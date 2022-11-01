@@ -1,7 +1,21 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
+    colors: {
+      transparent: 'transparent',
+      current: 'currentColor',
+      light: '#e3e3e3',
+      dark: '#1a1a1a',
+      purple: '#3f3cbb',
+      midnight: '#121063',
+      metal: '#565584',
+      tahiti: '#3ab7bf',
+      silver: '#ecebff',
+      'bubble-gum': '#ff77e9',
+      bermuda: '#78dcca',
+    },
+
     extend: {},
   },
   plugins: [],
