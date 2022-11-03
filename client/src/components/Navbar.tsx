@@ -9,36 +9,33 @@ function Navbar({ user }: { user: any }) {
 
   return (
     <nav className="h-16 flex items-center px-16 border-b-2 border-primary">
-      <ul className="flex gap-8 items-center">
-        <li>
-          <h1>FENDCH</h1>
-        </li>
-        <li>
+      <div className="flex gap-8 items-center justify-between w-full">
+        <div className="left flex items-center gap-6">
+          <Link to="/" className="text-xl font-bold">
+            FENDCH
+          </Link>
           <Link to="/challenges">Challenges</Link>
-        </li>
-        <li>
           <Link to="/projects">Projects</Link>
-        </li>
-        {user ? (
-          <>
+        </div>
+        <div className="right flex items-center gap-4">
+          {user ? (
+            <>
+              <Link to={`/profile/${user.username}`}>{user.username}</Link>
+              <img
+                src={user.photos[0].value}
+                alt="user"
+                className="w-8 h-8 rounded-full object-cover"
+              />
+            </>
+          ) : (
             <li>
-              <Link to={`/profile/${user.displayName}`}>Profile</Link>
+              <button type="button" onClick={loginWithGithub}>
+                Login with Github
+              </button>
             </li>
-            <img
-              src={user.photos[0].value}
-              alt="user"
-              className="w-8 h-8 rounded-full object-cover"
-            />
-            <h3>{user.displayName}</h3>
-          </>
-        ) : (
-          <li>
-            <button type="button" onClick={loginWithGithub}>
-              Login with Github
-            </button>
-          </li>
-        )}
-      </ul>
+          )}
+        </div>
+      </div>
     </nav>
   );
 }

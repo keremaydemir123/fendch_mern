@@ -1,5 +1,9 @@
+import { useUser } from '../contexts/authProvider';
+
 function Home() {
-  return <div>Home</div>;
+  const { user } = useUser();
+
+  return <div>{user?.displayName}</div>;
 }
 
 export default Home;

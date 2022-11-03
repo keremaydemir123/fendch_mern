@@ -6,6 +6,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import App from './App';
 import './index.css';
+import { UserProvider } from './contexts/authProvider';
 
 const queryClient = new QueryClient();
 
@@ -13,7 +14,9 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <App />
+        <UserProvider>
+          <App />
+        </UserProvider>
       </BrowserRouter>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

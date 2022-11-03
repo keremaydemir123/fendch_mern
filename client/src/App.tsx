@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import ChallengeDetails from './pages/ChallengeDetails';
@@ -8,9 +8,10 @@ import ProjectDetails from './pages/ProjectDetails';
 import Challenges from './pages/Challenges';
 import NotFound from './pages/NotFound';
 import Profile from './pages/Profile';
+import { useUser } from './contexts/authProvider';
 
 function App() {
-  const [user, setUser] = useState(null);
+  const { user, setUser } = useUser();
 
   useEffect(() => {
     const getUser = () => {
