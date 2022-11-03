@@ -1,6 +1,4 @@
 const GitHubStrategy = require("passport-github2").Strategy;
-const dotenv = require("dotenv");
-dotenv.config();
 const passport = require("passport");
 
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
@@ -29,6 +27,6 @@ passport.serializeUser(function (user, done) {
   done(null, user);
 });
 
-passport.deserializeUser(function (obj, done) {
-  done(null, obj);
+passport.deserializeUser(function (user, done) {
+  done(null, user);
 });
