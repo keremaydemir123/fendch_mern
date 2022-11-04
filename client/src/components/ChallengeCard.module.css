@@ -1,0 +1,71 @@
+.container {
+  width: 350px;
+  height: 500px;
+  perspective: 800px;
+}
+
+.container:hover > .card {
+  cursor: pointer;
+  transform: rotateY(180deg);
+}
+
+.card {
+  height: 100%;
+  width: 100%;
+  position: relative;
+  transition: transform 1000ms;
+  transform-style: preserve-3d;
+}
+
+.front,
+.back {
+  height: 100%;
+  width: 100%;
+  border-radius: 2rem;
+  box-shadow: 0 0 5px 2px rgba(50, 50, 50, 0.25);
+  position: absolute;
+  backface-visibility: hidden;
+  padding: 0.4rem;
+}
+
+.front {
+  background-color: #fff;
+  z-index: 2;
+}
+
+.frontHeader {
+  text-align: center;
+}
+
+.frontWeek {
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.frontTech {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 2.5rem;
+  height: 6rem;
+  line-height: 3rem;
+}
+
+.frontTask {
+  text-align: center;
+  font-style: italic;
+  font-size: 1.2rem;
+}
+
+.back {
+  background-color: #3a3a3a;
+  transform: rotateY(180deg);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5rem;
+}
