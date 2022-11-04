@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import Button from './Button';
 
 function Navbar({ user }: { user: any }) {
   const loginWithGithub = () => {
@@ -28,11 +29,9 @@ function Navbar({ user }: { user: any }) {
               />
             </>
           ) : (
-            <li>
-              <button type="button" onClick={loginWithGithub}>
-                Login with Github
-              </button>
-            </li>
+            <Button type="button" onClick={loginWithGithub}>
+              Login with Github
+            </Button>
           )}
         </div>
       </div>
