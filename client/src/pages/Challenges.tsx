@@ -9,9 +9,9 @@ function Challenges() {
         className="w-5/6 rounded-md outline-none border-none h-16 my-8 px-8 text-dark font-semibold text-3xl"
       />
       <div className="flex flex-wrap justify-center items-center gap-12 w-5/6">
-        <ChallengeCard />
-        <ChallengeCard />
-        <ChallengeCard />
+        <ChallengeCard onProggress />
+        <ChallengeCard onProggress />
+        <ChallengeCard onProggress />
         <ChallengeCard />
         <ChallengeCard />
         <ChallengeCard />

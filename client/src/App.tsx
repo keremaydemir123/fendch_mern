@@ -9,6 +9,7 @@ import Challenges from './pages/Challenges';
 import NotFound from './pages/NotFound';
 import Profile from './pages/Profile';
 import { useUser } from './contexts/authProvider';
+import toast, { Toaster } from 'react-hot-toast';
 
 function App() {
   const { user, setUser } = useUser();
@@ -30,6 +31,7 @@ function App() {
         })
         .then((resObject) => {
           setUser(resObject.user);
+          toast.success('Welcome back!');
         })
         .catch((err) => {
           console.log(err);
@@ -41,6 +43,9 @@ function App() {
   return (
     <div className="App bg-dark text-light min-h-screen">
       <Navbar user={user} />
+      <div>
+        <Toaster />
+      </div>
       <Routes>
         <Route path="/" element={<Home />} />
 
