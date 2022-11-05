@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 const User = require("./UserModel.js");
 
 const challengeSchema = mongoose.Schema({
+  tech: {
+    type: String,
+    required: [true, "Please enter the techs that will be used"],
+  },
   title: {
     type: String,
     required: [true, "Please enter a challenge title"],
@@ -11,10 +15,7 @@ const challengeSchema = mongoose.Schema({
   //   required: true,
   //   ref: "user",
   // },
-  tech: {
-    type: String,
-    required: [true, "Please enter the techs that will be used"],
-  },
+
   description: {
     type: String,
     required: [true, "Please enter a description"],

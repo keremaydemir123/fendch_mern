@@ -6,13 +6,13 @@ import { getActiveChallenges, getOldChallenges } from '../services/challenges';
 
 function SmallCard({ challenge }: { color?: string; challenge?: any }) {
   return (
-    <div className={`w-64 h-32 bg-red p-4`}>
+    <div className={`w-64 bg-red p-4`}>
       <h1>Small Card</h1>
       <h1>
         {challenge.tech} : {challenge.title}
       </h1>
-      <h1>isSecret: {challenge.isSecret}</h1>
-      <h1>isActive: {challenge.isActive}</h1>
+      <h1>isSecret: {challenge.isSecret.toString()}</h1>
+      <h1>isActive: {challenge.isActive.toString()}</h1>
     </div>
   );
 }
@@ -32,6 +32,8 @@ function Admin() {
   const { data: secretChallenges } = useQuery('secretChallenges', () =>
     getSecretChallenges()
   );
+
+  console.log(oldChallenges);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -87,23 +89,29 @@ function Admin() {
 
       <div className="">
         <h1>Old Challenges</h1>
-        {oldChallenges?.map((challenge: any) => (
-          <SmallCard challenge={challenge} />
-        ))}
+        <div className="flex flex-col gap-4">
+          {oldChallenges?.map((challenge: any) => (
+            <SmallCard challenge={challenge} />
+          ))}
+        </div>
       </div>
 
       <div className="">
         <h1>Active Challenges</h1>
-        {activeChallenges?.map((challenge: any) => (
-          <SmallCard challenge={challenge} />
-        ))}
+        <div className="flex flex-col gap-4">
+          {activeChallenges?.map((challenge: any) => (
+            <SmallCard challenge={challenge} />
+          ))}
+        </div>
       </div>
 
       <div className="">
         <h1>Upcoming Challenges</h1>
-        {secretChallenges?.map((challenge: any) => (
-          <SmallCard challenge={challenge} />
-        ))}
+        <div className="flex flex-col gap-4">
+          {secretChallenges?.map((challenge: any) => (
+            <SmallCard challenge={challenge} />
+          ))}
+        </div>
       </div>
     </div>
   );
