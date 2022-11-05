@@ -9,14 +9,16 @@ exports.aliasTopProjects = (req, res, next) => {
   next();
 };
 
+exports.increaseTotalSubmits = (req, res, next) => {
+  const challengeId = req.body.challengeId;
+
+  next();
+};
+
 //! HANDLERS
 exports.getAllProject = async (req, res) => {
   try {
-    const features = new APIFeatures(Project.find(), req.query)
-      .filter()
-      .sort()
-      .limitFields()
-      .paginate();
+    const features = new APIFeatures(Project.find(), req.query).paginate();
 
     const projects = await features.query;
 

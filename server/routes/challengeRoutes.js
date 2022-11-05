@@ -1,14 +1,20 @@
 const express = require("express");
-const {
-  getAllChallenges,
-  getChallenge,
-  createChallenge,
-} = require("../controller/challenge.js");
+const challengeController = require("../controller/challenge.js");
 
 const router = express.Router();
 
-router.route("/").get(getAllChallenges).post(createChallenge);
+//! Current Challenges
+//! All Challenges
+//! Secrent Challenges
 
-router.route("/:id").get(getChallenge);
+//! on GET request, push current challenges to all challenges, delete current challenges, filter secret challenges and push to current challenges
+//! get Current Challenges
+
+router
+  .route("/")
+  .get(challengeController.getAllChallenges)
+  .post(challengeController.createChallenge);
+
+router.route("/:id").get(challengeController.getChallenge);
 
 module.exports = router;

@@ -10,7 +10,10 @@ router
 router
   .route("/")
   .get(projectController.getAllProject)
-  .post(projectController.createProject);
+  .post(
+    projectController.increaseTotalSubmits,
+    projectController.createProject
+  );
 
 router
   .route("/:id")
