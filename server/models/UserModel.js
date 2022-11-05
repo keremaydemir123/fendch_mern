@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
-const Project = require("./Project.js");
-const Comment = require("./Comment.js");
+const Project = require("./ProjectModel.js");
+const Comment = require("./CommentModel.js");
 
 const userSchema = mongoose.Schema(
   {

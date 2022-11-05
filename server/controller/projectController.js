@@ -1,4 +1,4 @@
-const Project = require("../models/Project");
+const Project = require("../models/ProjectModel");
 const APIFeatures = require("../utils/APIFeatures");
 
 //! MIDLEWARES
