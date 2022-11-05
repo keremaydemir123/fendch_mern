@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import ChallengeDetails from './pages/ChallengeDetails';
@@ -9,10 +9,12 @@ import Challenges from './pages/Challenges';
 import NotFound from './pages/NotFound';
 import Profile from './pages/Profile';
 import { useUser } from './contexts/authProvider';
-import toast, { Toaster } from 'react-hot-toast';
 
 function App() {
   const { user, setUser } = useUser();
+  const [session] = useState(
+    document.cookie.split(';').find((c) => c == 'session')
+  );
 
   useEffect(() => {
     const getUser = () => {
@@ -31,21 +33,18 @@ function App() {
         })
         .then((resObject) => {
           setUser(resObject.user);
-          toast.success('Welcome back!');
         })
         .catch((err) => {
           console.log(err);
         });
     };
     getUser();
-  }, []);
+    console.log('worked');
+  }, [session]);
 
   return (
     <div className="App bg-dark text-light min-h-screen">
       <Navbar user={user} />
-      <div>
-        <Toaster />
-      </div>
       <Routes>
         <Route path="/" element={<Home />} />
 

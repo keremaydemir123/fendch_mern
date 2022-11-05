@@ -28,9 +28,17 @@ const challengeSchema = mongoose.Schema({
     default: new Date(),
   },
   tasks: [String],
-  totalSubmits: Number,
+  totalSubmits: {
+    type: Number,
+    default: 0,
+  },
+  images: [String],
+  logos: [String],
 });
 
-const Challenge = mongoose.model("challenge", challengeSchema);
+const Challenge = mongoose.model("Challenge", challengeSchema);
+
+//! Secret Challenge
+//! client will make a request on Sunday 00.00 to GET /challenges
 
 module.exports = Challenge;

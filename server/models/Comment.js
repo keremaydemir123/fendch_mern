@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const commentSchema = mongoose.Schema({
-  text: { type: String, required: [true, "Please enter a text"]},
+  text: { type: String, required: [true, "Please enter a text"] },
   // user: User,
   // child,
   // parent,
@@ -11,6 +11,6 @@ const commentSchema = mongoose.Schema({
   },
 });
 
-const Comment = mongoose.model("comment", commentSchema);
+const Comment = mongoose.model("Comment", commentSchema);
 
 module.exports = Comment;

@@ -6,8 +6,6 @@ function Navbar({ user }: { user: any }) {
     window.open('http://localhost:4000/auth/github', '_self');
   };
 
-  console.log(user);
-
   return (
     <nav className="h-16 flex items-center px-16 border-b-2 border-primary">
       <div className="flex gap-8 items-center justify-between w-full">

@@ -1,9 +1,6 @@
-const express = require("express");
 const asyncHandler = require("express-async-handler");
 
 const Challenge = require("../models/Challenge.js");
-
-const router = express.Router();
 
 exports.getAllChallenges = asyncHandler(async (req, res) => {
   const challenge = await Challenge.find();
@@ -19,7 +16,6 @@ exports.getChallenge = asyncHandler(async (req, res) => {
 
 //Create a new challenge
 exports.createChallenge = asyncHandler(async (req, res) => {
-
   if (!req.body.title || !req.body.tech || !req.body.description) {
     res
       .status(400)
