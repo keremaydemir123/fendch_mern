@@ -1,9 +1,18 @@
 import SERVER_URL from './baseURL';
 import axios from 'axios';
 
-export async function getChallenges() {
+export async function getOldChallenges() {
   try {
-    const response = await axios.get(`${SERVER_URL}/challenges`);
+    const response = await axios.get(`${SERVER_URL}/challenges/old`);
+    return response.data;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+}
+
+export async function getActiveChallenges() {
+  try {
+    const response = await axios.get(`${SERVER_URL}/challenges/active`);
     return response.data;
   } catch (err: any) {
     throw new Error(err);

@@ -9,6 +9,7 @@ import Challenges from './pages/Challenges';
 import NotFound from './pages/NotFound';
 import Profile from './pages/Profile';
 import { useUser } from './contexts/authProvider';
+import Admin from './pages/Admin';
 
 function App() {
   const { user, setUser } = useUser();
@@ -55,6 +56,8 @@ function App() {
         <Route path="/projects/:id" element={<ProjectDetails />} />
 
         <Route path="/profile/:username" element={<Profile />} />
+
+        <Route path="/admin" element={<Admin />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
