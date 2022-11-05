@@ -6,8 +6,6 @@ const cookieSession = require("cookie-session");
 const passport = require("passport");
 const morgan = require("morgan");
 
-const challengeRouter = require("./routes/challengeRouter.js");
-const authRouter = require("./routes/authRouter");
 require("./passport");
 
 const connectDB = require("./config/db.js");
@@ -38,8 +36,9 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/auth", authRouter);
-app.use("/challenges", challengeRouter);
+app.use("/auth", require("./routes/authRoutes"));
+app.use("/challenges", require("./routes/challengeRoutes"));
+app.use("/projects", require("./routes/projectRoutes"));
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
