@@ -1,27 +1,38 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Project = require("./Project.js");
 const Comment = require("./Comment.js");
-
 
 const userSchema = mongoose.Schema(
   {
     username: { type: String, required: [true, "Please enter a username"] },
-    password: { type: String, required: [true, "Please enter a password"] },
-    projects: [String], //
-    comments: [String], //
+    projects: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Project",
+      default: [],
+    },
+    comments: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Comment",
+      default: [],
+    },
     likedComments: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "user",
+      ref: "Comment",
       default: [],
     },
     ratedProjects: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "project",
+      ref: "Project",
       default: [],
     },
+    //streak
+    //points
+    //totalProjects
+    //totalLikes
+    //totalComments
   },
   { timestamp: true }
 );
 
-const User = mongoose.model("user", userSchema);
+const User = mongoose.model("User", userSchema);
 module.exports = User;

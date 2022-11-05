@@ -1,11 +1,10 @@
 import { Link } from 'react-router-dom';
+import Button from './Button';
 
 function Navbar({ user }: { user: any }) {
   const loginWithGithub = () => {
     window.open('http://localhost:4000/auth/github', '_self');
   };
-
-  console.log(user);
 
   return (
     <nav className="h-16 flex items-center px-16 border-b-2 border-primary">
@@ -28,11 +27,9 @@ function Navbar({ user }: { user: any }) {
               />
             </>
           ) : (
-            <li>
-              <button type="button" onClick={loginWithGithub}>
-                Login with Github
-              </button>
-            </li>
+            <Button type="button" onClick={loginWithGithub}>
+              Login with Github
+            </Button>
           )}
         </div>
       </div>

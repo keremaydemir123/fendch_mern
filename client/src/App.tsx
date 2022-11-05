@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import ChallengeDetails from './pages/ChallengeDetails';
@@ -12,6 +12,9 @@ import { useUser } from './contexts/authProvider';
 
 function App() {
   const { user, setUser } = useUser();
+  const [session] = useState(
+    document.cookie.split(';').find((c) => c == 'session')
+  );
 
   useEffect(() => {
     const getUser = () => {
@@ -36,7 +39,8 @@ function App() {
         });
     };
     getUser();
-  }, []);
+    console.log('worked');
+  }, [session]);
 
   return (
     <div className="App bg-dark text-light min-h-screen">
