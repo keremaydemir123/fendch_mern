@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const User = require("./User.js");
+const User = require("./UserModel.js");
 
 const challengeSchema = mongoose.Schema({
   title: {
@@ -34,6 +34,14 @@ const challengeSchema = mongoose.Schema({
   },
   images: [String],
   logos: [String],
+  isSecret: {
+    type: Boolean,
+    default: true,
+  },
+  isActive: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const Challenge = mongoose.model("Challenge", challengeSchema);
