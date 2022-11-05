@@ -1,12 +1,15 @@
 import ChallengeCard from '../components/ChallengeCard';
 import { useUser } from '../contexts/authProvider';
 import { useQuery } from 'react-query';
-import { getChallenges } from '../services/challenges';
+import { getActiveChallenges } from '../services/challenges';
 
 function Home() {
   const { user } = useUser();
 
-  const { isLoading, error, data } = useQuery('allChallenges', getChallenges);
+  const { isLoading, error, data } = useQuery(
+    'allChallenges',
+    getActiveChallenges
+  );
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error...</div>;

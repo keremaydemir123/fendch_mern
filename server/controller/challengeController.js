@@ -8,7 +8,10 @@ const Challenge = require("../models/ChallengeModel.js");
 exports.getActiveChallenges = asyncHandler(async (req, res) => {
   const challenge = await Challenge.find();
 
-  filteredChallenge = challenge.filter(secretChallenge => secretChallenge.isSecret != true && secretChallenge.isActive == true)
+  filteredChallenge = challenge.filter(
+    (secretChallenge) =>
+      secretChallenge.isSecret != true && secretChallenge.isActive == true
+  );
 
   res.status(200).json(filteredChallenge);
 });
@@ -19,10 +22,13 @@ exports.getActiveChallenges = asyncHandler(async (req, res) => {
 exports.getOldChallenges = asyncHandler(async (req, res) => {
   const challenge = await Challenge.find();
 
-  filteredChallenge = challenge.filter(secretChallenge => secretChallenge.isSecret != true && secretChallenge.isActive != true)
+  filteredChallenge = challenge.filter(
+    (secretChallenge) =>
+      secretChallenge.isSecret != true && secretChallenge.isActive != true
+  );
 
   res.status(200).json(filteredChallenge);
-})
+});
 
 // Get Challenge
 // @route GET /api/active/
@@ -52,10 +58,11 @@ exports.getSecretChallenges = asyncHandler(async (req, res) => {
   //check if user name equals to admins' username function will be added here
   const challenge = await Challenge.find();
 
-  filteredChallenge = challenge.filter(secretChallenge => secretChallenge.isSecret == true)
+  filteredChallenge = challenge.filter(
+    (secretChallenge) => secretChallenge.isSecret == true
+  );
 
   res.status(200).json(filteredChallenge);
-
 });
 
 exports.getActiveChallenge = asyncHandler(async (req, res) => {});
@@ -69,8 +76,10 @@ exports.deleteChallenge = asyncHandler(async (req, res) => {
 
   if (!challenge) {
     res.status(400);
-    throw new Error("Challenge not found")
+    throw new Error("Challenge not found");
   }
   await challenge.remove();
-  res.status(200).json({id: req.params.id, message: 'Challenge deleted successfully'})
-})
+  res
+    .status(200)
+    .json({ id: req.params.id, message: "Challenge deleted successfully" });
+});
