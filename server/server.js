@@ -6,15 +6,13 @@ const cookieSession = require("cookie-session");
 const passport = require("passport");
 const morgan = require("morgan");
 
-const challengeRouter = require("./routes/challengeRouter.js")
-const authRoutes = require("./routes/authRouter");
-const passportSetup = require("./passport");
+const challengeRouter = require("./routes/challengeRouter.js");
+const authRouter = require("./routes/authRouter");
+require("./passport");
 
 const connectDB = require("./config/db.js");
 
 connectDB();
-
-const CLIENT_URL = process.env.CLIENT_URL;
 
 const app = express();
 
@@ -25,7 +23,7 @@ app.use(
   })
 );
 
-app.use(morgan("dev"))
+app.use(morgan("dev"));
 app.use(express.json({ limit: "30mb", extended: true }));
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
 
@@ -40,8 +38,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/auth", authRoutes);
-app.use("/", challengeRouter);
+app.use("/auth", authRouter);
+app.use("/challenges", challengeRouter);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

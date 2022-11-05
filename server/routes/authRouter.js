@@ -26,7 +26,6 @@ router.get("/login/success", (req, res) => {
       // cookies: req.cookies,
     });
   }
-  res.status(401).send("Login failed");
 });
 
 router.get("/logout", (req, res) => {
