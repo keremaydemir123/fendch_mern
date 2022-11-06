@@ -2,13 +2,20 @@ import { Link } from 'react-router-dom';
 import { PulseLoader } from 'react-spinners';
 import styles from './ChallengeCard.module.css';
 
-type ChallengeCardProps = {
-  onProggress: boolean;
+type ChallengeProps = {
+  challenge: {
+    isActive: boolean;
+    tech: string;
+    _id: string;
+    description: string;
+    tags: string[];
+    tasks: string[];
+    createdAt: string;
+    updatedAt: string;
+  };
 };
 
-function ChallengeCard({ onProggress }: ChallengeCardProps) {
-  const id = '1';
-
+function ChallengeCard({ challenge }: ChallengeProps) {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
@@ -17,7 +24,7 @@ function ChallengeCard({ onProggress }: ChallengeCardProps) {
             <p className={styles.frontWeek}>week 1</p>
             <h1 className={styles.frontTech}>React</h1>
             <h3 className={styles.frontTask}>Todo App</h3>
-            {onProggress && (
+            {challenge.isActive && (
               <h1>
                 On Proggress
                 <span className="ml-1">
@@ -35,7 +42,7 @@ function ChallengeCard({ onProggress }: ChallengeCardProps) {
         <div className={styles.back}>
           <h1>back of card</h1>
           <p>bla bla</p>
-          <Link to={`/challenges/${id}`}>See Details</Link>
+          <Link to={`/challenges/${challenge._id}`}>See Details</Link>
         </div>
       </div>
     </div>

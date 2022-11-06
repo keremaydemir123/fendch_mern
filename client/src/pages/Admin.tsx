@@ -42,6 +42,10 @@ function Admin() {
     const tags = tagsRef.current?.value.split(',');
     const tasks = tasksRef.current?.value.split(',');
 
+    if (!tech || !description || !tags || !tasks) {
+      return;
+    }
+
     const challenge = await createChallenge({ tech, description, tags, tasks });
     console.log(challenge);
   };
