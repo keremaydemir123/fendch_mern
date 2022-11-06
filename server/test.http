@@ -1,0 +1,12 @@
+### GET OLD CHALLENGES
+GET http://localhost:4000/challenges/old HTTP/1.1
+
+### GET SECRET CHALLENGES
+GET http://localhost:4000/challenges/secret HTTP/1.1
+
+### GET ACTIVE CHALLENGES
+GET http://localhost:4000/challenges/active HTTP/1.1
+
+### GET ALL USERS
+GET http://localhost:4000/users HTTP/1.1
+

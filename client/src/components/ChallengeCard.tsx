@@ -3,30 +3,21 @@ import { PulseLoader } from 'react-spinners';
 import styles from './ChallengeCard.module.css';
 import CustomCTA from './CustomCTA';
 import CustomLink from './CustomLink';
+import { ChallengeProps } from '../types/Challenge';
 
-type ChallengeProps = {
-  challenge: {
-    isActive: boolean;
-    tech: string;
-    _id: string;
-    description: string;
-    tags: string[];
-    tasks: string[];
-    createdAt: string;
-    updatedAt: string;
-    objective: string;
-    liveExample: string;
-  };
+function ChallengeCard({
+  challenge,
+  isActive = false,
+}: {
+  challenge: ChallengeProps;
   isActive?: boolean;
-};
-
-function ChallengeCard({ challenge, isActive = false }: ChallengeProps) {
+}) {
   return (
     <div className={styles.container}>
       <div className={styles.card}>
         <div className={styles.front}>
           <div className={styles.frontHeader}>
-            <p className={styles.frontWeek}>week 1</p>
+            <p className={styles.frontWeek}>week {challenge.week}</p>
             <h1 className={styles.frontTech}>{challenge.tech}</h1>
             <h3 className={styles.frontTask}>{challenge.objective}</h3>
             {isActive && (
@@ -47,9 +38,13 @@ function ChallengeCard({ challenge, isActive = false }: ChallengeProps) {
         <div className={styles.back}>
           <h1>{challenge.description}</h1>
           <CustomCTA href={`${challenge.liveExample}`}>LiveExample</CustomCTA>
-          <CustomLink to={`/challenges/${challenge._id}`}>
-            See Details
-          </CustomLink>
+          {challenge._id ? (
+            <CustomLink to={`/challenges/${challenge._id}`}>
+              See Details
+            </CustomLink>
+          ) : (
+            <CustomLink to={``}>See Details</CustomLink>
+          )}
         </div>
       </div>
     </div>
