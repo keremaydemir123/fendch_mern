@@ -40,14 +40,25 @@ exports.getChallenge = asyncHandler(async (req, res) => {
   res.status(200).json(challenge);
 });
 
-//Create a new challenge
+// Create a new challenge
+// @route POST /api/
+// @access private
 exports.createChallenge = asyncHandler(async (req, res) => {
-  if (!req.body.title || !req.body.tech || !req.body.description) {
+  if (!req.body.objective || !req.body.tech || !req.body.description || !req.body.week) {
     res
       .status(400)
       .send("Don't forget to enter a title, techs and description");
     throw new Error("Don't forget to enter a title, techs and description");
   }
+
+  const objectiveExist = await Challenge.find({objective: req.body.objective, tech: req.body.tech})
+  if (objectiveExist) {
+    res
+      .status(400)
+      .send("Same challenge with same objective and tech stack is already exist");
+    throw new Error("Same challenge with same objective and tech stack is already exist");
+  }
+  
   const challenge = await Challenge.create(req.body);
 
   res.status(200).json(challenge);
@@ -64,8 +75,6 @@ exports.getSecretChallenges = asyncHandler(async (req, res) => {
 
   res.status(200).json(filteredChallenge);
 });
-
-exports.getActiveChallenge = asyncHandler(async (req, res) => {});
 
 //update challenge status from admin panel. If challenge isActive => show in client else {false}
 
