@@ -4,27 +4,30 @@ const Comment = require("./CommentModel.js");
 
 const userSchema = mongoose.Schema(
   {
-    username: { type: String, required: [true, "Please enter a username"] },
-    projects: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Project",
-      default: [],
-    },
-    comments: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Comment",
-      default: [],
-    },
-    likedComments: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Comment",
-      default: [],
-    },
-    ratedProjects: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Project",
-      default: [],
-    },
+    username: { type: String, required: true },
+    photo: { type: String, required: true },
+    profileUrl: { type: String, required: true },
+    // projects: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Project",
+    //   default: [],
+    // },
+    // comments: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Comment",
+    //   default: [],
+    // },
+    // likedComments: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Comment",
+    //   default: [],
+    // },
+    // ratedProjects: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Project",
+    //   default: [],
+    // },
+    
     //streak
     //points
     //totalProjects
