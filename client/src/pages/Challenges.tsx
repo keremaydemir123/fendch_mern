@@ -25,7 +25,11 @@ function Challenges() {
       />
       <div className="flex flex-wrap justify-center items-center gap-12 w-5/6">
         {activeChallenges?.map((challenge: any) => (
-          <ChallengeCard key={challenge._id} challenge={challenge} />
+          <ChallengeCard
+            key={challenge._id}
+            challenge={challenge}
+            isActive={challenge.isActive}
+          />
         ))}
         {oldChallenges?.map((challenge: any) => (
           <ChallengeCard key={challenge._id} challenge={challenge} />
