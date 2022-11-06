@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { useQuery } from 'react-query';
+
 import Button from '../components/Button';
 import { createChallenge, getSecretChallenges } from '../services/admin';
 import { getActiveChallenges, getOldChallenges } from '../services/challenges';
@@ -41,6 +42,10 @@ function Admin() {
     const description = descriptionRef.current?.value;
     const tags = tagsRef.current?.value.split(',');
     const tasks = tasksRef.current?.value.split(',');
+
+    if (!tech || !description || !tags || !tasks) {
+      return;
+    }
 
     const challenge = await createChallenge({ tech, description, tags, tasks });
     console.log(challenge);

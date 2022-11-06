@@ -4,20 +4,20 @@ import SERVER_URL from './baseURL';
 type ChallengeProps = {
   tech: string;
   description: string;
-  todos: string[];
   tags: string[];
+  tasks: string[];
 };
 
 export async function createChallenge({
   tech,
   description,
-  todos,
+  tasks,
   tags,
 }: ChallengeProps) {
   const response = await axios.post(`${SERVER_URL}/challenges`, {
     tech,
     description,
-    todos,
+    tasks,
     tags,
   });
   return response.data;
