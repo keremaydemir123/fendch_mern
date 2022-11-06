@@ -6,9 +6,9 @@ const challengeSchema = mongoose.Schema({
     type: String,
     required: [true, "Please enter the techs that will be used"],
   },
-  title: {
+  objective: {
     type: String,
-    required: [true, "Please enter a challenge title"],
+    required: [true, "Please enter a challenge objective"],
   },
   // creator: {
   //   type: mongoose.Schema.Types.ObjectId,
@@ -42,6 +42,14 @@ const challengeSchema = mongoose.Schema({
   isActive: {
     type: Boolean,
     default: false,
+  },
+  week: {
+    type: Number,
+    required: true,
+  },
+  liveExample: {
+    type: String,
+    required: true,
   },
 });
 
