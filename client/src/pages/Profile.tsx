@@ -14,9 +14,9 @@ function Profile() {
           <FcSettings className="absolute top-2 right-2 text-2xl cursor-pointer" />
         )}
         <div className="w-max">
-          {user?._json.avatar_url ? (
+          {user?.avatar ? (
             <img
-              src={user._json.avatar_url}
+              src={user.avatar}
               alt={user.username}
               className="rounded-full w-64 h-64 object-cover my-4"
             />
@@ -50,8 +50,8 @@ function Profile() {
         </div>
 
         <div className="p-4">
-          {user?._json.bio ? (
-            <p className="text-lg font-regular">{user._json.bio}</p>
+          {user?.bio ? (
+            <p className="text-lg font-regular">{user.bio}</p>
           ) : (
             <p>No description</p>
           )}

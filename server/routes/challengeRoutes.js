@@ -24,6 +24,7 @@ router.route("/").post(challengeController.createChallenge);
 router
   .route("/:id")
   .get(challengeController.getChallenge)
+  .patch(challengeController.updateChallenge)
   .delete(challengeController.deleteChallenge);
 
 module.exports = router;

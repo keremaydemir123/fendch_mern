@@ -1,7 +1,9 @@
 const asyncHandler = require("express-async-handler");
 
-const userModel = require("../models/UserModel.js")
+const User = require("../models/UserModel.js");
 
-exports.saveUserToDB = asyncHandler(async (req, res) => {
-  
-})
+exports.getUsers = asyncHandler(async (req, res) => {
+  const users = await User.find();
+
+  res.status(200).json(users);
+});

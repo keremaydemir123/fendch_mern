@@ -24,7 +24,7 @@ const challengeSchema = mongoose.Schema({
     type: [String],
     default: [],
   },
-  date: {
+  startDate: {
     type: Date,
     default: new Date(),
   },

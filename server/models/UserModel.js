@@ -4,9 +4,20 @@ const Comment = require("./CommentModel.js");
 
 const userSchema = mongoose.Schema(
   {
-    username: { type: String, required: true },
-    photo: { type: String, required: true },
+    githubId: { type: String, required: true, unique: true },
+    username: { type: String, required: true, unique: true },
+    avatar: { type: String, required: true },
     profileUrl: { type: String, required: true },
+    role: {
+      type: String,
+      required: true,
+      default: "user",
+      enum: ["user", "admin"],
+    },
+    joinedAt: { type: Date, default: Date.now },
+    projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+
     // projects: {
     //   type: mongoose.Schema.Types.ObjectId,
     //   ref: "Project",
@@ -27,7 +38,7 @@ const userSchema = mongoose.Schema(
     //   ref: "Project",
     //   default: [],
     // },
-    
+
     //streak
     //points
     //totalProjects
