@@ -27,6 +27,7 @@ NOTES AFTER LAST COMMIT:
 
 ## Any bugs?
 # OFC.
+[fixed]
 1- When you edit a challenge its ok. Everything seems normal
 You can see the difference in secret challenges tab also, again its ok
 However, when you click the edit button again for the same challenge, 
