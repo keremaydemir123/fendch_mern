@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
@@ -9,68 +9,35 @@ import { getChallenge, updateChallenge } from '../../services/challenges';
 import { ChallengeProps } from '../../types/Challenge';
 
 function AdminChallengeEdit() {
+  const [newChallenge, setNewChallenge] = useState<ChallengeProps>({
+    tech: '',
+    objective: '',
+    description: '',
+    tasks: [],
+    tags: [],
+    week: 0,
+    startDate: '',
+    liveExample: '',
+  });
+
   const { id } = useParams();
-  if (!id) return <div>Challenge not found</div>;
 
   const {
     isLoading,
     error,
     data: challenge,
-  } = useQuery<ChallengeProps>('challenge', () => getChallenge(id));
+  } = useQuery<ChallengeProps>(['challenge', id], () => getChallenge(id!), {
+    onSuccess: (data) => {
+      setNewChallenge(data);
+    },
+  });
 
+  if (!id) return <div>Challenge not found</div>;
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Something went wrong...</div>;
 
-  const [tech, setTech] = useState(challenge?.tech);
-  const [objective, setObjective] = useState(challenge?.objective);
-  const [tasks, setTasks] = useState(challenge?.tasks.join(','));
-  const [description, setDescription] = useState(challenge?.description);
-  const [tags, setTags] = useState(challenge?.tags.join(','));
-  const [week, setWeek] = useState(challenge?.week.toString());
-  const [startDate, setStartDate] = useState(challenge?.startDate);
-  const [liveExample, setLiveExample] = useState(challenge?.liveExample);
-
-  let newChallenge: ChallengeProps = {
-    tech: tech || '',
-    objective: objective || '',
-    tasks: tasks ? tasks.split(',') : [],
-    description: description || '',
-    tags: tags ? tags.split(',') : [],
-    week: Number(week) || 0,
-    startDate: startDate || '',
-    liveExample: liveExample || '',
-  };
-
-  const seePreview = () => {
-    if (
-      !tech ||
-      !objective ||
-      !description ||
-      !tags ||
-      !tasks ||
-      !week ||
-      !startDate ||
-      !liveExample
-    ) {
-      toast.error('Please fill all the fields');
-      return;
-    }
-
-    newChallenge = {
-      tech,
-      objective,
-      description,
-      tasks: tasks.split(','),
-      tags: tags.split(','),
-      week: Number(week),
-      startDate,
-      liveExample,
-    };
-  };
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    seePreview();
     try {
       await updateChallenge(id, newChallenge);
       toast.success('Challenge updated successfully');
@@ -89,59 +56,84 @@ function AdminChallengeEdit() {
             type="text"
             id="tech"
             label="Tech"
-            value={tech}
-            onChange={(e) => setTech(e.target.value)}
+            value={newChallenge.tech}
+            onChange={(e) =>
+              setNewChallenge({ ...newChallenge, tech: e.target.value })
+            }
           />
           <Input
             type="text"
             id="objective"
             label="Objective"
-            value={objective}
-            onChange={(e) => setObjective(e.target.value)}
+            value={newChallenge.objective}
+            onChange={(e) =>
+              setNewChallenge({ ...newChallenge, objective: e.target.value })
+            }
           />
           <Input
             type="text"
             id="tasks"
             label="Tasks"
             placeholder="comma seperated values"
-            value={tasks}
-            onChange={(e) => setTasks(e.target.value)}
+            value={newChallenge.tasks.join(', ')}
+            onChange={(e) =>
+              setNewChallenge({
+                ...newChallenge,
+                tasks: e.target.value.split(', '),
+              })
+            }
           />
           <Input
             type="text"
             id="tags"
             label="Tags"
             placeholder="comma seperated values"
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
+            value={newChallenge.tags.join(', ')}
+            onChange={(e) =>
+              setNewChallenge({
+                ...newChallenge,
+                tags: e.target.value.split(', '),
+              })
+            }
           />
           <Input
             type="text"
             id="description"
             label="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={newChallenge.description}
+            onChange={(e) =>
+              setNewChallenge({ ...newChallenge, description: e.target.value })
+            }
           />
           <Input
             type="number"
             id="week"
             label="week"
-            value={week}
-            onChange={(e) => setWeek(e.target.value)}
+            value={newChallenge.week.toString()}
+            onChange={(e) =>
+              setNewChallenge({
+                ...newChallenge,
+                week: parseInt(e.target.value),
+              })
+            }
           />
           <Input
             type="date"
             id="startDate"
             label="Start Date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            value={newChallenge.startDate}
+            onChange={(e) =>
+              setNewChallenge({ ...newChallenge, startDate: e.target.value })
+            }
           />
           <Input
             type="text"
             id="liveExample"
             label="Live Example"
-            value={liveExample}
-            onChange={(e) => setLiveExample(e.target.value)}
+            value={newChallenge.liveExample}
+            onChange={(e) =>
+              setNewChallenge({ ...newChallenge, liveExample: e.target.value })
+            }
           />
           <Button type="submit" className="mt-2 border-green">
             Submit Challenge
