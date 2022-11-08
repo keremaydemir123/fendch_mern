@@ -2,9 +2,8 @@
 
 GOALS:
 
-1) Save github user to database by selecting necessary fields only -> (id, username, displayName, avatar, github url, repos url etc.) - [x] 
-2) Create first project (check if its unique)
-3) When a project is created update necessary models and fields -> (challenge.totalSubmits, challenge.projects, user.projects etc.)
+1) Create first project (check if its unique)
+2) When a project is created update necessary models and fields -> (challenge.totalSubmits, challenge.projects, user.projects user.notifications etc.)
 
 
 NOTES AFTER LAST COMMIT:
@@ -15,8 +14,9 @@ NOTES AFTER LAST COMMIT:
 - admin panel structure changed, new routes added
 - admin role is added if user is admin, he/she can see admin Link in Navbar
 - admin can create a challenge and he/she can see the preview of the challenge card
-- admin can see secret challenges and edit them(?)
+- admin can see secret challenges and edit them
 - new Input component added
+- new Badge component added
 
 #### Server:
 - user saved to db differently 
@@ -26,23 +26,15 @@ NOTES AFTER LAST COMMIT:
 
 
 ## Any bugs?
-# OFC.
-[fixed]
-1- When you edit a challenge its ok. Everything seems normal
-You can see the difference in secret challenges tab also, again its ok
-However, when you click the edit button again for the same challenge, 
-it shows the previous version,
-Furthermore, if you changed the Java challenge and wanted to edit Go challenge
-it links you again to the Java challenge. INTERESTING
-
-2- startDate is not working for Date input
+1- startDate is not working for Date input
 
 ## Whats next?
 
 #### Client:
 - "are you sure?" popup
+- in services/user file add getUserByUsername function
+- in profile page getUser by username every 10 second
 - challengeCard design
-- bug fix for admin panel
 - protected route for admin page
 - tags component
 - search component for challenges page
@@ -56,6 +48,9 @@ it links you again to the Java challenge. INTERESTING
 
 #### Server:
 - Middleware that checks time and changing isSecret and isActive states
+- notifications: string [] for user model
+- getNotifications route
+- addNotification and deleteNotification functions that takes a message to add or delete
 - Project creation
 - Pagination functionality for challenges and projects
 
