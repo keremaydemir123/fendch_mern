@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import Button from './Button';
 import CustomLink from './CustomLink';
 import { User } from '../contexts/authProvider';
+import Badge from './Badge';
 
 function Navbar({ user }: { user: User }) {
   const loginWithGithub = () => {
@@ -21,6 +22,7 @@ function Navbar({ user }: { user: User }) {
         <div className="right flex items-center gap-4">
           {user ? (
             <>
+              <Badge />
               <Link to={`/profile/${user.username}`}>{user.username}</Link>
               <img
                 src={user.avatar}
