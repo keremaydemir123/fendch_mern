@@ -1,4 +1,5 @@
 const Project = require("../models/ProjectModel");
+const User = require("../models/UserModel");
 const Challenge = require("../models/ChallengeModel");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/UserModel");
@@ -29,7 +30,8 @@ exports.createProject = asyncHandler(async (req, res) => {
   }
 
   const challenge = await Challenge.findOne({ id: req.params.challengeId });
-  console.log("challenge:", challenge);
+
+  const user = await User.findOne({ githubId: req.body.userId });
 
   const user = await User.findOne({ githubId: req.body.userId });
 
@@ -40,10 +42,9 @@ exports.createProject = asyncHandler(async (req, res) => {
 
   const project = await Project.create({
     challenge,
-    user,
     git: req.body.git,
     description: req.body.description,
-    userId: req.body.githubId,
+    user,
   });
   console.log('user :>> ', user); 
   challenge.projects.push(project);
