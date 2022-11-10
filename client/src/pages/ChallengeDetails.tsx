@@ -3,7 +3,9 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useMutation } from 'react-query';
 import { useParams } from 'react-router-dom';
 import Button from '../components/Button';
+import Input from '../components/Input';
 import Modal from '../components/Modal';
+import Textarea from '../components/Textarea';
 import YoutubePlayer from '../components/YoutubePlayer';
 import { useUser } from '../contexts/authProvider';
 import { createProject } from '../services/projects';
@@ -46,7 +48,7 @@ function ChallengeDetails() {
       return;
     }
 
-    mutation.mutate({ git, description, challengeId, userId: user.githubId });
+    mutation.mutate({ git, description, challengeId, userId: user._id! });
 
     if (mutation.isLoading) return <div>loading...</div>;
     if (mutation.isSuccess) toast.success('Project submitted successfully');
@@ -62,19 +64,8 @@ function ChallengeDetails() {
         <Button onClick={() => setOpen(true)}>Submit</Button>
         <Modal open={open} onClose={() => setOpen(false)}>
           <form onSubmit={handleModalSubmit} className="flex flex-col gap-4">
-            <label htmlFor="git">Git</label>
-            <input
-              type="text"
-              id="git"
-              ref={gitRef}
-              className="text-dark p-2"
-            />
-            <label htmlFor="desc">Description</label>
-            <textarea
-              id="desc"
-              ref={descriptionRef}
-              className="text-dark p-2"
-            />
+            <Input label="Git" id="git" type="text" ref={gitRef} />
+            <Textarea label="Description" id="desc" ref={descriptionRef} />
             <Button type="submit">Submit</Button>
           </form>
         </Modal>
