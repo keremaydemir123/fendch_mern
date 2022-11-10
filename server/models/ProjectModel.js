@@ -7,8 +7,8 @@ const projectSchema = mongoose.Schema(
       type: String,
       required: [true, "Please enter repository URL"],
     },
-    challenge: { type: mongoose.Schema.Types.ObjectId, ref: "Challenge" },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    challengeId: { type: mongoose.Schema.Types.ObjectId, ref: "Challenge" },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     description: {
       type: String,
       required: [true, "Please enter a description"],
@@ -16,6 +16,10 @@ const projectSchema = mongoose.Schema(
     tags: [String],
     selectedFile: String,
     public: Boolean,
+    submittedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   { timestamp: true }
 );

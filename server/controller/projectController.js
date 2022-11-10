@@ -1,5 +1,4 @@
 const Project = require("../models/ProjectModel");
-const User = require("../models/UserModel");
 const Challenge = require("../models/ChallengeModel");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/UserModel");
@@ -9,10 +8,10 @@ exports.getAllProjects = asyncHandler(async (req, res) => {
   res.status(200).json(projects);
 });
 
-exports.getProjectsByUsername = asyncHandler(async (req, res) => {
-  const user = await User.findOne({ username: req.params.username });
+exports.getProjectsByUserId = asyncHandler(async (req, res) => {
+  const projects = await Project.find({ userId: req.params.userId });
 
-  res.status(200).json(user.projects);
+  res.status(200).json(projects);
 });
 
 exports.createProject = asyncHandler(async (req, res) => {
@@ -30,9 +29,6 @@ exports.createProject = asyncHandler(async (req, res) => {
   }
 
   const challenge = await Challenge.findOne({ id: req.params.challengeId });
-
-  const user = await User.findOne({ githubId: req.body.userId });
-
   const user = await User.findOne({ githubId: req.body.userId });
 
   if (!challenge) {
@@ -41,12 +37,12 @@ exports.createProject = asyncHandler(async (req, res) => {
   }
 
   const project = await Project.create({
-    challenge,
+    challengeId: challenge._id,
     git: req.body.git,
     description: req.body.description,
-    user,
+    userId: user._id,
   });
-  console.log('user :>> ', user); 
+
   challenge.projects.push(project);
   await challenge.save();
 
@@ -60,4 +56,16 @@ exports.createProject = asyncHandler(async (req, res) => {
   }
 
   console.log("project added: ", challenge);
+});
+
+exports.getProjectById = asyncHandler(async (req, res) => {
+  console.log("req.params: ", req.params);
+  const project = await Project.findById(req.params.projectId);
+
+  if (project) {
+    res.status(200).json(project);
+  } else {
+    res.status(404);
+    throw new Error("Project not found");
+  }
 });

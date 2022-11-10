@@ -1,9 +1,22 @@
 import { useState } from 'react';
 import { FaBell } from 'react-icons/fa';
+import { useQuery } from 'react-query';
+import { useUser } from '../contexts/authProvider';
+import { getNotifications } from '../services/notifications';
+import { NotificationProps } from '../types/Notification';
 
 function Badge() {
-  const [count, setCount] = useState(10);
   const [open, setOpen] = useState(false);
+
+  const { user } = useUser();
+
+  const {
+    isLoading,
+    error,
+    data: notifications,
+  } = useQuery('notifications', () => getNotifications(user?._id!));
+
+  if (isLoading) return <p>Loading...</p>;
 
   return (
     <div className="relative h-max w-max ">
@@ -11,12 +24,14 @@ function Badge() {
         onClick={() => setOpen(true)}
         className="text-light text-xl hover:cursor-pointer hover:text-light-gray transition duration-100"
       />
-      <span className="absolute text-light flex justify-center items-center text-xs -right-2 -top-2 rounded-full w-[16px] h-[16px] bg-red">
-        {
-          // if count is greater than 9, show 9+
-          count > 9 ? '9+' : count
-        }
-      </span>
+      {notifications?.length > 0 && (
+        <span className="absolute text-light flex justify-center items-center text-xs -right-2 -top-2 rounded-full w-[16px] h-[16px] bg-red">
+          {
+            // if count is greater than 9, show 9+
+            notifications?.length > 9 ? '9+' : notifications?.length
+          }
+        </span>
+      )}
       {open && (
         <div
           onClick={() => setOpen(false)}
@@ -32,18 +47,23 @@ function Badge() {
               </h1>
               {
                 // if count is greater than 0, show notifications
-                count > 0 ? (
+                notifications?.length > 0 ? (
                   <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-2 bg-primary rounded-md p-2">
-                      Turhan Liked your project
-                    </div>
-                    <div className="flex items-center gap-2 bg-primary rounded-md p-2">
-                      Barkın make a comment to your project: "Wow this is
-                      awesome!"
-                    </div>
+                    {notifications.map((notification: NotificationProps) => (
+                      <div
+                        key={notification._id}
+                        className="flex items-center gap-2 bg-primary rounded-md p-2"
+                      >
+                        {notification.message}
+                      </div>
+                    ))}
                   </div>
                 ) : (
-                  <p className="text-light">You have no notifications</p>
+                  <p className="text-light">
+                    {error
+                      ? 'Eror when fetching notifications'
+                      : 'You have no notifications'}
+                  </p>
                 )
               }
             </div>

@@ -1,25 +1,9 @@
 import React, { useState, createContext, useContext, useMemo } from 'react';
-
-type Project = {
-  _id: string;
-  name: string;
-};
-
-export interface User {
-  githubId: string;
-  displayName: string;
-  username: string;
-  profileUrl: string;
-  avatar: string;
-  bio?: string;
-  role: 'user' | 'admin';
-  projects: Project[];
-  joinedAt: Date;
-}
+import { UserProps } from '../types/User';
 
 type UserContextType = {
-  user: User | null;
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
+  user: UserProps | null;
+  setUser: React.Dispatch<React.SetStateAction<UserProps | null>>;
 };
 
 const UserContext = createContext<UserContextType>({

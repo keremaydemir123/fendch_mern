@@ -13,7 +13,7 @@ export async function createProject({
   description: string;
 }) {
   const response = await axios.post(
-    `${SERVER_URL}/challenges/${challengeId}/projects`,
+    `${SERVER_URL}/projects/challenges/${challengeId}/projects`,
     { git, description, userId }
   );
   return response.data;
@@ -24,8 +24,10 @@ export async function getProjects() {
   return response.data;
 }
 
-export async function getProjectsByUsername(username: string) {
-  const response = await axios.get(`${SERVER_URL}/projects/${username}`);
+export async function getProjectsByUserId(userId: string) {
+  const response = await axios.get(
+    `${SERVER_URL}/projects/getProjectByUserId/${userId}`
+  );
   return response.data;
 }
 
