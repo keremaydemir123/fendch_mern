@@ -46,7 +46,7 @@ function ChallengeDetails() {
       return;
     }
 
-    mutation.mutate({ git, description, challengeId, userId: user.id });
+    mutation.mutate({ git, description, challengeId, userId: user.githubId });
 
     if (mutation.isLoading) return <div>loading...</div>;
     if (mutation.isSuccess) toast.success('Project submitted successfully');

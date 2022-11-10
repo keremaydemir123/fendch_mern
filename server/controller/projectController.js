@@ -1,107 +1,66 @@
 const Project = require("../models/ProjectModel");
-const APIFeatures = require("../utils/APIFeatures");
-
-//! MIDLEWARES
-exports.aliasTopProjects = (req, res, next) => {
-  req.query.limit = "5";
-  req.query.sort = "-ratingsAverage";
-  req.query.fields = "ratingsAverage,git";
-  next();
-};
-
-exports.increaseTotalSubmits = (req, res, next) => {
-  const challengeId = req.body.challengeId;
-
-  next();
-};
+const Challenge = require("../models/ChallengeModel");
+const asyncHandler = require("express-async-handler");
 
 //! HANDLERS
-exports.getAllProject = async (req, res) => {
-  try {
-    const features = new APIFeatures(Project.find(), req.query).paginate();
 
-    const projects = await features.query;
+// exports.createProject = async (req, res) => {
+//   try {
+//     const newProject = await Project.create(req.body);
+//     res.status(201).json({
+//       status: "success",
+//       data: {
+//         project: newProject,
+//       },
+//     });
+//   } catch (err) {
+//     res.status(400).json({
+//       status: "fail",
+//       message: err,
+//     });
+//   }
+// };
 
-    res.status(200).json({
-      status: "success",
-      requestedAt: req.requestTime,
-      data: {
-        projects,
-      },
-    });
-  } catch (err) {
-    res.status(500).json({
-      status: "fail",
-      message: err,
-    });
+exports.createProject = asyncHandler(async (req, res) => {
+  console.log("body: ", req.body);
+  console.log("params: ", req.params);
+
+  if (
+    !req.params.challengeId ||
+    !req.body.git ||
+    !req.body.description ||
+    !req.body.userId
+  ) {
+    res.status(400).send("Error");
+    throw new Error("Error");
   }
-};
 
-exports.getProject = async (req, res) => {
-  try {
-    const project = await Project.findById(req.params.id);
-    res.status(200).json({
-      status: "success",
-      data: {
-        project,
-      },
-    });
-  } catch (err) {
-    res.status(500).json({
-      status: "fail",
-      message: err,
-    });
+  const challenge = await Challenge.findOne({ id: req.params.challengeId });
+  console.log("challenge:", challenge);
+
+  if (!challenge) {
+    res.status(400).send("Error");
+    throw new Error("Error");
   }
-};
 
-exports.createProject = async (req, res) => {
-  try {
-    const newProject = await Project.create(req.body);
+  const project = await Project.create({
+    challengeId: req.params.challengeId,
+    git: req.body.git,
+    description: req.body.description,
+    userId: req.body.githubId,
+  });
+
+  challenge.projects.push(project);
+  await challenge.save();
+
+  if (project) {
     res.status(201).json({
       status: "success",
       data: {
-        project: newProject,
-      },
-    });
-  } catch (err) {
-    res.status(400).json({
-      status: "fail",
-      message: err,
-    });
-  }
-};
-
-exports.updateProject = async (req, res) => {
-  try {
-    const project = await Project.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    res.status(200).json({
-      status: "success",
-      data: {
         project,
       },
     });
-  } catch (err) {
-    res.status(500).json({
-      status: "fail",
-      message: err,
-    });
   }
-};
 
-exports.deleteProject = async (req, res) => {
-  try {
-    await Project.findByIdAndDelete(req.params.id);
-    res.status(200).json({
-      status: "success",
-      data: null,
-    });
-  } catch (err) {
-    res.status(500).json({
-      status: "fail",
-      message: err,
-    });
-  }
-};
+  console.log("project added: ", challenge);
+});

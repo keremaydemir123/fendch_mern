@@ -8,6 +8,7 @@ const userSchema = mongoose.Schema(
     username: { type: String, required: true, unique: true },
     avatar: { type: String, required: true },
     profileUrl: { type: String, required: true },
+    bio: { type: String, default: "" },
     role: {
       type: String,
       required: true,
@@ -17,6 +18,7 @@ const userSchema = mongoose.Schema(
     joinedAt: { type: Date, default: Date.now },
     projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+    notifications: [String],
 
     // projects: {
     //   type: mongoose.Schema.Types.ObjectId,

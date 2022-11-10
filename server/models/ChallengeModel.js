@@ -15,6 +15,7 @@ const challengeSchema = mongoose.Schema({
   //   required: true,
   //   ref: "user",
   // },
+  projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
 
   description: {
     type: String,
