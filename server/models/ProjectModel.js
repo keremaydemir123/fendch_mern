@@ -2,11 +2,9 @@ const mongoose = require("mongoose");
 
 const projectSchema = mongoose.Schema(
   {
-    projectTitle: {
-      type: String,
-      required: [true, "Please enter a project title"],
-    },
-    repository: {
+    projectTitle: String,
+
+    git: {
       type: String,
       required: [true, "Please enter repository URL"],
     },
