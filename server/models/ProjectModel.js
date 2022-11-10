@@ -16,6 +16,10 @@ const projectSchema = mongoose.Schema(
     tags: [String],
     selectedFile: String,
     public: Boolean,
+    submittedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   { timestamp: true }
 );

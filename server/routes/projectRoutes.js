@@ -9,8 +9,8 @@ router
 
 router.route("/").get(projectController.getAllProjects);
 router
-  .route("/getProjectByUsername/:username")
-  .get(projectController.getProjectsByUsername);
+  .route("/getProjectByUserId/:userId")
+  .get(projectController.getProjectsByUserId);
 
 router
   .route("/getProjectById/:projectId")

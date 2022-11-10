@@ -8,10 +8,10 @@ exports.getAllProjects = asyncHandler(async (req, res) => {
   res.status(200).json(projects);
 });
 
-exports.getProjectsByUsername = asyncHandler(async (req, res) => {
-  const user = await User.findOne({ username: req.params.username });
+exports.getProjectsByUserId = asyncHandler(async (req, res) => {
+  const projects = await Project.find({ userId: req.params.userId });
 
-  res.status(200).json(user.projects);
+  res.status(200).json(projects);
 });
 
 exports.createProject = asyncHandler(async (req, res) => {
