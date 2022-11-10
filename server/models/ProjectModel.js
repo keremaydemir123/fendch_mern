@@ -3,11 +3,12 @@ const mongoose = require("mongoose");
 const projectSchema = mongoose.Schema(
   {
     projectTitle: String,
-
     git: {
       type: String,
       required: [true, "Please enter repository URL"],
     },
+    challenge: { type: mongoose.Schema.Types.ObjectId, ref: "Challenge" },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     description: {
       type: String,
       required: [true, "Please enter a description"],
