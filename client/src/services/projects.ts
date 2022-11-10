@@ -24,6 +24,11 @@ export async function getProjects() {
   return response.data;
 }
 
+export async function getProjectsByUsername(username: string) {
+  const response = await axios.get(`${SERVER_URL}/projects/${username}`);
+  return response.data;
+}
+
 export async function getProject(id: string) {
   const response = await axios.get(`${SERVER_URL}/projects/${id}`);
   return response.data;
