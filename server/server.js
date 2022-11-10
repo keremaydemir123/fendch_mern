@@ -38,7 +38,6 @@ app.use(passport.session());
 
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/challenges", require("./routes/challengeRoutes"));
-app.use("/challenges", require("./routes/projectRoutes"));
 app.use("/projects", require("./routes/projectRoutes"));
 app.use("/users", require("./routes/userRoutes"));
 

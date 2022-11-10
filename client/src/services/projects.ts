@@ -13,7 +13,7 @@ export async function createProject({
   description: string;
 }) {
   const response = await axios.post(
-    `${SERVER_URL}/challenges/${challengeId}/projects`,
+    `${SERVER_URL}/projects/challenges/${challengeId}/projects`,
     { git, description, userId }
   );
   return response.data;
