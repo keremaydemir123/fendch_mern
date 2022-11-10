@@ -14,8 +14,9 @@ router
 
 router
   .route("/getProjectById/:projectId")
-  .get(projectController.getProjectById);
+  .get(projectController.getProjectById).patch(projectController.updateProject);
 
+  
 // router
 //   .route("/:id")
 //   .get(projectController.getProject)
