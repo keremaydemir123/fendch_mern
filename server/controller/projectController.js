@@ -2,25 +2,18 @@ const Project = require("../models/ProjectModel");
 const User = require("../models/UserModel");
 const Challenge = require("../models/ChallengeModel");
 const asyncHandler = require("express-async-handler");
+const User = require("../models/UserModel");
 
-//! HANDLERS
+exports.getAllProjects = asyncHandler(async (req, res) => {
+  const projects = await Project.find();
+  res.status(200).json(projects);
+});
 
-// exports.createProject = async (req, res) => {
-//   try {
-//     const newProject = await Project.create(req.body);
-//     res.status(201).json({
-//       status: "success",
-//       data: {
-//         project: newProject,
-//       },
-//     });
-//   } catch (err) {
-//     res.status(400).json({
-//       status: "fail",
-//       message: err,
-//     });
-//   }
-// };
+exports.getProjectsByUsername = asyncHandler(async (req, res) => {
+  const user = await User.findOne({ username: req.params.username });
+
+  res.status(200).json(user.projects);
+});
 
 exports.createProject = asyncHandler(async (req, res) => {
   console.log("body: ", req.body);
@@ -40,6 +33,8 @@ exports.createProject = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ githubId: req.body.userId });
 
+  const user = await User.findOne({ githubId: req.body.userId });
+
   if (!challenge) {
     res.status(400).send("Error");
     throw new Error("Error");
@@ -51,7 +46,7 @@ exports.createProject = asyncHandler(async (req, res) => {
     description: req.body.description,
     user,
   });
-
+  console.log('user :>> ', user); 
   challenge.projects.push(project);
   await challenge.save();
 

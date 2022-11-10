@@ -5,6 +5,9 @@ const router = express.Router();
 
 router.route("/:challengeId/projects").post(projectController.createProject);
 
+router.route("/").get(projectController.getAllProjects)
+router.route("/:username").get(projectController.getProjectsByUsername)
+
 // router
 //   .route("/:id")
 //   .get(projectController.getProject)
