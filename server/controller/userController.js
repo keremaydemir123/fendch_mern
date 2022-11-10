@@ -46,3 +46,7 @@ exports.getUserById = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 });
+
+exports.getNotifications = asyncHandler(async (req, res) => {
+  
+})
