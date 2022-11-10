@@ -3,21 +3,25 @@ import { FcSettings } from 'react-icons/fc';
 import { FaLinkedin, FaGithub } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
 import { useUser } from '../contexts/authProvider';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { getUserByUsername, updateMe } from '../services/user';
 import { UserProps } from '../types/User';
 import Modal from '../components/Modal';
 import Input from '../components/Input';
 import toast, { Toaster } from 'react-hot-toast';
 import Button from '../components/Button';
+import { getProjectsByUsername } from '../services/projects';
+import { ProjectProps } from '../types/Project';
+import ProjectCard from '../components/ProjectCard';
 
 function Profile() {
   const [pageUser, setPageUser] = useState<UserProps | null>(null);
+  const [projects, setProjects] = useState<ProjectProps[]>([]);
   const [open, setOpen] = useState(false);
   const bioRef = useRef<HTMLInputElement | null>(null);
   const { username } = useParams();
   const { user } = useUser();
-  const { isLoading, error } = useQuery(
+  const { isLoading: loadingUser, error: errorUser } = useQuery(
     ['user', username],
     () => getUserByUsername(username!),
     {
@@ -27,8 +31,18 @@ function Profile() {
     }
   );
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error</p>;
+  const { isLoading: loadingProjects, error: errorProjects } = useQuery(
+    ['projects', username],
+    () => getProjectsByUsername(username!),
+    {
+      onSuccess: (data: ProjectProps[]) => {
+        setProjects(data);
+      },
+    }
+  );
+
+  if (loadingProjects || loadingUser) return <p>Loading...</p>;
+  if (errorUser) return <p>Error fetching User</p>;
 
   const handleModalSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -114,10 +128,12 @@ function Profile() {
           </div>
         </div>
         <h1 className="text-2xl text-center border-b-2 p-4 text-blue-50">
-          Projects
+          {errorProjects ? 'Error fetching projects' : 'Projects'}
         </h1>
         <div className="flex flex-col gap-4 w-full h-full items-center justify-center">
-          PROJECTS.MAP
+          {projects?.map((project) => (
+            <ProjectCard key={project._id} project={project} />
+          ))}
         </div>
       </>
     </div>

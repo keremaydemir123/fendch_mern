@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const projectSchema = mongoose.Schema(
   {
     projectTitle: String,
-
     git: {
       type: String,
       required: [true, "Please enter repository URL"],
