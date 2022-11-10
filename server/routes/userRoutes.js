@@ -12,7 +12,12 @@ router
 router.route("/:id").get(userController.getUserById);
 
 //Notification
-router.route("/:userId/notifications").get(userController.getNotifications).post(userController.createNotification)
-router.route("/:userId/notifications/:id").delete(userController.deleteNotification);
+router
+  .route("/:userId/notifications")
+  .get(userController.getNotifications)
+  .post(userController.createNotification);
+router
+  .route("/:userId/notifications/:notificationId")
+  .delete(userController.deleteNotification);
 
 module.exports = router;

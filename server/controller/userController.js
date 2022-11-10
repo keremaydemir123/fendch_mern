@@ -50,22 +50,23 @@ exports.getUserById = asyncHandler(async (req, res) => {
 
 exports.getNotifications = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.userId);
-  console.log("user.notification", user.notification);
 
-  res.status(200).json(user);
+  res.status(200).json(user.notifications);
 });
 
 exports.createNotification = asyncHandler(async (req, res) => {
-  const user = await User.findOne({ _id: req.params.userId });
+  const user = await User.findById(req.params.userId);
+
+  console.log("user", user);
 
   const notification = await Notification.create({
     message: req.body.message,
-    user: user._id,
   });
 
   await notification.save();
 
   user.notifications.push(notification);
+
   await user.save();
 
   res.status(200).json(notification);
@@ -73,24 +74,23 @@ exports.createNotification = asyncHandler(async (req, res) => {
 
 exports.deleteNotification = asyncHandler(async (req, res) => {
   const user = await User.findOne({ _id: req.params.userId });
-  console.log('user.body :>> ', user.body);
 
-  const notification = await user.body.notifications;
+  const notifications = await user.notifications;
 
-  if (!notification) {
+  if (!notifications) {
     res.status(400);
     throw new Error("Notification not found");
   }
-  const userNotifications = user.notifications.filter(
-    (id) => id != notification._id
+  const userNotifications = notifications.filter(
+    (string) => !string.toString().includes(req.params.notificationId)
   );
 
   user.notifications = userNotifications;
   await user.save();
-  
-  await notification.remove();
-  await notification.save();
 
+  await Notification.findByIdAndDelete(req.params.notificationId);
 
-  res.status(204).json({ id: req.params.id, message: "Notification deleted" });
+  res
+    .status(204)
+    .json({ message: req.params.notificationId + "of Notification deleted" });
 });
