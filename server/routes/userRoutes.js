@@ -11,4 +11,6 @@ router
 
 router.route("/:id").get(userController.getUserById);
 
+router.route("/:id/getNotifications").get(userController.getNotifications)
+
 module.exports = router;

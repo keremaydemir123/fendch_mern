@@ -14,6 +14,10 @@ exports.getProjectsByUserId = asyncHandler(async (req, res) => {
   res.status(200).json(projects);
 });
 
+exports.updateProject = asyncHandler(async (req, res) => {
+  
+})
+
 exports.createProject = asyncHandler(async (req, res) => {
   console.log("body: ", req.body);
   console.log("params: ", req.params);
@@ -28,8 +32,15 @@ exports.createProject = asyncHandler(async (req, res) => {
     throw new Error("Error");
   }
 
+  const projectExist = await Project.findOne({challengeId: req.params.challengeId, userId: req.body.userId})
+  console.log('projectExist :>> ', projectExist);
+  if (projectExist){
+    res.status(400).send("You already have submitted a project to this challenge");
+    throw new Error("You already have submitted a project to this challenge");
+  }
+
   const challenge = await Challenge.findOne({ id: req.params.challengeId });
-  const user = await User.findOne({ githubId: req.body.userId });
+  const user = await User.findOne({ _id: req.body.userId });
 
   if (!challenge) {
     res.status(400).send("Error");
@@ -42,6 +53,9 @@ exports.createProject = asyncHandler(async (req, res) => {
     description: req.body.description,
     userId: user._id,
   });
+
+  user.projects.push(project);
+  await user.save();
 
   challenge.projects.push(project);
   await challenge.save();
