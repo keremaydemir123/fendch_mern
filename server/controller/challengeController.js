@@ -44,21 +44,34 @@ exports.getChallenge = asyncHandler(async (req, res) => {
 // @route POST /api/
 // @access private
 exports.createChallenge = asyncHandler(async (req, res) => {
-  if (!req.body.objective || !req.body.tech || !req.body.description || !req.body.week) {
+  if (
+    !req.body.objective ||
+    !req.body.tech ||
+    !req.body.description ||
+    !req.body.week
+  ) {
     res
       .status(400)
       .send("Don't forget to enter a title, techs and description");
     throw new Error("Don't forget to enter a title, techs and description");
   }
 
-  const objectiveExist = await Challenge.find({objective: req.body.objective, tech: req.body.tech})
-  if (objectiveExist) {
+  const objectiveExist = await Challenge.find({
+    objective: req.body.objective,
+    tech: req.body.tech,
+  });
+  console.log(objectiveExist);
+  if (objectiveExist.length > 0) {
     res
       .status(400)
-      .send("Same challenge with same objective and tech stack is already exist");
-    throw new Error("Same challenge with same objective and tech stack is already exist");
+      .send(
+        "Same challenge with same objective and tech stack is already exist"
+      );
+    throw new Error(
+      "Same challenge with same objective and tech stack is already exist"
+    );
   }
-  
+
   const challenge = await Challenge.create(req.body);
 
   res.status(200).json(challenge);
@@ -91,4 +104,19 @@ exports.deleteChallenge = asyncHandler(async (req, res) => {
   res
     .status(200)
     .json({ id: req.params.id, message: "Challenge deleted successfully" });
+});
+
+// @route PATCH /api/challenges/:id
+// @access private
+exports.updateChallenge = asyncHandler(async (req, res) => {
+  const updatedChallenge = await Challenge.findByIdAndUpdate(
+    req.params.id,
+    req.body
+  );
+
+  if (!updatedChallenge) {
+    res.status(400);
+    throw new Error("Challenge not found");
+  }
+  res.status(200).json(updatedChallenge);
 });

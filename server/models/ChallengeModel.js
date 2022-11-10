@@ -15,6 +15,7 @@ const challengeSchema = mongoose.Schema({
   //   required: true,
   //   ref: "user",
   // },
+  projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
 
   description: {
     type: String,
@@ -24,7 +25,7 @@ const challengeSchema = mongoose.Schema({
     type: [String],
     default: [],
   },
-  date: {
+  startDate: {
     type: Date,
     default: new Date(),
   },

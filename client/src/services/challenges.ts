@@ -1,5 +1,6 @@
 import SERVER_URL from './baseURL';
 import axios from 'axios';
+import { ChallengeProps } from '../types/Challenge';
 
 export async function getOldChallenges() {
   try {
@@ -22,6 +23,18 @@ export async function getActiveChallenges() {
 export async function getChallenge(id: string) {
   try {
     const response = await axios.get(`${SERVER_URL}/challenges/${id}`);
+    return response.data;
+  } catch (err: any) {
+    throw new Error(err);
+  }
+}
+
+export async function updateChallenge(id: string, challenge: ChallengeProps) {
+  try {
+    const response = await axios.patch(
+      `${SERVER_URL}/challenges/${id}`,
+      challenge
+    );
     return response.data;
   } catch (err: any) {
     throw new Error(err);

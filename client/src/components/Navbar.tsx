@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import Button from './Button';
+import CustomLink from './CustomLink';
+import { User } from '../contexts/authProvider';
+import Badge from './Badge';
 
-function Navbar({ user }: { user: any }) {
+function Navbar({ user }: { user: User }) {
   const loginWithGithub = () => {
     window.open('http://localhost:4000/auth/github', '_self');
   };
@@ -19,12 +22,16 @@ function Navbar({ user }: { user: any }) {
         <div className="right flex items-center gap-4">
           {user ? (
             <>
+              <Badge />
               <Link to={`/profile/${user.username}`}>{user.username}</Link>
               <img
-                src={user.photos[0].value}
+                src={user.avatar}
                 alt="user"
                 className="w-8 h-8 rounded-full object-cover"
               />
+              {user.role === 'admin' && (
+                <CustomLink to="/admin">Admin</CustomLink>
+              )}
             </>
           ) : (
             <Button type="button" onClick={loginWithGithub}>

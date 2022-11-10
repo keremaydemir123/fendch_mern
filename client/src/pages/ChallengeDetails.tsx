@@ -3,7 +3,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useMutation } from 'react-query';
 import { useParams } from 'react-router-dom';
 import Button from '../components/Button';
-import Modal from '../components/Modals/Modal';
+import Modal from '../components/Modal';
 import YoutubePlayer from '../components/YoutubePlayer';
 import { useUser } from '../contexts/authProvider';
 import { createProject } from '../services/projects';
@@ -46,7 +46,7 @@ function ChallengeDetails() {
       return;
     }
 
-    mutation.mutate({ git, description, challengeId, userId: user.id });
+    mutation.mutate({ git, description, challengeId, userId: user.githubId });
 
     if (mutation.isLoading) return <div>loading...</div>;
     if (mutation.isSuccess) toast.success('Project submitted successfully');

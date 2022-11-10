@@ -23,41 +23,20 @@ router.get("/login/failure", (req, res) => {
 router.get(
   "/login/success",
   asyncHandler(async (req, res) => {
-    console.log("req.user >> ", req.user);
-
-    const userExist = await User.find({ username: req.user.username });
-
-    if (userExist) {
-      res.status(200).json({
-        success: true,
-        message: "user has successfully authenticated",
-        user: userExist,
-        // cookies: req.cookies,
-      });
-    } else {
-      if (req.user) {
-        const user = await User.create({
+    if (req.user) {
+      const user = await User.findOne({ githubId: req.user.id });
+      if (user) {
+        res.status(200).json(user);
+      } else {
+        const newUser = await User.create({
+          githubId: req.user.id,
           username: req.user.username,
-          photo: req.user.photos[0].value,
+          avatar: req.user.photos[0].value,
           profileUrl: req.user.profileUrl,
         });
-        res.status(200).json({
-          success: true,
-          message: "user has successfully authenticated",
-          user: user,
-          // cookies: req.cookies,
-        });
+        res.status(200).json(newUser);
       }
     }
-  })
-);
-
-router.get(
-  "/all",
-  asyncHandler(async (req, res) => {
-    const users = await User.find();
-
-    res.status(200).json(users);
   })
 );
 
