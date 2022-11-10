@@ -10,7 +10,7 @@ import Modal from '../components/Modal';
 import Input from '../components/Input';
 import toast, { Toaster } from 'react-hot-toast';
 import Button from '../components/Button';
-import { getProjectsByUsername } from '../services/projects';
+import { getProjectsByUserId } from '../services/projects';
 import { ProjectProps } from '../types/Project';
 import ProjectCard from '../components/ProjectCard';
 
@@ -21,6 +21,7 @@ function Profile() {
   const bioRef = useRef<HTMLInputElement | null>(null);
   const { username } = useParams();
   const { user } = useUser();
+
   const { isLoading: loadingUser, error: errorUser } = useQuery(
     ['user', username],
     () => getUserByUsername(username!),
@@ -30,18 +31,16 @@ function Profile() {
       },
     }
   );
-
   const { isLoading: loadingProjects, error: errorProjects } = useQuery(
-    ['projects', username],
-    () => getProjectsByUsername(username!),
+    ['projects', pageUser?._id],
+    () => getProjectsByUserId(pageUser?._id!),
     {
       onSuccess: (data: ProjectProps[]) => {
         setProjects(data);
       },
     }
   );
-
-  if (loadingProjects || loadingUser) return <p>Loading...</p>;
+  if (loadingUser) return <p>Loading...</p>;
   if (errorUser) return <p>Error fetching User</p>;
 
   const handleModalSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -131,6 +130,8 @@ function Profile() {
           {errorProjects ? 'Error fetching projects' : 'Projects'}
         </h1>
         <div className="flex flex-col gap-4 w-full h-full items-center justify-center">
+          {loadingProjects && <p>Loading...</p>}
+
           {projects?.map((project) => (
             <ProjectCard key={project._id} project={project} />
           ))}

@@ -1,4 +1,6 @@
 export default function dateFormatter(date: Date) {
+  console.log('date: ', date);
+
   // formats date to DD/MM/YYYY
 
   const year = date.getFullYear();

@@ -39,12 +39,14 @@ function ProjectCard({ project }: { project: ProjectProps }) {
     <div className="flex flex-col rounded-xl bg-gray overflow-hidden md:w-[700px] w-5/6 h-max shadow-lg shadow-secondary">
       <div className="flex justify-between bg-primary text-gray-50 p-2 border-b-secondary border-b-2">
         <Link to={`/profile/${user.username}`}>@{user.username}</Link>
-        <p className="text-sm text-muted">{'sda'}</p>
+        <p className="text-sm text-muted">
+          {dateFormatter(new Date(project.submittedAt))}
+        </p>
       </div>
       <div className="flex flex-col justify-between text-gray-50 p-2">
         <div className="flex justify-between">
           <p className="uppercase font-semibold text-muted text-sm">
-            {challenge.week}
+            Week {challenge.week}
           </p>
         </div>
         <div className="flex justify-between">
