@@ -73,10 +73,13 @@ exports.createNotification = asyncHandler(async (req, res) => {
 
 exports.deleteNotification = asyncHandler(async (req, res) => {
   const user = await User.findOne({ _id: req.params.userId });
-  const notification = await Notification.findById(req.params.id);
+  console.log('user.body :>> ', user.body);
+
+  const notification = await user.body.notifications;
 
   if (!notification) {
     res.status(400);
+    throw new Error("Notification not found");
   }
   const userNotifications = user.notifications.filter(
     (id) => id != notification._id
@@ -84,9 +87,10 @@ exports.deleteNotification = asyncHandler(async (req, res) => {
 
   user.notifications = userNotifications;
   await user.save();
+  
+  await notification.remove();
+  await notification.save();
 
-  await Notification.findOneAndRemove({_id: req.body.notificationId});
 
-  res.status(204).json({id: req.params.id, message: "Notification deleted"})
-
+  res.status(204).json({ id: req.params.id, message: "Notification deleted" });
 });
