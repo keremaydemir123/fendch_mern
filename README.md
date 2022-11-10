@@ -32,7 +32,6 @@ NOTES AFTER LAST COMMIT:
 
 #### Client:
 - "are you sure?" popup
-- in services/user file add getUserByUsername function
 - in profile page getUser by username every 10 second
 - challengeCard design
 - protected route for admin page
@@ -48,10 +47,7 @@ NOTES AFTER LAST COMMIT:
 
 #### Server:
 - Middleware that checks time and changing isSecret and isActive states
-- notifications: string [] for user model
-- getNotifications route
 - addNotification and deleteNotification functions that takes a message to add or delete
-- Project creation
 - Pagination functionality for challenges and projects
 
  
