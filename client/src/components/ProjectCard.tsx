@@ -15,8 +15,6 @@ function ProjectCard({ project }: { project: ProjectProps }) {
     setOpen(true);
   };
 
-  console.log(project);
-
   const {
     isLoading: loadingChallenge,
     error: errorChallenge,
