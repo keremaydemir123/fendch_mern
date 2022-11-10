@@ -6,6 +6,7 @@ import { getUser } from '../services/user';
 import { ProjectProps } from '../types/Project';
 import dateFormatter from '../utils/dateFormatter';
 import Button from './Button';
+import CustomLink from './CustomLink';
 
 function ProjectCard({ project }: { project: ProjectProps }) {
   const [open, setOpen] = useState(false);
@@ -59,9 +60,14 @@ function ProjectCard({ project }: { project: ProjectProps }) {
         <a href={project.git} target="_blank" rel="noreferrer">
           <span>Github Repo</span>
         </a>
-        <Button onClick={seePreview} type="button">
-          Preview
-        </Button>
+        <div className="h-max">
+          <CustomLink to={`/projects/${project._id}`}>
+            Project Details
+          </CustomLink>
+          <Button onClick={seePreview} type="button">
+            Preview
+          </Button>
+        </div>
       </div>
 
       {open && (

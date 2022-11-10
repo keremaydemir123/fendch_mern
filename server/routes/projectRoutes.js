@@ -13,10 +13,10 @@ router
   .get(projectController.getProjectsByUserId);
 
 router
-  .route("/getProjectById/:projectId")
-  .get(projectController.getProjectById).patch(projectController.updateProject);
+  .route("/:id")
+  .get(projectController.getProjectById)
+  .patch(projectController.updateProject);
 
-  
 // router
 //   .route("/:id")
 //   .get(projectController.getProject)
