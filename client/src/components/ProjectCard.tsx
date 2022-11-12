@@ -11,28 +11,14 @@ import CustomLink from './CustomLink';
 function ProjectCard({ project }: { project: ProjectProps }) {
   const [open, setOpen] = useState(false);
 
+  console.log(project);
+
   const seePreview = () => {
     setOpen(true);
   };
 
-  const {
-    isLoading: loadingChallenge,
-    error: errorChallenge,
-    data: challenge,
-  } = useQuery(['challenge', project.challengeId], () =>
-    getChallenge(project.challengeId)
-  );
-  const {
-    isLoading: loadingUser,
-    error: errorUser,
-    data: user,
-  } = useQuery(['user', project.userId], () => getUser(project.userId));
-
-  if (loadingChallenge || loadingUser) return <p>Loading...</p>;
-  if (errorChallenge || errorUser) return <p>Error</p>;
-
-  console.log('user: ', user);
-  console.log('challenge: ', challenge);
+  const user = project.user;
+  const challenge = project.challenge;
 
   return (
     <div className="flex flex-col rounded-xl bg-gray overflow-hidden md:w-[700px] w-5/6 h-max shadow-lg shadow-secondary">

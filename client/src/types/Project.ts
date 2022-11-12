@@ -1,6 +1,9 @@
+import { ChallengeProps } from './Challenge';
+import { UserProps } from './User';
+
 export type ProjectProps = {
-  userId: string;
-  challengeId: string;
+  user: UserProps;
+  challenge: ChallengeProps;
   _id?: string;
   git: string;
   description: string;

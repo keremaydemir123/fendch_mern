@@ -2,6 +2,7 @@
   width: 350px;
   height: 500px;
   perspective: 800px;
+  padding: 1rem;
 }
 
 .container:hover > .card {
