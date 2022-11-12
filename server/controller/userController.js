@@ -50,7 +50,6 @@ exports.getUserById = asyncHandler(async (req, res) => {
 
 exports.getNotifications = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.userId);
-  console.log("user.notification", user.notification);
 
   res.status(200).json(user);
 });
