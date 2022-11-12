@@ -1,18 +1,19 @@
 const mongoose = require("mongoose");
 
-const NotificationSchema = mongoose.Schema(
+const notificationSchema = mongoose.Schema(
   {
     message: {
       type: String,
       required: true,
     },
     challenge: { type: mongoose.Schema.Types.ObjectId, ref: "Challenge" },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    sender: String,
+    receiver: String,
     project: { type: mongoose.Schema.Types.ObjectId, ref: "Notification" },
   },
   { timestamp: true }
 );
 
-const Notification = mongoose.model("Notification", NotificationSchema);
+const Notification = mongoose.model("Notification", notificationSchema);
 
 module.exports = Notification;

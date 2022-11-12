@@ -4,7 +4,7 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/UserModel");
 
 exports.getAllProjects = asyncHandler(async (req, res) => {
-  const projects = await Project.find();
+  const projects = await Project.find().populate("challenge").populate("user");
   res.status(200).json(projects);
 });
 
@@ -14,14 +14,9 @@ exports.getProjectsByUserId = asyncHandler(async (req, res) => {
   res.status(200).json(projects);
 });
 
-exports.updateProject = asyncHandler(async (req, res) => {
-  
-})
+exports.updateProject = asyncHandler(async (req, res) => {});
 
 exports.createProject = asyncHandler(async (req, res) => {
-  console.log("body: ", req.body);
-  console.log("params: ", req.params);
-
   if (
     !req.params.challengeId ||
     !req.body.git ||
@@ -32,49 +27,43 @@ exports.createProject = asyncHandler(async (req, res) => {
     throw new Error("Error");
   }
 
-  const projectExist = await Project.findOne({challengeId: req.params.challengeId, userId: req.body.userId})
-  console.log('projectExist :>> ', projectExist);
-  if (projectExist){
-    res.status(400).send("You already have submitted a project to this challenge");
+  const challenge = await Challenge.findById(req.params.challengeId);
+  const user = await User.findById(req.body.userId);
+
+  const projectExist = await Project.findOne({
+    challenge: challenge,
+    user: user,
+  });
+
+  if (projectExist) {
+    res
+      .status(400)
+      .send("You already have submitted a project to this challenge");
     throw new Error("You already have submitted a project to this challenge");
   }
 
-  const challenge = await Challenge.findOne({ id: req.params.challengeId });
-  const user = await User.findOne({ _id: req.body.userId });
-
-  if (!challenge) {
-    res.status(400).send("Error");
-    throw new Error("Error");
-  }
-
   const project = await Project.create({
-    challengeId: challenge._id,
+    challenge: challenge,
     git: req.body.git,
     description: req.body.description,
-    userId: user._id,
+    user: user,
   });
 
-  user.projects.push(project);
+  user.projects.push(project._id);
   await user.save();
 
-  challenge.projects.push(project);
+  challenge.projects.push(project._id);
   await challenge.save();
 
   if (project) {
     res.status(201).json({
-      status: "success",
-      data: {
-        project,
-      },
+      project,
     });
   }
-
-  console.log("project added: ", challenge);
 });
 
 exports.getProjectById = asyncHandler(async (req, res) => {
-  console.log("req.params: ", req.params);
-  const project = await Project.findById(req.params.projectId);
+  const project = await Project.findById(req.params.id);
 
   if (project) {
     res.status(200).json(project);

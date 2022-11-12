@@ -18,18 +18,11 @@ const userSchema = mongoose.Schema(
     joinedAt: { type: Date, default: Date.now },
     projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
-    notifications: [{ type: mongoose.Schema.Types.ObjectId, ref: "Notification" }],
+    notifications: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Notification" },
+    ],
+    follows: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 
-    // projects: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Project",
-    //   default: [],
-    // },
-    // comments: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Comment",
-    //   default: [],
-    // },
     // likedComments: {
     //   type: mongoose.Schema.Types.ObjectId,
     //   ref: "Comment",

@@ -1,9 +1,13 @@
 import { useState } from 'react';
 import { FaBell } from 'react-icons/fa';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { useUser } from '../contexts/authProvider';
-import { getNotifications } from '../services/notifications';
+import {
+  deleteNotification,
+  getNotifications,
+} from '../services/notifications';
 import { NotificationProps } from '../types/Notification';
+import { FaTrash } from 'react-icons/fa';
 
 function Badge() {
   const [open, setOpen] = useState(false);
@@ -16,8 +20,12 @@ function Badge() {
     data: notifications,
   } = useQuery('notifications', () => getNotifications(user?._id!));
 
-  if (isLoading) return <p>Loading...</p>;
+  const mutation = useMutation(
+    ({ userId, notificationId }: { userId: string; notificationId: string }) =>
+      deleteNotification({ userId, notificationId })
+  );
 
+  if (isLoading) return <p>Loading...</p>;
   return (
     <div className="relative h-max w-max ">
       <FaBell
@@ -35,7 +43,7 @@ function Badge() {
       {open && (
         <div
           onClick={() => setOpen(false)}
-          className="fixed top-0 right-0 left-0 bottom-0 bg-transparent"
+          className="fixed top-0 right-0 left-0 bottom-0 bg-transparent z-20"
         >
           <div
             onClick={(e) => e.stopPropagation()}
@@ -55,6 +63,14 @@ function Badge() {
                         className="flex items-center gap-2 bg-primary rounded-md p-2"
                       >
                         {notification.message}
+                        <FaTrash
+                          onClick={() =>
+                            mutation.mutate({
+                              userId: user?._id!,
+                              notificationId: notification._id!,
+                            })
+                          }
+                        />
                       </div>
                     ))}
                   </div>
