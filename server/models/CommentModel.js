@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 
 const commentSchema = mongoose.Schema({
-  text: { type: String, required: [true, "Please enter a text"] },
+  message: { type: String, required: [true, "Please enter a text"] },
+  likes: Number,
+  parent: {type: mongoose.Schema.Types.ObjectId, ref: "Comment"},
   // user: User,
   // child,
   // parent,
