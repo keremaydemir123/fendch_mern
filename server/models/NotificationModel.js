@@ -7,7 +7,8 @@ const notificationSchema = mongoose.Schema(
       required: true,
     },
     challenge: { type: mongoose.Schema.Types.ObjectId, ref: "Challenge" },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    sender: String,
+    receiver: String,
     project: { type: mongoose.Schema.Types.ObjectId, ref: "Notification" },
   },
   { timestamp: true }

@@ -20,8 +20,6 @@ function Badge() {
     data: notifications,
   } = useQuery('notifications', () => getNotifications(user?._id!));
 
-  console.log(notifications);
-
   const mutation = useMutation(
     ({ userId, notificationId }: { userId: string; notificationId: string }) =>
       deleteNotification({ userId, notificationId })
