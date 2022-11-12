@@ -44,11 +44,13 @@ NOTES AFTER LAST COMMIT:
 - navbar needs to be responsive
 - all card containers must be responsive
 - sorting and filtering functionality for projects page
+- Hot Fix: Create like notification and create follow notification[]
 
 #### Server:
 - Middleware that checks time and changing isSecret and isActive states
 - addNotification and deleteNotification functions that takes a message to add or delete
 - Pagination functionality for challenges and projects
+- Fix routes[]
 
  
 

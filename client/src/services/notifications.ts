@@ -34,3 +34,21 @@ export async function createFollowNotification({
   );
   return response.data;
 }
+
+export async function createLikeNotification({
+  userId,
+  receiverUsername,
+  projectId,
+  challengeId,
+}: {
+  userId: string;
+  receiverUsername: string;
+  projectId: string;
+  challengeId: string;
+}) {
+  const response = await axios.post(
+    `${SERVER_URL}/users/${userId}/notifications`,
+    { receiverUsername, projectId, challengeId }
+  );
+  return response.data;
+}

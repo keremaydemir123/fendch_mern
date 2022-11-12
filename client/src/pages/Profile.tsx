@@ -13,7 +13,7 @@ import Button from '../components/Button';
 import { getProjectsByUserId } from '../services/projects';
 import { ProjectProps } from '../types/Project';
 import ProjectCard from '../components/ProjectCard';
-import { createFollowNotification } from '../services/notifications';
+import { createFollowNotification, createLikeNotification } from '../services/notifications';
 
 function Profile() {
   const [pageUser, setPageUser] = useState<UserProps | null>(null);
@@ -62,9 +62,11 @@ function Profile() {
 
   const sendFollowNotification = async () => {
     try {
-      await createFollowNotification({
+      await createLikeNotification({
         userId: user?._id!,
         receiverUsername: pageUser?.username!,
+        challengeId: projects[0]?.challenge!,
+        projectId: projects[0]._id
       });
       toast.success('Follow notification sent');
     } catch (error) {}
