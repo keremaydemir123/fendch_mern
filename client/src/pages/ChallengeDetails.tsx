@@ -26,9 +26,7 @@ function ChallengeDetails() {
     userId: string;
   };
 
-  const mutation = useMutation((data: ProjectDataProps) => createProject(data));
-
-  const handleModalSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleModalSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const git = gitRef.current?.value;
     const description = descriptionRef.current?.value;
@@ -38,7 +36,7 @@ function ChallengeDetails() {
       return;
     }
 
-    if (!user) {
+    if (!user?._id) {
       toast.error('Please login to submit your project');
       return;
     }
@@ -48,11 +46,12 @@ function ChallengeDetails() {
       return;
     }
 
-    mutation.mutate({ git, description, challengeId, userId: user._id! });
-
-    if (mutation.isLoading) return <div>loading...</div>;
-    if (mutation.isSuccess) toast.success('Project submitted successfully');
-    if (mutation.isError) toast.error('Something went wrong');
+    try {
+      await createProject({ challengeId, description, git, userId: user._id });
+      toast.success('Project submitted successfully');
+    } catch (error: any) {
+      toast.error(error.response.data);
+    }
   };
 
   return (

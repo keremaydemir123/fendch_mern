@@ -13,6 +13,7 @@ import Button from '../components/Button';
 import { getProjectsByUserId } from '../services/projects';
 import { ProjectProps } from '../types/Project';
 import ProjectCard from '../components/ProjectCard';
+import { createFollowNotification } from '../services/notifications';
 
 function Profile() {
   const [pageUser, setPageUser] = useState<UserProps | null>(null);
@@ -57,6 +58,16 @@ function Profile() {
     } catch (error) {
       toast.error('Something went wrong');
     }
+  };
+
+  const sendFollowNotification = async () => {
+    try {
+      await createFollowNotification({
+        userId: user?._id!,
+        receiverUsername: pageUser?.username!,
+      });
+      toast.success('Follow notification sent');
+    } catch (error) {}
   };
 
   return (
@@ -111,6 +122,8 @@ function Profile() {
               <h1 className="font-semibold">16</h1>
               <h1 className="">Likes</h1>
             </div>
+
+            <Button onClick={sendFollowNotification}>Follow</Button>
           </div>
 
           <div className="p-4">

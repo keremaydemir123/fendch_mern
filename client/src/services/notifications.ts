@@ -20,3 +20,17 @@ export async function deleteNotification({
   );
   return response.data;
 }
+
+export async function createFollowNotification({
+  userId,
+  receiverUsername,
+}: {
+  userId: string;
+  receiverUsername: string;
+}) {
+  const response = await axios.post(
+    `${SERVER_URL}/users/${userId}/notifications`,
+    { receiverUsername }
+  );
+  return response.data;
+}
