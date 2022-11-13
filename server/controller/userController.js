@@ -9,7 +9,19 @@ exports.getUsers = asyncHandler(async (req, res) => {
 });
 
 exports.getUserByUsername = asyncHandler(async (req, res) => {
-  const user = await User.findOne({ username: req.params.username });
+  const user = await User.findOne({ username: req.params.username })
+    .populate({
+      path: "projects",
+      populate: [
+        { path: "user", select: "username", model: "User" },
+        {
+          path: "challenge",
+          select: "week tech objective",
+          model: "Challenge",
+        },
+      ],
+    })
+    .select("-notifications -_id -__v");
 
   if (user) {
     res.status(200).json(user);
