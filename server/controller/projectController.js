@@ -4,7 +4,9 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/UserModel");
 
 exports.getAllProjects = asyncHandler(async (req, res) => {
-  const projects = await Project.find().populate("challenge").populate("user");
+  const projects = await Project.find()
+    .populate("challenge", { objective: 1, week: 1, tech: 1 })
+    .populate("user", { username: 1 });
   res.status(200).json(projects);
 });
 
