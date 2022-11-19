@@ -7,7 +7,7 @@ exports.getNotifications = asyncHandler(async (req, res) => {
   const notifications = await User.findById(req.params.userId)
     .populate("notifications")
     .select("notifications");
-  res.status(200).json(notifications);
+  res.status(200).json(notifications.notifications);
 });
 
 exports.createFollowNotification = asyncHandler(async (req, res) => {

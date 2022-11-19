@@ -14,18 +14,16 @@ function Badge() {
 
   const { user } = useUser();
 
-  const {
-    isLoading,
-    error,
-    data: notifications,
-  } = useQuery('notifications', () => getNotifications(user?._id!));
+  const { error, data: notifications } = useQuery(
+    ['notifications', user?._id],
+    () => getNotifications(user?._id!)
+  );
 
   const mutation = useMutation(
     ({ userId, notificationId }: { userId: string; notificationId: string }) =>
       deleteNotification({ userId, notificationId })
   );
 
-  if (isLoading) return <p>Loading...</p>;
   return (
     <div className="relative h-max w-max ">
       <FaBell
@@ -47,7 +45,7 @@ function Badge() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="absolute top-16 right-16 w-[300px] h-[300px] bg-gray rounded-lg"
+            className="absolute top-16 right-16 w-[300px] h-[300px] bg-gray rounded-lg shadow-dark shadow-lg overflow-y-auto"
           >
             <div className="h-full w-full flex flex-col p-2">
               <h1 className="text-2xl font-bold border-b-2 border-secondary mb-2">
@@ -62,8 +60,9 @@ function Badge() {
                         key={notification._id}
                         className="flex items-center gap-2 bg-primary rounded-md p-2"
                       >
-                        {notification.message}
+                        <p>{notification.message}</p>
                         <FaTrash
+                          className="text-light text-xl hover:cursor-pointer hover:text-light-gray transition duration-100"
                           onClick={() =>
                             mutation.mutate({
                               userId: user?._id!,
