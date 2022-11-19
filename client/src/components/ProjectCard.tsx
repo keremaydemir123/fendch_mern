@@ -1,17 +1,13 @@
 import { useState } from 'react';
-import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
-import { getChallenge } from '../services/challenges';
-import { getUser } from '../services/user';
 import { ProjectProps } from '../types/Project';
 import dateFormatter from '../utils/dateFormatter';
 import Button from './Button';
 import CustomLink from './CustomLink';
+import Modal from './Modal';
 
 function ProjectCard({ project }: { project: ProjectProps }) {
   const [open, setOpen] = useState(false);
-
-  console.log(project);
 
   const seePreview = () => {
     setOpen(true);
@@ -62,11 +58,13 @@ function ProjectCard({ project }: { project: ProjectProps }) {
           >
             X
           </Button>
-          <img
-            src="https://picsum.photos/400"
-            alt="preview"
-            className="object-cover w-full h-full"
-          />
+          <Modal open={open} onClose={() => setOpen(false)}>
+            <img
+              src="https://picsum.photos/400"
+              alt="preview"
+              className="object-cover w-full h-full"
+            />
+          </Modal>
         </div>
       )}
     </div>

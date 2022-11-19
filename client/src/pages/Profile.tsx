@@ -10,14 +10,11 @@ import Modal from '../components/Modal';
 import Input from '../components/Input';
 import toast, { Toaster } from 'react-hot-toast';
 import Button from '../components/Button';
-import { getProjectsByUserId } from '../services/projects';
-import { ProjectProps } from '../types/Project';
 import ProjectCard from '../components/ProjectCard';
 import { createFollowNotification, createLikeNotification } from '../services/notifications';
 
 function Profile() {
   const [pageUser, setPageUser] = useState<UserProps | null>(null);
-  const [projects, setProjects] = useState<ProjectProps[]>([]);
   const [open, setOpen] = useState(false);
   const bioRef = useRef<HTMLInputElement | null>(null);
   const { username } = useParams();
@@ -32,15 +29,7 @@ function Profile() {
       },
     }
   );
-  const { isLoading: loadingProjects, error: errorProjects } = useQuery(
-    ['projects', pageUser?._id],
-    () => getProjectsByUserId(pageUser?._id!),
-    {
-      onSuccess: (data: ProjectProps[]) => {
-        setProjects(data);
-      },
-    }
-  );
+
   if (loadingUser) return <p>Loading...</p>;
   if (errorUser) return <p>Error fetching User</p>;
 
@@ -97,35 +86,33 @@ function Profile() {
                 className="rounded-full w-64 h-64 object-cover my-4"
               />
             ) : (
-              <img
-                src="../../kerem2.jpeg"
-                alt="kerem2"
-                className="w-32 h-32 object-cover rounded-full"
-              />
+              <div className="rounded-full w-64 h-64 bg-light my-4" />
             )}
           </div>
           <h1 className="text-2xl font-semibold flex items-center gap-2">
-            {pageUser?.username}{' '}
-            <span className="font-light text-sm">(23)</span>
+            {pageUser?.username}
           </h1>
 
           <div className="flex justify-between font-regular text-lg w-full mt-4 px-6 border-b-2 border-slate-400">
             <div className="flex flex-col">
-              <h1 className="font-semibold">16</h1>
-              <h1 className="">Projexts</h1>
+              <h3 className="font-semibold">{pageUser?.projects.length}</h3>
+              <h3 className="">Projexts</h3>
             </div>
 
             <div className="flex flex-col">
-              <h1 className="font-semibold">16</h1>
-              <h1 className="">Comments</h1>
+              <h3 className="font-semibold">{pageUser?.comments?.length}</h3>
+              <h3 className="">Comments</h3>
             </div>
 
             <div className="flex flex-col">
-              <h1 className="font-semibold">16</h1>
-              <h1 className="">Likes</h1>
+              <h3 className="font-semibold">
+                {pageUser?.likedProjects.length}
+              </h3>
+              <h3 className="">Likes</h3>
             </div>
-
-            <Button onClick={sendFollowNotification}>Follow</Button>
+            {user?.username !== pageUser?.username && (
+              <Button onClick={sendFollowNotification}>Follow</Button>
+            )}
           </div>
 
           <div className="p-4">
@@ -137,17 +124,21 @@ function Profile() {
           </div>
 
           <div className=" flex justify-center gap-2 text-2xl">
-            <FaLinkedin fill="#eee" />
-            <FaGithub fill="#eee" />
+            {pageUser?.linkedin && (
+              <a href={pageUser.linkedin}>
+                <FaLinkedin fill="#eee" />
+              </a>
+            )}
+            <a href={pageUser?.profileUrl} target="_blank">
+              <FaGithub fill="#eee" />
+            </a>
           </div>
         </div>
-        <h1 className="text-2xl text-center border-b-2 p-4 text-blue-50">
-          {errorProjects ? 'Error fetching projects' : 'Projects'}
-        </h1>
-        <div className="flex flex-col gap-4 w-full h-full items-center justify-center">
-          {loadingProjects && <p>Loading...</p>}
 
-          {projects?.map((project) => (
+        <h1>Projects</h1>
+
+        <div className="flex flex-col gap-4 w-full h-full items-center justify-center">
+          {pageUser?.projects?.map((project) => (
             <ProjectCard key={project._id} project={project} />
           ))}
         </div>

@@ -1,3 +1,5 @@
+import { ProjectProps } from './Project';
+
 export type UserProps = {
   _id?: string;
   githubId?: string;
@@ -6,6 +8,10 @@ export type UserProps = {
   profileUrl: string;
   role: 'user' | 'admin';
   challenges: string[];
-  projects: string[];
+  comments: string[];
+  likes: string[];
+  projects: ProjectProps[];
   bio: string;
+  likedProjects: string[];
+  linkedin: string;
 };

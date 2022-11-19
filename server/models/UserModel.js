@@ -21,24 +21,10 @@ const userSchema = mongoose.Schema(
     notifications: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Notification" },
     ],
-    followings: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
-    // likedComments: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Comment",
-    //   default: [],
-    // },
-    // ratedProjects: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Project",
-    //   default: [],
-    // },
+    follows: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 
-    //streak
-    //points
-    //totalProjects
-    //totalLikes
-    //totalComments
+    likedComments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+    likedProjects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
   },
   { timestamp: true }
 );
