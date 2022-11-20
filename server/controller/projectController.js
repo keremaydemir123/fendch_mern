@@ -16,7 +16,20 @@ exports.getProjectsByUserId = asyncHandler(async (req, res) => {
   res.status(200).json(projects);
 });
 
-exports.updateProject = asyncHandler(async (req, res) => {});
+exports.updateProject = asyncHandler(async (req, res) => {
+  const project = await Project.findById(req.params.id);
+
+  if (!project) {
+    res.status(404).send(`No project with id: ${id}`);
+    throw new Error("Project not found");
+  }
+
+  const newProject = await Project.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  })
+
+  res.status(200).json(newProject);
+});
 
 exports.createProject = asyncHandler(async (req, res) => {
   if (
