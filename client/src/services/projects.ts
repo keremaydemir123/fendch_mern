@@ -19,8 +19,8 @@ export async function createProject({
   return response.data;
 }
 
-export async function getProjects() {
-  const response = await axios.get(`${SERVER_URL}/projects`);
+export async function getProjects(queryString: string) {
+  const response = await axios.get(`${SERVER_URL}/projects?${queryString}`);
   return response.data;
 }
 

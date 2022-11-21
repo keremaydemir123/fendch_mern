@@ -50,7 +50,11 @@ NOTES AFTER LAST COMMIT:
 - Middleware that checks time and changing isSecret and isActive states
 - addNotification and deleteNotification functions that takes a message to add or delete
 - Pagination functionality for challenges and projects
-- Fix routes[]
+- web socket
+- firebase real time db notifications
+- s3 img
+- https://uploadcare.com/
+
 
  
 
