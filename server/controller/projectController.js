@@ -2,12 +2,27 @@ const Project = require("../models/ProjectModel");
 const Challenge = require("../models/ChallengeModel");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/UserModel");
+const APIFeatures = require("../utils/apiFeatures");
 
 exports.getAllProjects = asyncHandler(async (req, res) => {
-  const projects = await Project.find()
-    .populate("challenge", { objective: 1, week: 1, tech: 1 })
-    .populate("user", { username: 1 });
-  res.status(200).json(projects);
+  req.query.limit = "3";
+
+  const totalProjects = await Project.countDocuments();
+
+  const features = new APIFeatures(
+    Project.find().populate("challenge").populate("user"),
+    req.query
+  )
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  const projects = await features.query;
+  res.status(200).json({
+    totalProjects,
+    projects,
+  });
 });
 
 exports.getProjectsByUserId = asyncHandler(async (req, res) => {
