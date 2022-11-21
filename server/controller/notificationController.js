@@ -37,22 +37,47 @@ exports.createFollowNotification = asyncHandler(async (req, res) => {
   });
 });
 
-exports.createLikeNotification = asyncHandler(async (req, res) => { //{sender} liked your {project.title} project
-  const user = await User.findById(req.params.userId).populate({
-    path: "projects",
-    populate: [
-      { path: "user", select: "username", model: "User" },
-      {
-        path: "challenge",
-        select: "week tech objective",
-        model: "Challenge",
-      },
-    ],
-  })
-  .select("-notifications -_id -__v");
+exports.createLikeNotification = asyncHandler(async (req, res) => {
+  //{sender} liked your {project.title} project
+  const user = await User.findById(req.params.userId)
+    .populate({
+      path: "projects",
+      populate: [
+        { path: "user", select: "username", model: "User" },
+        {
+          path: "challenge",
+          select: "week tech objective",
+          model: "Challenge",
+        },
+      ],
+    })
+    .select("-notifications -_id -__v");
 
-  console.log('user.projects :>> ', user.projects);
-})
+  projectName = user.projects[req.body.projectId].challenge.objective;
+  // console.log(
+  //   "users.project :>> ",
+  //   user.projects[req.body.projectId].challenge.objective
+  // );
+
+  const notification = await Notification.create({
+    message: `${user.username} has liked your ${projectName} project`,
+    sender: user.username,
+    receiver: req.body.receiverUsername,
+  });
+
+  const receiverUser = await User.findOne({
+    username: req.body.receiverUsername,
+  });
+  // console.log('receiverUser.username :>> ', receiverUser.username);
+  receiverUser.notifications.push(notification);
+  await receiverUser.save();
+
+  res.status(200).json({
+    message: notification.message,
+    sender: notification.sender,
+    receiver: notification.receiver,
+  });
+});
 
 exports.deleteNotification = asyncHandler(async (req, res) => {
   const user = await User.findOne({ _id: req.params.userId });

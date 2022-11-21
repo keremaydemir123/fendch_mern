@@ -102,3 +102,21 @@ exports.getProjectById = asyncHandler(async (req, res) => {
     throw new Error("Project not found");
   }
 });
+
+exports.likeProject = asyncHandler(async (req, res) => {
+  const project = await Project.findById(req.params.id)
+
+  if (!project) {
+    res.status(404).send(`No project with id: ${project._id}`);
+    throw new Error("Project not found");
+  }
+
+  const userLiked = await User.findOne({
+    username: req.body.userLiked,
+  });
+
+  project.likes.push(userLiked)
+  await project.save()
+
+  res.status(200).json(project.likes);
+})

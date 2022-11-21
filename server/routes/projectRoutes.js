@@ -8,14 +8,22 @@ router
   .post(projectController.createProject);
 
 router.route("/").get(projectController.getAllProjects);
+
 router
-  .route("/getProjectByUserId/:userId")
+  .route("/getProjectsByUserId/:userId")
   .get(projectController.getProjectsByUserId);
+
+router.route("/:id/like")
+  .patch(projectController.likeProject);
 
 router
   .route("/:id")
   .get(projectController.getProjectById)
   .patch(projectController.updateProject);
+
+// router
+//   .route("/:id/likeProject")
+//   .patch(projectController.likeProject);
 
 // router
 //   .route("/:id")
