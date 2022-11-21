@@ -8,4 +8,5 @@ export type ProjectProps = {
   git: string;
   description: string;
   submittedAt: Date;
+  likes: string[];
 };

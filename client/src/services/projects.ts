@@ -35,3 +35,14 @@ export async function getProject(id: string) {
   const response = await axios.get(`${SERVER_URL}/projects/${id}`);
   return response.data;
 }
+
+export async function likeProject({
+  userId,
+  projectId,
+}: {
+  userId: string;
+  projectId: string;
+}) {
+  const response = await axios.post(`${SERVER_URL}/projects/${projectId}/like`);
+  return response.data;
+}

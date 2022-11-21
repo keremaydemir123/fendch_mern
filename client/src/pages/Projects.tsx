@@ -27,12 +27,18 @@ function Projects() {
     getProjects(queryString)
   );
 
+  const search = () => {
+    setPage(1);
+    filterProjects();
+  };
+
   const filterProjects = () => {
-    console.log(selectValue);
     let str;
-    let techStr = selectValue.map((tech) => tech.value).join(',');
+    let techStr = selectValue.map((tech) => tech.label).join(',');
     if (techStr.length < 1) str = `page=${page}`;
-    else str = `page=1&tech=${techStr}`;
+    else str = `page=${page}&tech=${techStr}`;
+    console.log(str);
+
     setQueryString(str);
 
     console.log(str);
@@ -57,7 +63,7 @@ function Projects() {
           onChange={(value) => setSelectValue(value)}
           value={selectValue}
         />
-        <Button onClick={filterProjects}>Search</Button>
+        <Button onClick={search}>Search</Button>
       </div>
       <div className="w-full flex flex-col gap-4 items-center my-8">
         {projects.map((project: ProjectProps) => (
@@ -67,7 +73,7 @@ function Projects() {
       <Pagination
         page={page}
         setPage={setPage}
-        limit={2}
+        limit={data.limit}
         total={totalProjects}
       />
     </div>
