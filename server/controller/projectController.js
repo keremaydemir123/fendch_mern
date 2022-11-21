@@ -2,26 +2,39 @@ const Project = require("../models/ProjectModel");
 const Challenge = require("../models/ChallengeModel");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/UserModel");
-const APIFeatures = require("../utils/apiFeatures");
 
 exports.getAllProjects = asyncHandler(async (req, res) => {
+  //! returns 3 documents
   req.query.limit = "3";
 
-  const totalProjects = await Project.countDocuments();
+  const page = req.query.page * 1 || 1;
+  const limit = req.query.limit * 1 || 10;
+  const skip = (page - 1) * limit;
 
-  const features = new APIFeatures(
-    Project.find().populate("challenge").populate("user"),
-    req.query
-  )
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
+  let techs;
+  if (req.query.tech.includes(",")) techs = req.query.tech.split(",");
+  else techs = [req.query.tech];
 
-  const projects = await features.query;
+  let projects = await Project.find().populate("challenge").populate("user");
+
+  projects = projects.filter((project) => {
+    if (techs.includes("All")) return project;
+
+    for (let i = 0; i < techs.length; i++) {
+      if (project.challenge.tech.includes(techs[i])) {
+        return project;
+      }
+    }
+  });
+
+  totalProjects = projects.length;
+
+  projects = projects.slice(skip, skip + limit);
+
   res.status(200).json({
     totalProjects,
     projects,
+    limit,
   });
 });
 
