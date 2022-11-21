@@ -17,6 +17,11 @@ router
   .route("/:userId/notifications")
   .get(notificationController.getNotifications)
   .post(notificationController.createFollowNotification);
+
+// router
+//   .route("/:userId/notifications")
+//   .post(notificationController.createLikeNotification);
+  
 router
   .route("/:userId/notifications/:notificationId")
   .delete(notificationController.deleteNotification);
