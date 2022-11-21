@@ -13,14 +13,17 @@ router
 router.route("/:id").get(userController.getUserById);
 
 //Notification
-router
-  .route("/:userId/notifications")
+
+router.route("/:userId/notifications")
   .get(notificationController.getNotifications)
+
+router
+  .route("/:userId/notifications/userFollowed")
   .post(notificationController.createFollowNotification);
 
-// router
-//   .route("/:userId/notifications")
-//   .post(notificationController.createLikeNotification);
+router
+  .route("/:userId/notifications/projectLiked")
+  .post(notificationController.createLikeNotification);
   
 router
   .route("/:userId/notifications/:notificationId")
