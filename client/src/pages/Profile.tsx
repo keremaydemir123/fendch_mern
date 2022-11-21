@@ -12,6 +12,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import Button from '../components/Button';
 import ProjectCard from '../components/ProjectCard';
 import { createFollowNotification } from '../services/notifications';
+import Loading from '../components/Loading';
 
 function Profile() {
   const [pageUser, setPageUser] = useState<UserProps | null>(null);
@@ -30,7 +31,7 @@ function Profile() {
     }
   );
 
-  if (loadingUser) return <p>Loading...</p>;
+  if (loadingUser) return <Loading />;
   if (errorUser) return <p>Error fetching User</p>;
 
   const handleModalSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

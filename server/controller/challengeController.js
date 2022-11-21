@@ -1,4 +1,5 @@
 const asyncHandler = require("express-async-handler");
+const APIFeatures = require("../utils/apiFeatures");
 
 const Challenge = require("../models/ChallengeModel.js");
 
@@ -20,9 +21,14 @@ exports.getActiveChallenges = asyncHandler(async (req, res) => {
 // @route GET /api/
 // @access public
 exports.getOldChallenges = asyncHandler(async (req, res) => {
-  const challenge = await Challenge.find();
+  const features = new APIFeatures(Challenge.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+  const challenges = await features.query;
 
-  filteredChallenge = challenge.filter(
+  filteredChallenge = challenges.filter(
     (secretChallenge) =>
       secretChallenge.isSecret != true && secretChallenge.isActive != true
   );
