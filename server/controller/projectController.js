@@ -54,7 +54,7 @@ exports.updateProject = asyncHandler(async (req, res) => {
 
   const newProject = await Project.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
-  })
+  });
 
   res.status(200).json(newProject);
 });
@@ -117,7 +117,7 @@ exports.getProjectById = asyncHandler(async (req, res) => {
 });
 
 exports.likeProject = asyncHandler(async (req, res) => {
-  const project = await Project.findById(req.params.id)
+  const project = await Project.findById(req.params.id);
 
   if (!project) {
     res.status(404).send(`No project with id: ${project._id}`);
@@ -125,11 +125,16 @@ exports.likeProject = asyncHandler(async (req, res) => {
   }
 
   const userLiked = await User.findOne({
-    username: req.body.userLiked,
+    _id: req.body.userId,
   });
 
-  project.likes.push(userLiked)
-  await project.save()
+
+  if (project.likes.includes(userLiked._id)) {
+    project.likes.remove(userLiked._id)
+  } else {
+    project.likes.push(userLiked._id);
+  }
+  await project.save();
 
   res.status(200).json(project.likes);
-})
+});
