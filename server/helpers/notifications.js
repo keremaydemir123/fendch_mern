@@ -1,7 +1,11 @@
+// function sendNotification(userId, message) {}
 
-function sendNotification(userId, message) {
-  // a User liked your Comment
-}
+const sendNotification = async (userId, message) => {
+  const notification = await Notification.create({
+    message: `${userId.username} ${message}`,
+    sender: user.username,
+    receiver: req.body.receiverUsername,
+  });
+};
 
-
-'/users/:userId/getnotifications/'
+("/users/:userId/getnotifications/");

@@ -54,8 +54,8 @@ NOTES AFTER LAST COMMIT:
 - firebase real time db notifications
 - s3 img
 - https://uploadcare.com/
-
-
+- like a project: project.likes.push(liker.id)
+- GET: liked projects
  
 
 
