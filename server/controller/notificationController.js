@@ -37,6 +37,23 @@ exports.createFollowNotification = asyncHandler(async (req, res) => {
   });
 });
 
+exports.createLikeNotification = asyncHandler(async (req, res) => { //{sender} liked your {project.title} project
+  const user = await User.findById(req.params.userId).populate({
+    path: "projects",
+    populate: [
+      { path: "user", select: "username", model: "User" },
+      {
+        path: "challenge",
+        select: "week tech objective",
+        model: "Challenge",
+      },
+    ],
+  })
+  .select("-notifications -_id -__v");
+
+  console.log('user.projects :>> ', user.projects);
+})
+
 exports.deleteNotification = asyncHandler(async (req, res) => {
   const user = await User.findOne({ _id: req.params.userId });
 

@@ -44,6 +44,7 @@ NOTES AFTER LAST COMMIT:
 - navbar needs to be responsive
 - all card containers must be responsive
 - sorting and filtering functionality for projects page
+- Hot Fix: Create like notification and create follow notification[]
 
 #### Server:
 - Middleware that checks time and changing isSecret and isActive states
@@ -53,6 +54,7 @@ NOTES AFTER LAST COMMIT:
 - firebase real time db notifications
 - s3 img
 - https://uploadcare.com/
+
 
  
 
