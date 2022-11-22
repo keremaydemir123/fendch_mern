@@ -82,7 +82,7 @@ function Comment({
     <>
       <div className="w-full flex flex-col bg-slate-50 rounded-md px-2 mt-4">
         <div className="flex justify-between items-center  py-1">
-          <span className="font-medium">{user.username}</span>
+          <span className="font-medium">{user?.username}</span>
           <span className="font-light italic text-gray-500 text-sm">
             {dateFormatter.format(Date.parse(createdAt))}
           </span>
@@ -115,7 +115,7 @@ function Comment({
             isActive={isReplying}
           />
           <div>
-            {user._id === currentUser?._id && (
+            {user?.username === currentUser?.username && (
               <>
                 <IconButton
                   Icon={FaEdit}

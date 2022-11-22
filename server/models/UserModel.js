@@ -19,6 +19,7 @@ const userSchema = mongoose.Schema(
     joinedAt: { type: Date, default: Date.now },
     projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+
     notifications: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Notification" },
     ],
