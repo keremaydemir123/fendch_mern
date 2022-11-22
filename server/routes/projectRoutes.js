@@ -19,16 +19,14 @@ router.route("/:id/toggleLike")
 router
   .route("/:id")
   .get(projectController.getProjectById)
-  .patch(projectController.updateProject);
+  .patch(projectController.updateProject)
+  .delete(projectController.deleteProject);
 
-// router
-//   .route("/:id/likeProject")
-//   .patch(projectController.likeProject);
+router.route("/:id/comments")
+  .get(projectController.getComments)
+  .post(projectController.createComment);
 
-// router
-//   .route("/:id")
-//   .get(projectController.getProject)
-//   .patch(projectController.updateProject)
-//   .delete(projectController.deleteProject);
+router.route("/:id/comments/:commentId/toggleLike")
+  .post(projectController.likeComment)
 
 module.exports = router;

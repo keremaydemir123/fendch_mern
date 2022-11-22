@@ -22,14 +22,18 @@ router.route("/old").get(challengeController.getOldChallenges);
 
 // Actions for all challenges
 router.route("/").post(challengeController.createChallenge);
+
 router
   .route("/:id")
   .get(challengeController.getChallenge)
   .patch(challengeController.updateChallenge)
   .delete(challengeController.deleteChallenge);
 
-router.route("/:id/comments").get(commentController.getComments).post(commentController.createComment)
+router.route("/:id/comments")
+  .get(commentController.getComments)
+  .post(commentController.createComment)
 
-router.route("/:id/comments/:commentId/toggleLike").post(commentController.likeComment)
+router.route("/:id/comments/:commentId/toggleLike")
+  .post(commentController.likeComment)
 
 module.exports = router;

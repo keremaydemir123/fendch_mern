@@ -2,11 +2,13 @@ const mongoose = require("mongoose");
 
 const commentSchema = mongoose.Schema({
   message: { type: String, required: [true, "Please enter a text"] },
-  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  parent: { type: mongoose.Schema.Types.ObjectId || String, ref: "Comment" },
-  childs: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
-  // user: User,
-  date: {
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] }],
+  parentId: String,
+  children: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "Comment", default: [] },
+  ],
+  username: { type: String, required: true },
+  createdAt: {
     type: Date,
     default: new Date(),
   },
