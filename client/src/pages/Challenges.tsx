@@ -19,25 +19,20 @@ function Challenges() {
   if (isLoadingOld || isLoadingActive) return <Loading />;
 
   return (
-    <div className="w-full h-full flex flex-col items-center">
-      <input
-        type="text"
-        placeholder="Search"
-        className="w-5/6 rounded-md outline-none border-none h-16 my-8 px-8 text-dark font-semibold text-3xl"
-        value={queryString}
-        onChange={(e) => setQueryString(e.target.value)}
-      />
-      <div className="flex flex-wrap justify-center items-center gap-12 w-5/6">
-        {activeChallenges?.map((challenge: any) => (
-          <ChallengeCard
-            key={challenge._id}
-            challenge={challenge}
-            isActive={challenge.isActive}
-          />
-        ))}
-        {oldChallenges?.map((challenge: any) => (
-          <ChallengeCard key={challenge._id} challenge={challenge} />
-        ))}
+    <div className="wrapper">
+      <div className="w-full h-full flex flex-col items-center">
+        <div className="flex flex-wrap justify-center items-center gap-4 w-5/6">
+          {activeChallenges?.map((challenge: any) => (
+            <ChallengeCard
+              key={challenge._id}
+              challenge={challenge}
+              isActive={challenge.isActive}
+            />
+          ))}
+          {oldChallenges?.map((challenge: any) => (
+            <ChallengeCard key={challenge._id} challenge={challenge} />
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -58,3 +58,22 @@ exports.getUserById = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 });
+
+exports.followUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  if (user) {
+    if (user.followers.includes(req.body.followerId)) {
+      res.status(400);
+      throw new Error("You already follow this user");
+    }
+
+    user.followers.push(req.body.followerId);
+    await user.save();
+
+    res.status(200).json({ message: "User followed" });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
+});

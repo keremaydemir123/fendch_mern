@@ -1,21 +1,29 @@
-import React from "react";
-import { useState } from "react";
-import { useUser } from "../../contexts/UserProvider";
-import Button from "../Button";
+import React from 'react';
+import { useState } from 'react';
+import { useUser } from '../contexts/UserProvider';
+import Button from './Button';
+
+type CommentFormProps = {
+  onSubmit: (message: string) => Promise<void>;
+  loading?: boolean;
+  error?: string;
+  autoFocus?: boolean;
+  initialValue?: string;
+};
 
 function CommentForm({
   loading,
   error,
   autoFocus = false,
   onSubmit,
-  initialValue = "",
-}) {
+  initialValue = '',
+}: CommentFormProps) {
   const [message, setMessage] = useState(initialValue);
   const { user } = useUser();
 
-  function handleSubmit(e) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    onSubmit(message).then(() => setMessage(""));
+    onSubmit(message).then(() => setMessage(''));
   }
 
   return (
@@ -27,12 +35,12 @@ function CommentForm({
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder={
-            !user ? "please login to send a comment" : "Write a comment"
+            !user ? 'please login to send a comment' : 'Write a comment'
           }
           disabled={!user || loading}
         />
-        <Button className="btn" disabled={!user || loading} type="submit">
-          {loading ? "Loading" : "Post"}
+        <Button className="btn" type="submit">
+          {loading ? 'Loading' : 'Post'}
         </Button>
       </div>
       <div className="error-msg">{error}</div>

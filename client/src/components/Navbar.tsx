@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import Button from './Button';
 import CustomLink from './CustomLink';
-import { User } from '../contexts/authProvider';
+import { User } from '../contexts/UserProvider';
 import Badge from './Badge';
 
 function Navbar({ user }: { user: User }) {

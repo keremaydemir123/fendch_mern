@@ -1,24 +1,31 @@
-import React from "react";
-import IconButton from "../IconButton";
-import { FaEdit, FaHeart, FaRegHeart, FaReply, FaTrash } from "react-icons/fa";
-import { useChallenge } from "../../contexts/ChallengeContext";
-import { useCookieUser } from "../../hooks/useCookieUser";
-import CommentList from "./CommentList";
-import { useState } from "react";
-import CommentForm from "./CommentForm";
+import IconButton from './IconButton';
+import { FaEdit, FaHeart, FaRegHeart, FaReply, FaTrash } from 'react-icons/fa';
+import { useChallenge } from '../contexts/ChallengeProvider';
+import CommentList from './CommentList';
+import { useState } from 'react';
+import CommentForm from './CommentForm';
 import {
   createComment,
   deleteComment,
   toggleCommentLike,
   updateComment,
-} from "../../services/comments";
+} from '../services/comments';
+import { CommentProps } from '../types/Comment';
+import { useUser } from '../contexts/UserProvider';
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
-  dateStyle: "medium",
-  timeStyle: "short",
+  dateStyle: 'medium',
+  timeStyle: 'short',
 });
 
-function Comment({ id, message, user, createdAt, likeCount, likedByMe }) {
+function Comment({
+  _id,
+  message,
+  user,
+  createdAt,
+  likeCount,
+  likedByMe,
+}: CommentProps) {
   const [areChildrenHidden, setAreChildrenHidden] = useState(false);
   const {
     challenge,
@@ -28,34 +35,34 @@ function Comment({ id, message, user, createdAt, likeCount, likedByMe }) {
     deleteLocalComment,
     toggleLocalCommentLike,
   } = useChallenge();
-  const currentUser = useCookieUser();
-  const childComments = getReplies(id);
+  const { user: currentUser } = useUser();
+  const childComments = getReplies(_id);
   const [isReplying, setIsReplying] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  async function onCommentReply(message) {
+  async function onCommentReply(message: string) {
     const comment = await createComment({
       challengeId: challenge.id,
       message,
-      parentId: id,
+      parentId: _id,
     });
     setIsReplying(false);
     createLocalComment(comment);
   }
 
-  async function onCommentEdit(message) {
+  async function onCommentEdit(message: string) {
     const comment = updateComment({ challengeId: challenge.id, message, id });
     setIsEditing(false);
-    updateLocalComment(id, comment.message);
+    updateLocalComment(_id, comment.message);
   }
   async function onCommentDelete() {
-    const comment = await deleteComment({ challengeId: challenge.id, id });
+    const comment = await deleteComment({ challengeId: challenge.id, _id });
     deleteLocalComment(comment.id);
   }
 
   async function onToggleCommentLike() {
-    const like = await toggleCommentLike({ id, challengeId: challenge.id });
-    toggleLocalCommentLike(id, like);
+    const like = await toggleCommentLike({ _id, challengeId: challenge.id });
+    toggleLocalCommentLike(_id, like);
   }
 
   return (
@@ -80,14 +87,14 @@ function Comment({ id, message, user, createdAt, likeCount, likedByMe }) {
         <div className="flex items-center justify-between  border-t-[1px]">
           <IconButton
             Icon={likedByMe ? FaHeart : FaRegHeart}
-            aria-label={likedByMe ? "Unlike" : "Like"}
+            aria-label={likedByMe ? 'Unlike' : 'Like'}
             onClick={onToggleCommentLike}
           >
             {likeCount}
           </IconButton>
           <IconButton
             Icon={FaReply}
-            aria-label={isReplying ? "Cancel Reply" : "Reply"}
+            aria-label={isReplying ? 'Cancel Reply' : 'Reply'}
             onClick={() => setIsReplying((prev) => !prev)}
             isActive={isReplying}
           />
@@ -96,7 +103,7 @@ function Comment({ id, message, user, createdAt, likeCount, likedByMe }) {
             <>
               <IconButton
                 Icon={FaEdit}
-                aria-label={isEditing ? "Cancel Edit" : "Edit"}
+                aria-label={isEditing ? 'Cancel Edit' : 'Edit'}
                 onClick={() => setIsEditing((prev) => !prev)}
                 isActive={isEditing}
               />
@@ -118,7 +125,7 @@ function Comment({ id, message, user, createdAt, likeCount, likedByMe }) {
       )}
       {childComments?.length > 0 && (
         <>
-          <div className={`flex ${areChildrenHidden ? "hidden" : ""}`}>
+          <div className={`flex ${areChildrenHidden ? 'hidden' : ''}`}>
             <button
               className="collapse-line"
               aria-label="Hide Replies"
@@ -129,7 +136,7 @@ function Comment({ id, message, user, createdAt, likeCount, likedByMe }) {
             </div>
           </div>
           <button
-            className={`btn mt-1 ${!areChildrenHidden ? "hidden" : ""}`}
+            className={`btn mt-1 ${!areChildrenHidden ? 'hidden' : ''}`}
             onClick={() => setAreChildrenHidden(false)}
           >
             Show Replies

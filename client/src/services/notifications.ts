@@ -35,7 +35,7 @@ export async function createFollowNotification({
   return response.data;
 }
 
-export async function createLikeNotification({
+export async function createProjectLikeNotification({
   userId,
   receiverUsername,
   projectId,

@@ -6,7 +6,7 @@ import Button from './Button';
 import CustomLink from './CustomLink';
 import Modal from './Modal';
 import { likeProject } from '../services/projects';
-import { useUser } from '../contexts/authProvider';
+import { useUser } from '../contexts/UserProvider';
 import toast, { Toaster } from 'react-hot-toast';
 
 function ProjectCard({ project }: { project: ProjectProps }) {
@@ -29,7 +29,7 @@ function ProjectCard({ project }: { project: ProjectProps }) {
   };
 
   return (
-    <div className="flex flex-col rounded-xl bg-gray overflow-hidden md:w-[700px] w-5/6 h-max shadow-lg shadow-secondary">
+    <div className="flex flex-col rounded-xl bg-gray overflow-hidden w-full h-max shadow-lg shadow-secondary">
       <Toaster />
       <div className="flex justify-between bg-primary text-gray-50 p-2 border-b-secondary border-b-2">
         <Link to={`/profile/${projectUser.username}`}>
