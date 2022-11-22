@@ -7,4 +7,5 @@ export type CommentProps = {
   user: UserProps;
   likeCount: number;
   likedByMe: boolean;
+  parentId: string;
 };

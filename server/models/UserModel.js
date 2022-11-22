@@ -1,6 +1,4 @@
 const mongoose = require("mongoose");
-const Project = require("./ProjectModel.js");
-const Comment = require("./CommentModel.js");
 
 const userSchema = mongoose.Schema(
   {
@@ -9,6 +7,9 @@ const userSchema = mongoose.Schema(
     avatar: { type: String, required: true },
     profileUrl: { type: String, required: true },
     bio: { type: String, default: "" },
+    linkedin: { type: String, default: "" },
+    twitter: { type: String, default: "" },
+    job: { type: String, default: "" },
     role: {
       type: String,
       required: true,
@@ -21,8 +22,8 @@ const userSchema = mongoose.Schema(
     notifications: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Notification" },
     ],
-    follows: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-
+    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     likedComments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
     likedProjects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
   },

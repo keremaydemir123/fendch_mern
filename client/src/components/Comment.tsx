@@ -27,6 +27,7 @@ function Comment({
   likedByMe,
 }: CommentProps) {
   const [areChildrenHidden, setAreChildrenHidden] = useState(false);
+
   const {
     challenge,
     getReplies,
@@ -35,6 +36,7 @@ function Comment({
     deleteLocalComment,
     toggleLocalCommentLike,
   } = useChallenge();
+
   const { user: currentUser } = useUser();
   const childComments = getReplies(_id);
   const [isReplying, setIsReplying] = useState(false);
@@ -42,26 +44,37 @@ function Comment({
 
   async function onCommentReply(message: string) {
     const comment = await createComment({
-      challengeId: challenge.id,
+      challengeId: challenge?._id!,
       message,
       parentId: _id,
+      userId: currentUser?._id!,
     });
     setIsReplying(false);
     createLocalComment(comment);
   }
 
   async function onCommentEdit(message: string) {
-    const comment = updateComment({ challengeId: challenge.id, message, id });
+    const comment = await updateComment({
+      challengeId: challenge?._id!,
+      message,
+      id: _id,
+    });
     setIsEditing(false);
     updateLocalComment(_id, comment.message);
   }
   async function onCommentDelete() {
-    const comment = await deleteComment({ challengeId: challenge.id, _id });
+    const comment = await deleteComment({
+      challengeId: challenge?._id!,
+      id: _id,
+    });
     deleteLocalComment(comment.id);
   }
 
   async function onToggleCommentLike() {
-    const like = await toggleCommentLike({ _id, challengeId: challenge.id });
+    const like = await toggleCommentLike({
+      id: _id,
+      challengeId: challenge?._id!,
+    });
     toggleLocalCommentLike(_id, like);
   }
 
@@ -74,15 +87,18 @@ function Comment({
             {dateFormatter.format(Date.parse(createdAt))}
           </span>
         </div>
-        {isEditing ? (
-          <CommentForm
-            autoFocus={true}
-            onSubmit={onCommentEdit}
-            initialValue={message}
-          />
-        ) : (
-          <div className="font-light break-words">{message}</div>
-        )}
+
+        <div>
+          {isEditing ? (
+            <CommentForm
+              autoFocus={true}
+              onSubmit={onCommentEdit}
+              initialValue={message}
+            />
+          ) : (
+            <div className="font-light break-words">{message}</div>
+          )}
+        </div>
 
         <div className="flex items-center justify-between  border-t-[1px]">
           <IconButton
@@ -98,51 +114,57 @@ function Comment({
             onClick={() => setIsReplying((prev) => !prev)}
             isActive={isReplying}
           />
-
-          {user.id === currentUser.id && (
-            <>
-              <IconButton
-                Icon={FaEdit}
-                aria-label={isEditing ? 'Cancel Edit' : 'Edit'}
-                onClick={() => setIsEditing((prev) => !prev)}
-                isActive={isEditing}
-              />
-              <IconButton
-                Icon={FaTrash}
-                aria-label="Delete"
-                color="text-red-500"
-                onClick={() => onCommentDelete()}
-              />
-            </>
-          )}
+          <div>
+            {user._id === currentUser?._id && (
+              <>
+                <IconButton
+                  Icon={FaEdit}
+                  aria-label={isEditing ? 'Cancel Edit' : 'Edit'}
+                  onClick={() => setIsEditing((prev) => !prev)}
+                  isActive={isEditing}
+                />
+                <IconButton
+                  Icon={FaTrash}
+                  aria-label="Delete"
+                  color="text-red-500"
+                  onClick={() => onCommentDelete()}
+                />
+              </>
+            )}
+          </div>
         </div>
       </div>
 
-      {isReplying && (
-        <div className="mt-1 ml-3">
-          <CommentForm autoFocus={true} onSubmit={onCommentReply} />
-        </div>
-      )}
-      {childComments?.length > 0 && (
-        <>
-          <div className={`flex ${areChildrenHidden ? 'hidden' : ''}`}>
-            <button
-              className="collapse-line"
-              aria-label="Hide Replies"
-              onClick={() => setAreChildrenHidden(true)}
-            />
-            <div className="pl-2 flex-grow">
-              <CommentList comments={childComments} />
-            </div>
+      <div>
+        {isReplying && (
+          <div className="mt-1 ml-3">
+            <CommentForm autoFocus={true} onSubmit={onCommentReply} />
           </div>
-          <button
-            className={`btn mt-1 ${!areChildrenHidden ? 'hidden' : ''}`}
-            onClick={() => setAreChildrenHidden(false)}
-          >
-            Show Replies
-          </button>
-        </>
-      )}
+        )}
+      </div>
+
+      <div>
+        {childComments?.length > 0 && (
+          <>
+            <div className={`flex ${areChildrenHidden ? 'hidden' : ''}`}>
+              <button
+                className="collapse-line"
+                aria-label="Hide Replies"
+                onClick={() => setAreChildrenHidden(true)}
+              />
+              <div className="pl-2 flex-grow">
+                <CommentList comments={childComments} />
+              </div>
+            </div>
+            <button
+              className={`btn mt-1 ${!areChildrenHidden ? 'hidden' : ''}`}
+              onClick={() => setAreChildrenHidden(false)}
+            >
+              Show Replies
+            </button>
+          </>
+        )}
+      </div>
     </>
   );
 }

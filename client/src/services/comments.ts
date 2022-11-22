@@ -1,15 +1,22 @@
 import SERVER_URL from './baseURL';
 import axios from 'axios';
 
+export async function getCommentsByChallengeId(challengeId: string) {
+  const response = await axios.get(
+    `${SERVER_URL}/challenges/${challengeId}/comments`
+  );
+  return response.data;
+}
+
 export async function createComment({
   challengeId,
   message,
-  parentId,
+  parentId = 'null',
   userId,
 }: {
   challengeId: string;
   message: string;
-  parentId: string;
+  parentId?: string;
   userId: string;
 }) {
   const response = await axios.post(

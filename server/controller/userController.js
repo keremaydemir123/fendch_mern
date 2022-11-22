@@ -35,9 +35,9 @@ exports.updateMe = asyncHandler(async (req, res) => {
   const user = await User.findOne({ username: req.params.username });
 
   if (user) {
-    console.log(user);
-    console.log(req.body);
-    user.bio = req.body.data.bio || user.bio;
+    user.bio = req.body.bio || user.bio;
+    user.linkedin = req.body.linkedin || user.linkedin;
+    user.job = req.body.job || user.job;
 
     const updatedUser = await user.save();
 

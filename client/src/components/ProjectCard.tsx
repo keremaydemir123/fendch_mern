@@ -42,12 +42,12 @@ function ProjectCard({ project }: { project: ProjectProps }) {
       <div className="flex flex-col justify-between text-gray-50 p-2">
         <div className="flex justify-between">
           <p className="uppercase font-semibold text-muted text-sm">
-            Week {challenge.week}
+            Week {challenge?.week}
           </p>
         </div>
         <div className="flex justify-between">
-          <Link to={`/challenges/${challenge._id}`} className="text-xl">
-            {challenge.tech} : {challenge.objective}
+          <Link to={`/challenges/${challenge?._id}`} className="text-xl">
+            {challenge?.tech} : {challenge?.objective}
           </Link>
         </div>
       </div>
