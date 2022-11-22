@@ -11,7 +11,7 @@ const challengeSchema = mongoose.Schema({
     required: [true, "Please enter a challenge objective"],
   },
   projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
-
+  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
   description: {
     type: String,
     required: [true, "Please enter a description"],

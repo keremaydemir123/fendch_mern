@@ -4,10 +4,10 @@ const User = require("../models/UserModel.js");
 const asyncHandler = require("express-async-handler");
 
 exports.getNotifications = asyncHandler(async (req, res) => {
-  const notifications = await User.findById(req.params.userId)
+  const {notifications} = await User.findById(req.params.userId)
     .populate("notifications")
     .select("notifications");
-  res.status(200).json(notifications.notifications);
+  res.status(200).json(notifications);
 });
 
 exports.createFollowNotification = asyncHandler(async (req, res) => {
