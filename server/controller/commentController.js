@@ -38,11 +38,11 @@ exports.createComment = asyncHandler(async (req, res) => {
   }
 
   const comment = await Comment.create({
-    user,
+    user: user,
     message: req.body.message,
     parent: parentComment
   })
-
+  
   if (parentComment) {
     parentComment.childs.push(comment)
     await parentComment.save()
@@ -57,11 +57,23 @@ exports.createComment = asyncHandler(async (req, res) => {
 
 });
 
-exports.createChildComment = asyncHandler(async (req, res) => {})
-
 /* body: { commentId: "123", message: "hello" } */
 exports.updateComment = asyncHandler(async (req, res) => {});
 
 /* body: { commentId: "123" } */
 // when a user deletes a comment, all of its children comments are deleted
 exports.deleteComment = asyncHandler(async (req, res) => {});
+
+
+exports.likeComment = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.body.userId);
+  const comment = await User.findById(req.params.commentId);
+
+  const notification = await Notification.create({
+    message: `${user.username} has followed you`,
+    sender: user.username,
+    receiver: req.body.receiverUsername,
+  });
+
+  
+})

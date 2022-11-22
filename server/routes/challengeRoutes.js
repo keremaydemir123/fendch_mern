@@ -30,6 +30,6 @@ router
 
 router.route("/:id/comments").get(commentController.getComments).post(commentController.createComment)
 
-router.route("/:id/comments/:commentId/toggleLike")
+router.route("/:id/comments/:commentId/toggleLike").post(commentController.likeComment)
 
 module.exports = router;
