@@ -5,7 +5,9 @@ const Comment = require("../models/CommentModel.js");
 const Challenge = require("../models/ChallengeModel.js");
 
 exports.getComments = asyncHandler(async (req, res) => {
-  const {comments} = await Challenge.findById(req.params.id).populate("comments").select("comments");
+  const { comments } = await Challenge.findById(req.params.id)
+    .populate("comments")
+    .select("comments");
 
   res.status(200).json(comments);
 });
@@ -25,19 +27,19 @@ projectId: "123" | null, parentId: "123" | null } */
 exports.createComment = asyncHandler(async (req, res) => {
   const challenge = await Challenge.findById(req.params.id);
   const user = await User.findById(req.body.userId);
-  const parentComment = await Comment.findById(req.body.parentId);
 
   if (!req.body.message) {
     res.status(400).json("Please provide a message");
-    throw new Error("Please provide a message")
+    throw new Error("Please provide a message");
   }
 
   if (!challenge) {
     res.status(400).json("Challenge not found");
-    throw new Error("Challenge not found")
+    throw new Error("Challenge not found");
   }
 
   const comment = await Comment.create({
+<<<<<<< HEAD
     user: user,
     message: req.body.message,
     parent: parentComment
@@ -51,12 +53,26 @@ exports.createComment = asyncHandler(async (req, res) => {
   user.comments.push(comment)
   await user.save()
   challenge.comments.push(comment) //just like will be in project
+=======
+    username: user.username,
+    message: req.body.message,
+    parentId: req.body.parentId,
+  });
+
+  user.comments.push(comment._id);
+  await user.save();
+  challenge.comments.push(comment._id); //just like will be in project
+>>>>>>> 94df2606c41794f3ac30d648429ef0fb0f8b68f2
   await challenge.save();
 
-  res.status(200).json(comment)
-
+  res.status(200).json(comment);
 });
 
+<<<<<<< HEAD
+=======
+exports.createChildComment = asyncHandler(async (req, res) => {});
+
+>>>>>>> 94df2606c41794f3ac30d648429ef0fb0f8b68f2
 /* body: { commentId: "123", message: "hello" } */
 exports.updateComment = asyncHandler(async (req, res) => {});
 
