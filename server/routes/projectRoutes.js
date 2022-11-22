@@ -13,7 +13,7 @@ router
   .route("/getProjectsByUserId/:userId")
   .get(projectController.getProjectsByUserId);
 
-router.route("/:id/like")
+router.route("/:id/toggleLike")
   .patch(projectController.likeProject);
 
 router

@@ -1,5 +1,6 @@
 const express = require("express");
 const challengeController = require("../controller/challengeController.js");
+const commentController = require("../controller/commentController.js");
 
 const router = express.Router();
 
@@ -26,5 +27,9 @@ router
   .get(challengeController.getChallenge)
   .patch(challengeController.updateChallenge)
   .delete(challengeController.deleteChallenge);
+
+router.route("/:id/comments").get(commentController.getComments).post(commentController.createComment)
+
+router.route("/:id/comments/:commentId/toggleLike")
 
 module.exports = router;
