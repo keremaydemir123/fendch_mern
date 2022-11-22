@@ -9,8 +9,11 @@ type PaginationProps = {
 
 function Pagination({ total, limit, page, setPage }: PaginationProps) {
   return (
-    <div className="w-[700px] bg-secondary">
+    <div className="w-full bg-secondary rounded-md">
       <div className="flex justify-between items-center p-4">
+        <div className="text-white">
+          {page} of {Math.ceil(total / limit)}
+        </div>
         <div className="flex gap-4">
           <button
             className="p-2 rounded-full bg-primary text-light hover:bg-dark hover:cursor-pointer"
@@ -52,9 +55,6 @@ function Pagination({ total, limit, page, setPage }: PaginationProps) {
               />
             </svg>
           </button>
-        </div>
-        <div className="text-white">
-          {page} of {Math.ceil(total / limit)}
         </div>
       </div>
     </div>

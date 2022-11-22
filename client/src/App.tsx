@@ -8,7 +8,7 @@ import ProjectDetails from './pages/ProjectDetails';
 import Challenges from './pages/Challenges';
 import NotFound from './pages/NotFound';
 import Profile from './pages/Profile';
-import { useUser } from './contexts/authProvider';
+import { useUser } from './contexts/UserProvider';
 import Admin from './pages/Admin/Admin';
 import AdminUsers from './pages/Admin/AdminUsers';
 import AdminSecretChallenges from './pages/Admin/AdminSecretChallenges';

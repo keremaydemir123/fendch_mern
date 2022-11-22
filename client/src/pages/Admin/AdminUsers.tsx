@@ -1,7 +1,7 @@
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import Button from '../../components/Button';
-import { User } from '../../contexts/authProvider';
+import { User } from '../../contexts/UserProvider';
 import { getUsers } from '../../services/admin';
 import dateFormatter from '../../utils/dateFormatter';
 
