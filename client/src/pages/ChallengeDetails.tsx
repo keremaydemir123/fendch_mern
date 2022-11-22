@@ -1,13 +1,17 @@
 import { useRef, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import { useMutation } from 'react-query';
+import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import Button from '../components/Button';
+import CommentForm from '../components/CommentForm';
+import CommentList from '../components/CommentList';
 import Input from '../components/Input';
 import Modal from '../components/Modal';
 import Textarea from '../components/Textarea';
 import YoutubePlayer from '../components/YoutubePlayer';
+import { useChallenge } from '../contexts/ChallengeProvider';
 import { useUser } from '../contexts/UserProvider';
+import { createComment, getCommentsByChallengeId } from '../services/comments';
 import { createProject } from '../services/projects';
 
 function ChallengeDetails() {
@@ -15,16 +19,16 @@ function ChallengeDetails() {
   const { id: challengeId } = useParams<{ id: string }>();
 
   const [open, setOpen] = useState(false);
+  const { challenge } = useChallenge();
+  console.log(challenge);
+
+  const { isLoading, data: comments } = useQuery(
+    ['getComments', challengeId],
+    () => getCommentsByChallengeId(challengeId!)
+  );
 
   const gitRef = useRef<HTMLInputElement | null>(null);
   const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
-
-  type ProjectDataProps = {
-    git: string;
-    description: string;
-    challengeId: string;
-    userId: string;
-  };
 
   const handleModalSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -54,21 +58,45 @@ function ChallengeDetails() {
     }
   };
 
+  const onCommentCreate = async (message: string) => {
+    try {
+      await createComment({
+        challengeId: challengeId!,
+        message,
+        userId: user?._id!,
+      });
+      toast.success('Comment created successfully');
+    } catch (error: any) {
+      toast.error(error.response.data);
+    }
+  };
+
   return (
-    <div className="w-full flex flex-col items-center">
-      <Toaster />
-      <div className="w-[700px] rounded-lg my-16 bg-gray p-20">
-        <h1 className="text-center">Title</h1>
-        <YoutubePlayer embedId="E1E08i2UJGI" />
-        <Button onClick={() => setOpen(true)}>Submit</Button>
-        <Modal open={open} onClose={() => setOpen(false)}>
-          <form onSubmit={handleModalSubmit} className="flex flex-col gap-4">
-            <Input label="Git" id="git" type="text" ref={gitRef} />
-            <Textarea label="Description" id="desc" ref={descriptionRef} />
-            <Button type="submit">Submit</Button>
-          </form>
-        </Modal>
+    <div className="wrapper">
+      <div className="w-full flex flex-col items-center mb-4">
+        <Toaster />
+        <div className="w-full rounded-lg bg-primary p-8">
+          <h1 className="text-center">{challenge?.tech}</h1>
+          <h3 className="text-center">{challenge?.objective}</h3>
+          <div className="p-8">
+            <YoutubePlayer embedId="E1E08i2UJGI" />
+          </div>
+          <div className="text-right px-8">
+            <Button onClick={() => setOpen(true)}>Submit</Button>
+          </div>
+          <Modal open={open} onClose={() => setOpen(false)}>
+            <form onSubmit={handleModalSubmit} className="flex flex-col gap-4">
+              <Input label="Git" id="git" type="text" ref={gitRef} />
+              <Textarea label="Description" id="desc" ref={descriptionRef} />
+              <Button type="submit">Submit</Button>
+            </form>
+          </Modal>
+        </div>
       </div>
+      <h1>Comments</h1>
+      <div>{isLoading && <p>Loading...</p>}</div>
+      <CommentForm onSubmit={onCommentCreate} />
+      <div>{comments?.length > 0 && <CommentList comments={comments} />}</div>
     </div>
   );
 }

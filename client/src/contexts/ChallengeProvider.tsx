@@ -3,9 +3,17 @@ import { getChallenge } from '../services/challenges';
 import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import Loading from '../components/Loading';
-import { CommentProps } from '../types';
+import { ChallengeProps, CommentProps } from '../types';
 
-const Context = createContext();
+const Context = createContext({
+  challenge: {} as ChallengeProps,
+  getReplies: (parentId: string): CommentProps[] => [],
+  rootComments: [] as CommentProps[],
+  createLocalComment: (comment: CommentProps) => {},
+  updateLocalComment: (id: string, message: string) => {},
+  deleteLocalComment: (id: string) => {},
+  toggleLocalCommentLike: (id: string, addLike: unknown) => {},
+});
 
 export function useChallenge() {
   return useContext(Context);
@@ -18,19 +26,39 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
     isLoading,
     error,
     data: challenge,
-  } = useQuery('getChallenge', () => getChallenge(id!));
+  } = useQuery<ChallengeProps>('getChallenge', () => getChallenge(id!));
 
   const [comments, setComments] = useState<CommentProps[]>([]);
 
-  const commentsByParentId = useMemo(() => {
-    if (comments == null) return [];
-    const group = {};
-    comments.forEach((comment) => {
-      group[comment.parentId] ||= [];
-      group[comment.parentId].push(comment);
+  type groupProps = {
+    [key: string]: CommentProps[];
+  };
+
+  const commentsByParentId = useMemo((): groupProps => {
+    const groups: groupProps = {};
+
+    comments?.forEach((comment) => {
+      if (comment.parentId) {
+        if (groups[comment.parentId]) {
+          groups[comment.parentId].push(comment);
+        } else {
+          groups[comment.parentId] = [comment];
+        }
+      }
     });
-    return group;
+
+    return groups;
   }, [comments]);
+
+  // const commentsByParentId: groupProps = useMemo(() => {
+  //   if (comments.length < 1) return [];
+  //   const group: groupProps = {};
+  //   comments.forEach((comment) => {
+  //     group[comment.parentId] ||= [];
+  //     group[comment.parentId].push(comment);
+  //   });
+  //   return group;
+  // }, [comments]);
 
   useEffect(() => {
     if (challenge?.comments == null) return;
@@ -59,7 +87,7 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
     });
   }
 
-  function toggleLocalCommentLike(id: string, addLike: any) {
+  function toggleLocalCommentLike(id: string, addLike: unknown) {
     setComments((prevComments) => {
       return prevComments.map((comment) => {
         if (id === comment._id) {
@@ -88,9 +116,9 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
   return (
     <Context.Provider
       value={{
-        challenge: { id, ...challenge },
+        challenge: { ...challenge! },
         getReplies,
-        rootComments: commentsByParentId[null],
+        rootComments: commentsByParentId['null'],
         createLocalComment,
         updateLocalComment,
         deleteLocalComment,

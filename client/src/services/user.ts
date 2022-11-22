@@ -9,16 +9,20 @@ export async function getUserByUsername(username: string) {
 export async function updateMe({
   username,
   bio,
+  linkedin,
+  job,
 }: {
   username: string;
   bio: string;
+  linkedin: string;
+  job: string;
 }) {
   const response = await axios.patch(
     `${SERVER_URL}/users/username/${username}`,
     {
-      data: {
-        bio,
-      },
+      bio,
+      linkedin,
+      job,
     }
   );
   return response.data;
