@@ -55,27 +55,29 @@ function Projects() {
   const totalProjects = data.totalProjects;
 
   return (
-    <div className="flex flex-col items-center py-16">
-      <div className="flex justify-between w-[700px] bg-secondary p-4 ">
-        <Select
-          multiple={true}
-          options={selectOptions}
-          onChange={(value) => setSelectValue(value)}
-          value={selectValue}
+    <div className="wrapper">
+      <div className="flex flex-col justify-between h-full w-full  gap-4">
+        <div className="flex justify-between w-full bg-secondary p-4 py-2 rounded-md ">
+          <Select
+            multiple={true}
+            options={selectOptions}
+            onChange={(value) => setSelectValue(value)}
+            value={selectValue}
+          />
+          <Button onClick={search}>Search</Button>
+        </div>
+        <div className="w-full h-full flex flex-wrap justify-between gap-4 items-center">
+          {projects.map((project: ProjectProps) => (
+            <ProjectCard key={project._id} project={project} />
+          ))}
+        </div>
+        <Pagination
+          page={page}
+          setPage={setPage}
+          limit={data.limit}
+          total={totalProjects}
         />
-        <Button onClick={search}>Search</Button>
       </div>
-      <div className="w-full flex flex-col gap-4 items-center my-8">
-        {projects.map((project: ProjectProps) => (
-          <ProjectCard key={project._id} project={project} />
-        ))}
-      </div>
-      <Pagination
-        page={page}
-        setPage={setPage}
-        limit={data.limit}
-        total={totalProjects}
-      />
     </div>
   );
 }

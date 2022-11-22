@@ -6,7 +6,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 
 import App from './App';
 import './index.css';
-import { UserProvider } from './contexts/authProvider';
+import { UserProvider } from './contexts/UserProvider';
 
 const queryClient = new QueryClient({
   defaultOptions: {

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FaBell } from 'react-icons/fa';
 import { useMutation, useQuery } from 'react-query';
-import { useUser } from '../contexts/authProvider';
+import { useUser } from '../contexts/UserProvider';
 import {
   deleteNotification,
   getNotifications,

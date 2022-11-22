@@ -14,4 +14,5 @@ export type UserProps = {
   bio: string;
   likedProjects: string[];
   linkedin: string;
+  followers: string[];
 };

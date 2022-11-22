@@ -7,7 +7,7 @@ import Input from '../components/Input';
 import Modal from '../components/Modal';
 import Textarea from '../components/Textarea';
 import YoutubePlayer from '../components/YoutubePlayer';
-import { useUser } from '../contexts/authProvider';
+import { useUser } from '../contexts/UserProvider';
 import { createProject } from '../services/projects';
 
 function ChallengeDetails() {

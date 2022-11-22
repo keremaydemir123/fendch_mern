@@ -43,6 +43,8 @@ export async function likeProject({
   userId: string;
   projectId: string;
 }) {
-  const response = await axios.post(`${SERVER_URL}/projects/${projectId}/like`);
+  const response = await axios.patch(
+    `${SERVER_URL}/projects/${projectId}/like`
+  );
   return response.data;
 }

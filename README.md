@@ -31,8 +31,14 @@ NOTES AFTER LAST COMMIT:
 ## Whats next?
 
 #### Client:
+- Update App.tsx, fix second fetch
+- Add profile pic and links to notifications
+- Follow, unfollow in profile page
+- Preview in project card
+- Challenge details page
+- Add markdown to create project modal
+- Project details page
 - "are you sure?" popup
-- in profile page getUser by username every 10 second
 - challengeCard design
 - protected route for admin page
 - tags component
@@ -43,7 +49,6 @@ NOTES AFTER LAST COMMIT:
 - comment component
 - navbar needs to be responsive
 - all card containers must be responsive
-- sorting and filtering functionality for projects page
 - Hot Fix: Create like notification and create follow notification[]
 
 #### Server:
@@ -56,6 +61,8 @@ NOTES AFTER LAST COMMIT:
 - https://uploadcare.com/
 - like a project: project.likes.push(liker.id)
 - GET: liked projects
+- Mail nodemailer mailgun 
+- Change challenge fields with time
  
 
 
