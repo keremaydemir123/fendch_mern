@@ -9,8 +9,8 @@ const projectSchema = mongoose.Schema(
     },
     challenge: { type: mongoose.Schema.Types.ObjectId, ref: "Challenge" },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] }],
+    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment", default: [] }],
     description: {
       type: String,
       required: [true, "Please enter a description"],

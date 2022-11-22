@@ -3,6 +3,7 @@ const asyncHandler = require("express-async-handler");
 const User = require("../models/UserModel.js");
 const Comment = require("../models/CommentModel.js");
 const Challenge = require("../models/ChallengeModel.js");
+const Notification = require("../models/NotificationModel.js");
 
 exports.getComments = asyncHandler(async (req, res) => {
   const { comments } = await Challenge.findById(req.params.id)
@@ -46,13 +47,11 @@ exports.createComment = asyncHandler(async (req, res) => {
 
   user.comments.push(comment._id);
   await user.save();
-  challenge.comments.push(comment._id); //just like will be in project
+  challenge.comments.push(comment._id);
   await challenge.save();
 
   res.status(200).json(comment);
 });
-
-exports.createChildComment = asyncHandler(async (req, res) => {});
 
 /* body: { commentId: "123", message: "hello" } */
 exports.updateComment = asyncHandler(async (req, res) => {});
@@ -60,3 +59,38 @@ exports.updateComment = asyncHandler(async (req, res) => {});
 /* body: { commentId: "123" } */
 // when a user deletes a comment, all of its children comments are deleted
 exports.deleteComment = asyncHandler(async (req, res) => {});
+
+
+exports.likeComment = asyncHandler(async (req, res) => {
+  const comment = await Comment.findById(req.params.commentId);
+  const challenge = await Challenge.findById(req.params.id);
+
+  if (!comment) {
+    res.status(404).send(`No comment with id: ${comment._id}`);
+    throw new Error("Comment not found");
+  }
+  if (!challenge) {
+    res.status(400).json("Challenge not found");
+    throw new Error("Challenge not found");
+  }
+
+  const userLiked = await User.findOne({
+    _id: req.body.userId,
+  });
+
+  const notification = await Notification.create({
+    message: `${userLiked.username} has liked your "${comment.message}" comment`,
+    sender: userLiked.username,
+    receiver: req.body.receiverUsername,
+  });
+
+  if (comment.likes.includes(userLiked._id)) {
+    comment.likes.remove(userLiked._id)
+  } else {
+    comment.likes.push(userLiked._id);
+  }
+  await comment.save();
+
+  res.status(200).json(notification);
+  
+})
