@@ -5,7 +5,9 @@ const Comment = require("../models/CommentModel.js");
 const Challenge = require("../models/ChallengeModel.js");
 
 exports.getComments = asyncHandler(async (req, res) => {
-  const {comments} = await Challenge.findById(req.params.id).populate("comments").select("comments");
+  const { comments } = await Challenge.findById(req.params.id)
+    .populate("comments")
+    .select("comments");
 
   res.status(200).json(comments);
 });
@@ -25,39 +27,32 @@ projectId: "123" | null, parentId: "123" | null } */
 exports.createComment = asyncHandler(async (req, res) => {
   const challenge = await Challenge.findById(req.params.id);
   const user = await User.findById(req.body.userId);
-  const parentComment = await Comment.findById(req.body.parentId);
 
   if (!req.body.message) {
     res.status(400).json("Please provide a message");
-    throw new Error("Please provide a message")
+    throw new Error("Please provide a message");
   }
 
   if (!challenge) {
     res.status(400).json("Challenge not found");
-    throw new Error("Challenge not found")
+    throw new Error("Challenge not found");
   }
 
   const comment = await Comment.create({
-    user,
+    username: user.username,
     message: req.body.message,
-    parent: parentComment
-  })
+    parentId: req.body.parentId,
+  });
 
-  if (parentComment) {
-    parentComment.childs.push(comment)
-    await parentComment.save()
-  }
-
-  user.comments.push(comment)
-  await user.save()
-  challenge.comments.push(comment) //just like will be in project
+  user.comments.push(comment._id);
+  await user.save();
+  challenge.comments.push(comment._id); //just like will be in project
   await challenge.save();
 
-  res.status(200).json(comment)
-
+  res.status(200).json(comment);
 });
 
-exports.createChildComment = asyncHandler(async (req, res) => {})
+exports.createChildComment = asyncHandler(async (req, res) => {});
 
 /* body: { commentId: "123", message: "hello" } */
 exports.updateComment = asyncHandler(async (req, res) => {});
