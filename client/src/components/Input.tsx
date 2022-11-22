@@ -25,7 +25,7 @@ function Input(
   ref: React.Ref<HTMLInputElement>
 ) {
   return (
-    <>
+    <div className="flex flex-col gap-1">
       <label htmlFor={id} className="text-light font-semibold font-lg">
         {label}
       </label>
@@ -39,7 +39,7 @@ function Input(
         value={value}
         className={`p-2 border border-primary rounded-md text-primary outline-none ${className}`}
       />
-    </>
+    </div>
   );
 }
 

@@ -16,6 +16,8 @@ import AdminOldChallenges from './pages/Admin/AdminOldChallenges';
 import AdminActiveChallenges from './pages/Admin/AdminActiveChallenges';
 import AdminCreateChallenge from './pages/Admin/AdminCreateChallenge';
 import AdminChallengeEdit from './pages/Admin/AdminChallengeEdit';
+import Footer from './components/Footer';
+import { ChallengeProvider } from './contexts/ChallengeProvider';
 
 function App() {
   const { user, setUser } = useUser();
@@ -55,7 +57,14 @@ function App() {
         <Route path="/" element={<Home />} />
 
         <Route path="/challenges" element={<Challenges />} />
-        <Route path="/challenges/:id" element={<ChallengeDetails />} />
+        <Route
+          path="/challenges/:id"
+          element={
+            <ChallengeProvider>
+              <ChallengeDetails />
+            </ChallengeProvider>
+          }
+        />
 
         <Route path="/projects" element={<Projects />} />
         <Route path="/projects/:id" element={<ProjectDetails />} />
@@ -88,6 +97,8 @@ function App() {
 
         <Route path="*" element={<NotFound />} />
       </Routes>
+
+      <Footer />
     </div>
   );
 }

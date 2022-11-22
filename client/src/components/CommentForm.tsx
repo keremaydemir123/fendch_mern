@@ -31,7 +31,7 @@ function CommentForm({
       <div className="flex h-full gap-2">
         <textarea
           autoFocus={autoFocus}
-          className="flex-grow resize-none h-full rounded-lg p-2 outline-none text-blue-900 shadow-md bg-blue-50 leading-8"
+          className="flex-grow resize-none h-full rounded-lg p-2 outline-none text-dark bg-light font-medium leading-8"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder={

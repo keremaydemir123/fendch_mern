@@ -11,8 +11,10 @@ export type UserProps = {
   comments: string[];
   likes: string[];
   projects: ProjectProps[];
-  bio: string;
+  bio?: string;
+  linkedin?: string;
+  job?: string;
   likedProjects: string[];
-  linkedin: string;
   followers: string[];
+  following: string[];
 };
