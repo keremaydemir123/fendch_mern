@@ -3,9 +3,11 @@ import { UserProps } from './User';
 export type CommentProps = {
   _id: string;
   message: string;
+  avatar: string;
   createdAt: string;
-  user: UserProps;
+  username: string;
   likeCount: number;
-  likedByMe: boolean;
+  likes: string[];
   parentId: string;
+  likedByMe: boolean;
 };

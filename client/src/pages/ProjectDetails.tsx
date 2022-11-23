@@ -13,7 +13,9 @@ function ProjectDetails() {
   } = useQuery(['project', id], () => getProject(id!));
 
   const createComment = async (message: string) => {
-    console.log(message);
+    try {
+      const comment = await createComment(message);
+    } catch (error) {}
   };
 
   if (isLoading) return <p>Loading...</p>;

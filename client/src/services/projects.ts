@@ -44,7 +44,8 @@ export async function likeProject({
   projectId: string;
 }) {
   const response = await axios.patch(
-    `${SERVER_URL}/projects/${projectId}/like`
+    `${SERVER_URL}/projects/${projectId}/toggleLike`,
+    { userId }
   );
   return response.data;
 }

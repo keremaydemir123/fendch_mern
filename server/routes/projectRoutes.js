@@ -13,8 +13,7 @@ router
   .route("/getProjectsByUserId/:userId")
   .get(projectController.getProjectsByUserId);
 
-router.route("/:id/toggleLike")
-  .patch(projectController.likeProject);
+router.route("/:id/toggleLike").patch(projectController.likeProject);
 
 router
   .route("/:id")
@@ -22,11 +21,13 @@ router
   .patch(projectController.updateProject)
   .delete(projectController.deleteProject);
 
-router.route("/:id/comments")
+router
+  .route("/:id/comments")
   .get(projectController.getComments)
   .post(projectController.createComment);
 
-router.route("/:id/comments/:commentId/toggleLike")
-  .post(projectController.likeComment)
+router
+  .route("/:id/comments/:commentId/toggleLike")
+  .post(projectController.likeComment);
 
 module.exports = router;

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { FcSettings } from 'react-icons/fc';
 import { FaLinkedin, FaGithub } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
@@ -12,7 +12,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import Button from '../components/Button';
 import ProjectCard from '../components/ProjectCard';
 import Loading from '../components/Loading';
-import { toggleFollow } from '../services/follows';
+import { followUser, unfollowUser } from '../services/follows';
 
 function Profile() {
   const [pageUser, setPageUser] = useState<UserProps | null>(null);
@@ -53,13 +53,25 @@ function Profile() {
     }
   };
 
-  const followUser = async () => {
+  const onFollowUser = async () => {
     try {
-      await toggleFollow({
+      await followUser({
         followerId: user?._id!,
-        followeeId: pageUser?._id!,
+        username: pageUser?.username!,
       });
       toast.success('Successfully followed user');
+    } catch (error) {
+      toast.error('Something went wrong');
+    }
+  };
+
+  const onUnfollowUser = async () => {
+    try {
+      await unfollowUser({
+        followerId: user?._id!,
+        username: pageUser?.username!,
+      });
+      toast.success('Successfully unfollowed user');
     } catch (error) {
       toast.error('Something went wrong');
     }
@@ -149,9 +161,9 @@ function Profile() {
               {user?.username !== pageUser?.username && (
                 <div className="absolute top-4 right-4">
                   {pageUser?.followers?.includes(user?._id!) ? (
-                    <Button onClick={followUser}>Unfollow</Button>
+                    <Button onClick={onUnfollowUser}>Unfollow</Button>
                   ) : (
-                    <Button onClick={followUser}>Follow</Button>
+                    <Button onClick={onFollowUser}>Follow</Button>
                   )}
                 </div>
               )}

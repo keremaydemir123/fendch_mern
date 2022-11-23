@@ -1,4 +1,5 @@
 import { ChallengeProps } from './Challenge';
+import { CommentProps } from './Comment';
 import { UserProps } from './User';
 
 export type ProjectProps = {
@@ -9,4 +10,5 @@ export type ProjectProps = {
   description: string;
   submittedAt: Date;
   likes: string[];
+  comments: CommentProps[];
 };

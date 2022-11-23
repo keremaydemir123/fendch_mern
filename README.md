@@ -35,8 +35,8 @@ GOALS:
 - Hot Fix: Create like notification and create follow notification[]
 
 #### Server:
+- When a comment deleted, delete all references from project,challange and user
 - Middleware that checks time and changing isSecret and isActive states
-- addNotification and deleteNotification functions that takes a message to add or delete
 - Pagination functionality for challenges and projects
 - web socket
 - firebase real time db notifications

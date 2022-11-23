@@ -2,6 +2,10 @@ const asyncHandler = require("express-async-handler");
 const APIFeatures = require("../utils/apiFeatures");
 
 const Challenge = require("../models/ChallengeModel.js");
+const User = require("../models/UserModel.js");
+const Comment = require("../models/CommentModel.js");
+const Notification = require("../models/NotificationModel.js");
+const sendNotification = require("../helpers/notifications");
 
 // Active Challenges
 // @route GET /api/active/
@@ -41,7 +45,7 @@ exports.getOldChallenges = asyncHandler(async (req, res) => {
 // @access public
 exports.getChallenge = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const challenge = await Challenge.findById(id);
+  const challenge = await Challenge.findById(id).populate("comments");
 
   res.status(200).json(challenge);
 });
@@ -125,4 +129,169 @@ exports.updateChallenge = asyncHandler(async (req, res) => {
     throw new Error("Challenge not found");
   }
   res.status(200).json(updatedChallenge);
+});
+
+exports.getComments = asyncHandler(async (req, res) => {
+  const { comments } = await Challenge.findById(req.params.id)
+    .sort({ createdAt: -1 })
+    .populate("comments")
+    .select("comments");
+
+  res.status(200).json(comments);
+});
+
+exports.getCommentsByUserId = asyncHandler(async (req, res) => {
+  const comments = await User.find();
+
+  res.status(200).json(comments);
+});
+
+exports.createComment = asyncHandler(async (req, res, next) => {
+  console.log(req);
+  const challenge = await Challenge.findById(req.params.id);
+  const user = await User.findById(req.body.userId);
+
+  if (!req.body.message) {
+    res.status(400).json("Please provide a message");
+    throw new Error("Please provide a message");
+  }
+
+  if (!challenge) {
+    res.status(400).json("Challenge not found");
+    throw new Error("Challenge not found");
+  }
+
+  const comment = await Comment.create({
+    username: user.username,
+    message: req.body.message,
+    parentId: req.body.parentId,
+    avatar: user.avatar,
+  });
+
+  user.comments.push(comment._id);
+  await user.save();
+  challenge.comments.push(comment._id);
+  await challenge.save();
+
+  if (req.originalUrl.endsWith("reply")) {
+    let parentComment = await Comment.findById(req.body.parentId);
+    if (parentComment.username !== user.username) {
+      await sendNotification({
+        sender: user._id,
+        receiver: parentComment.username,
+        message: `${user.username} has replied to your comment`,
+      });
+    }
+  }
+
+  res.status(200).json(comment);
+});
+
+exports.updateComment = asyncHandler(async (req, res) => {
+  const comment = await Comment.findById(req.params.commentId);
+
+  if (!comment) {
+    res.status(400).json("Comment not found");
+    throw new Error("Comment not found");
+  }
+
+  if (req.body.message) {
+    comment.message = req.body.message;
+  }
+
+  await comment.save();
+
+  res.status(200).json(comment);
+});
+
+exports.deleteComment = asyncHandler(async (req, res) => {
+  const comment = await Comment.findById(req.params.commentId);
+  const childrenComments = await Comment.find({ parentId: comment._id });
+
+  const user = await User.findOne({ username: comment.username });
+
+  if (!comment) {
+    res.status(400).json("Comment not found");
+    throw new Error("Comment not found");
+  }
+
+  user.comments.pull(comment._id);
+
+  await comment.remove();
+  // remove all children comments
+  childrenComments.forEach(async (comment) => {
+    await comment.remove();
+    user.comments.pull(comment._id);
+  });
+
+  await user.save();
+
+  res.status(200).json(comment);
+});
+
+exports.likeComment = asyncHandler(async (req, res) => {
+  const comment = await Comment.findById(req.params.commentId);
+  const challenge = await Challenge.findById(req.params.id);
+
+  if (!comment) {
+    res.status(404).send(`No comment with id: ${comment._id}`);
+    throw new Error("Comment not found");
+  }
+  if (!challenge) {
+    res.status(400).json("Challenge not found");
+    throw new Error("Challenge not found");
+  }
+
+  const userLiked = await User.findOne({
+    _id: req.body.userId,
+  });
+
+  if (comment.likes.includes(userLiked._id)) {
+    comment.likes.remove(userLiked._id);
+  } else {
+    comment.likes.push(userLiked._id);
+    if (comment.username !== userLiked.username) {
+      await sendNotification({
+        sender: userLiked.username,
+        receiver: comment.username,
+        message: `${userLiked.username} liked your comment`,
+        comment: comment._id,
+      });
+    }
+  }
+  await comment.save();
+
+  res.status(200).json(comment);
+});
+
+exports.dislikeComment = asyncHandler(async (req, res) => {
+  const comment = await Comment.findById(req.params.commentId);
+  const challenge = await Challenge.findById(req.params.id);
+
+  if (!comment) {
+    res.status(404).send(`No comment with id: ${comment._id}`);
+    throw new Error("Comment not found");
+  }
+  if (!challenge) {
+    res.status(400).json("Challenge not found");
+    throw new Error("Challenge not found");
+  }
+
+  const userDisliked = await User.findOne({
+    _id: req.body.userId,
+  });
+
+  if (comment.dislikes.includes(userDisliked._id)) {
+    comment.dislikes.remove(userDisliked._id);
+  } else {
+    comment.dislikes.push(userDisliked._id);
+    await Notification.create({
+      message: `${userDisliked.username} has disliked your "${comment.message}" comment`,
+      sender: userDisliked.username,
+      receiver: comment.username,
+    });
+  }
+  await comment.save();
+
+  res.status(200).json(comment);
 });

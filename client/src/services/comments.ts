@@ -35,7 +35,7 @@ export async function updateComment({
   message: string;
   id: string;
 }) {
-  const response = await axios.post(
+  const response = await axios.patch(
     `${SERVER_URL}/challenges/${challengeId}/comments/${id}`,
     { message }
   );
@@ -55,15 +55,52 @@ export async function deleteComment({
   return response.data;
 }
 
-export async function toggleCommentLike({
+export async function likeComment({
   id,
   challengeId,
+  userId,
 }: {
   id: string;
   challengeId: string;
+  userId: string;
 }) {
   const response = await axios.post(
-    `${SERVER_URL}/challenges/${challengeId}/comments/${id}/toggleLike`
+    `${SERVER_URL}/challenges/${challengeId}/comments/${id}/like`,
+    { userId }
+  );
+  return response.data;
+}
+
+export async function dislikeComment({
+  id,
+  challengeId,
+  userId,
+}: {
+  id: string;
+  challengeId: string;
+  userId: string;
+}) {
+  const response = await axios.post(
+    `${SERVER_URL}/challenges/${challengeId}/comments/${id}/like`,
+    { userId }
+  );
+  return response.data;
+}
+
+export async function replyComment({
+  challengeId,
+  message,
+  parentId,
+  userId,
+}: {
+  challengeId: string;
+  message: string;
+  parentId: string;
+  userId: string;
+}) {
+  const response = await axios.post(
+    `${SERVER_URL}/challenges/${challengeId}/comments/${parentId}/reply`,
+    { message, userId, parentId }
   );
   return response.data;
 }

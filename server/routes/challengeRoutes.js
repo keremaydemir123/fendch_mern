@@ -1,15 +1,8 @@
 const express = require("express");
 const challengeController = require("../controller/challengeController.js");
-const commentController = require("../controller/commentController.js");
+const notificationController = require("../controller/notificationController.js");
 
 const router = express.Router();
-
-//! Secret Challenges (upcoming)
-//! Active Challenges
-//! Old Challenges
-
-//! on GET request, push current challenges to all challenges, delete current challenges, filter secret challenges and push to current challenges
-//! get Current Challenges
 
 // Secret challenges
 router.route("/secret").get(challengeController.getSecretChallenges);
@@ -29,11 +22,25 @@ router
   .patch(challengeController.updateChallenge)
   .delete(challengeController.deleteChallenge);
 
-router.route("/:id/comments")
-  .get(commentController.getComments)
-  .post(commentController.createComment)
+router
+  .route("/:id/comments")
+  .get(challengeController.getComments)
+  .post(challengeController.createComment);
 
-router.route("/:id/comments/:commentId/toggleLike")
-  .post(commentController.likeComment)
+router
+  .route("/:id/comments/:commentId")
+  .patch(challengeController.updateComment)
+  .delete(challengeController.deleteComment);
+
+router
+  .route("/:id/comments/:commentId/like")
+  .post(challengeController.likeComment);
+router
+  .route("/:id/comments/:commentId/dislike")
+  .post(challengeController.dislikeComment);
+
+router
+  .route("/:id/comments/:commentId/reply")
+  .post(challengeController.createComment);
 
 module.exports = router;

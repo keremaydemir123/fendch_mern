@@ -16,7 +16,7 @@ function Badge() {
 
   const { error, data: notifications } = useQuery(
     ['notifications', user?._id],
-    () => getNotifications(user?._id!)
+    () => getNotifications(user?.username!)
   );
 
   const mutation = useMutation(

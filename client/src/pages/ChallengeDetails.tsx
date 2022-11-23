@@ -11,21 +11,15 @@ import Textarea from '../components/Textarea';
 import YoutubePlayer from '../components/YoutubePlayer';
 import { useChallenge } from '../contexts/ChallengeProvider';
 import { useUser } from '../contexts/UserProvider';
-import { createComment, getCommentsByChallengeId } from '../services/comments';
+import { createComment } from '../services/comments';
 import { createProject } from '../services/projects';
 
 function ChallengeDetails() {
   const { user } = useUser();
+  const { challenge, createLocalComment, rootComments } = useChallenge();
   const { id: challengeId } = useParams<{ id: string }>();
 
   const [open, setOpen] = useState(false);
-  const { challenge } = useChallenge();
-  console.log(challenge);
-
-  const { isLoading, data: comments } = useQuery(
-    ['getComments', challengeId],
-    () => getCommentsByChallengeId(challengeId!)
-  );
 
   const gitRef = useRef<HTMLInputElement | null>(null);
   const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
@@ -60,12 +54,13 @@ function ChallengeDetails() {
 
   const onCommentCreate = async (message: string) => {
     try {
-      await createComment({
+      const comment = await createComment({
         challengeId: challengeId!,
         message,
         userId: user?._id!,
       });
       toast.success('Comment created successfully');
+      return createLocalComment(comment);
     } catch (error: any) {
       toast.error(error.response.data);
     }
@@ -78,9 +73,9 @@ function ChallengeDetails() {
         <div className="w-full rounded-lg bg-primary p-8">
           <h1 className="text-center">{challenge?.tech}</h1>
           <h3 className="text-center">{challenge?.objective}</h3>
-          <div className="p-8">
+          {/* <div className="p-8">
             <YoutubePlayer embedId="E1E08i2UJGI" />
-          </div>
+          </div> */}
           <div className="text-right px-8">
             <Button onClick={() => setOpen(true)}>Submit</Button>
           </div>
@@ -94,9 +89,12 @@ function ChallengeDetails() {
         </div>
       </div>
       <h1>Comments</h1>
-      <div>{isLoading && <p>Loading...</p>}</div>
       <CommentForm onSubmit={onCommentCreate} />
-      <div>{comments?.length > 0 && <CommentList comments={comments} />}</div>
+      <div>
+        {rootComments != null && rootComments.length > 0 && (
+          <CommentList comments={rootComments} />
+        )}
+      </div>
     </div>
   );
 }

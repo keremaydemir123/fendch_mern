@@ -7,7 +7,9 @@ import CommentForm from './CommentForm';
 import {
   createComment,
   deleteComment,
-  toggleCommentLike,
+  dislikeComment,
+  likeComment,
+  replyComment,
   updateComment,
 } from '../services/comments';
 import { CommentProps } from '../types/Comment';
@@ -21,10 +23,10 @@ const dateFormatter = new Intl.DateTimeFormat(undefined, {
 function Comment({
   _id,
   message,
-  user,
+  username,
+  avatar,
   createdAt,
-  likeCount,
-  likedByMe,
+  likes,
 }: CommentProps) {
   const [areChildrenHidden, setAreChildrenHidden] = useState(false);
 
@@ -34,7 +36,8 @@ function Comment({
     createLocalComment,
     updateLocalComment,
     deleteLocalComment,
-    toggleLocalCommentLike,
+    likeLocalComment,
+    dislikeLocalComment,
   } = useChallenge();
 
   const { user: currentUser } = useUser();
@@ -42,8 +45,10 @@ function Comment({
   const [isReplying, setIsReplying] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
+  const likedByMe: boolean = likes.includes(currentUser?._id!);
+
   async function onCommentReply(message: string) {
-    const comment = await createComment({
+    const comment = await replyComment({
       challengeId: challenge?._id!,
       message,
       parentId: _id,
@@ -67,23 +72,36 @@ function Comment({
       challengeId: challenge?._id!,
       id: _id,
     });
-    deleteLocalComment(comment.id);
+    deleteLocalComment(comment._id);
   }
 
-  async function onToggleCommentLike() {
-    const like = await toggleCommentLike({
+  async function onCommentLike() {
+    await likeComment({
       id: _id,
       challengeId: challenge?._id!,
+      userId: currentUser?._id!,
     });
-    toggleLocalCommentLike(_id, like);
+    likeLocalComment(_id);
+  }
+
+  async function onCommentDislike() {
+    await dislikeComment({
+      id: _id,
+      challengeId: challenge?._id!,
+      userId: currentUser?._id!,
+    });
+    dislikeLocalComment(_id);
   }
 
   return (
     <>
-      <div className="w-full flex flex-col bg-slate-50 rounded-md px-2 mt-4">
-        <div className="flex justify-between items-center  py-1">
-          <span className="font-medium">{user?.username}</span>
-          <span className="font-light italic text-gray-500 text-sm">
+      <div className="w-full flex flex-col bg-primary rounded-md mt-4 overflow-hidden">
+        <div className="flex justify-between items-center p-2 bg-secondary">
+          <span className="font-medium flex gap-2">
+            <img src={avatar} alt="avatar" className="rounded-full h-6 w-6" />
+            {username}
+          </span>
+          <span className="font-light italic text-light text-sm">
             {dateFormatter.format(Date.parse(createdAt))}
           </span>
         </div>
@@ -96,17 +114,17 @@ function Comment({
               initialValue={message}
             />
           ) : (
-            <div className="font-light break-words">{message}</div>
+            <div className="font-light break-words p-2">{message}</div>
           )}
         </div>
 
-        <div className="flex items-center justify-between  border-t-[1px]">
+        <div className="flex items-center justify-between px-2">
           <IconButton
             Icon={likedByMe ? FaHeart : FaRegHeart}
             aria-label={likedByMe ? 'Unlike' : 'Like'}
-            onClick={onToggleCommentLike}
+            onClick={likedByMe ? onCommentDislike : onCommentLike}
           >
-            {likeCount}
+            {likes.length}
           </IconButton>
           <IconButton
             Icon={FaReply}
@@ -114,24 +132,23 @@ function Comment({
             onClick={() => setIsReplying((prev) => !prev)}
             isActive={isReplying}
           />
-          <div>
-            {user?.username === currentUser?.username && (
-              <>
-                <IconButton
-                  Icon={FaEdit}
-                  aria-label={isEditing ? 'Cancel Edit' : 'Edit'}
-                  onClick={() => setIsEditing((prev) => !prev)}
-                  isActive={isEditing}
-                />
-                <IconButton
-                  Icon={FaTrash}
-                  aria-label="Delete"
-                  color="text-red-500"
-                  onClick={() => onCommentDelete()}
-                />
-              </>
-            )}
-          </div>
+
+          {username === currentUser?.username && (
+            <>
+              <IconButton
+                Icon={FaEdit}
+                aria-label={isEditing ? 'Cancel Edit' : 'Edit'}
+                onClick={() => setIsEditing((prev) => !prev)}
+                isActive={isEditing}
+              />
+              <IconButton
+                Icon={FaTrash}
+                aria-label="Delete"
+                color="text-red-500"
+                onClick={() => onCommentDelete()}
+              />
+            </>
+          )}
         </div>
       </div>
 
