@@ -1,7 +1,9 @@
 const Project = require("../models/ProjectModel");
 const Challenge = require("../models/ChallengeModel");
-const asyncHandler = require("express-async-handler");
 const User = require("../models/UserModel");
+const Comment = require("../models/CommentModel");
+
+const asyncHandler = require("express-async-handler");
 
 exports.getAllProjects = asyncHandler(async (req, res) => {
   //! returns 3 documents
@@ -116,6 +118,10 @@ exports.getProjectById = asyncHandler(async (req, res) => {
   }
 });
 
+exports.deleteProject = asyncHandler(async (req, res) => {
+
+})
+
 exports.likeProject = asyncHandler(async (req, res) => {
   const project = await Project.findById(req.params.id);
 
@@ -138,3 +144,43 @@ exports.likeProject = asyncHandler(async (req, res) => {
 
   res.status(200).json(project.likes);
 });
+
+exports.getComments = asyncHandler(async (req, res) => {
+  const { comments } = await Project.findById(req.params.id)
+    .populate("comments")
+    .select("comments");
+
+  res.status(200).json(comments);
+})
+
+exports.createComment = asyncHandler(async (req, res) => {
+  const project = await Project.findById(req.params.id);
+  const user = await User.findById(req.body.userId);
+
+  if (!req.body.message) {
+    res.status(400).json("Please provide a message");
+    throw new Error("Please provide a message");
+  }
+
+  if (!project) {
+    res.status(400).json("Project not found");
+    throw new Error("Project not found");
+  }
+
+  const comment = await Comment.create({
+    username: user.username,
+    message: req.body.message,
+    parentId: req.body.parentId,
+  });
+
+  user.comments.push(comment._id);
+  await user.save();
+  project.comments.push(comment._id); //just like will be in project
+  await project.save();
+
+  res.status(200).json(comment);
+})
+
+exports.likeComment = asyncHandler(async (req, res) => {
+  
+})
