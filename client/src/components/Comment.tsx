@@ -26,7 +26,8 @@ function Comment({
   username,
   avatar,
   createdAt,
-  likes,
+  likeCount,
+  likedByMe,
 }: CommentProps) {
   const [areChildrenHidden, setAreChildrenHidden] = useState(false);
 
@@ -44,8 +45,6 @@ function Comment({
   const childComments = getReplies(_id);
   const [isReplying, setIsReplying] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-
-  const likedByMe: boolean = likes.includes(currentUser?._id!);
 
   async function onCommentReply(message: string) {
     const comment = await replyComment({
@@ -124,7 +123,7 @@ function Comment({
             aria-label={likedByMe ? 'Unlike' : 'Like'}
             onClick={likedByMe ? onCommentDislike : onCommentLike}
           >
-            {likes.length}
+            {likeCount}
           </IconButton>
           <IconButton
             Icon={FaReply}

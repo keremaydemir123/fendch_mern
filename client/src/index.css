@@ -34,8 +34,7 @@ a:hover {
 
 .wrapper {
   max-width: 900px;
-  min-height: calc(100vh - 4rem);
-
+  min-height: calc(100vh - 8rem);
   margin: 0 auto;
   padding: 1rem 1rem;
   background: #131313;

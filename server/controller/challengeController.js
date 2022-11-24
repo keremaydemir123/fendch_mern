@@ -246,9 +246,7 @@ exports.likeComment = asyncHandler(async (req, res) => {
     _id: req.body.userId,
   });
 
-  if (comment.likes.includes(userLiked._id)) {
-    comment.likes.remove(userLiked._id);
-  } else {
+  if (!comment.likes.includes(userLiked._id)) {
     comment.likes.push(userLiked._id);
     if (comment.username !== userLiked.username) {
       await sendNotification({
@@ -281,15 +279,8 @@ exports.dislikeComment = asyncHandler(async (req, res) => {
     _id: req.body.userId,
   });
 
-  if (comment.dislikes.includes(userDisliked._id)) {
-    comment.dislikes.remove(userDisliked._id);
-  } else {
-    comment.dislikes.push(userDisliked._id);
-    await Notification.create({
-      message: `${userDisliked.username} has disliked your "${comment.message}" comment`,
-      sender: userDisliked.username,
-      receiver: comment.username,
-    });
+  if (comment.likes.includes(userDisliked._id)) {
+    comment.likes.remove(userDisliked._id);
   }
   await comment.save();
 
