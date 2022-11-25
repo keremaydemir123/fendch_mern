@@ -3,9 +3,16 @@ import { useUser } from '../contexts/UserProvider';
 import { useQuery } from 'react-query';
 import { getActiveChallenges } from '../services/challenges';
 import Loading from '../components/Loading';
+import { getUser } from '../services/auth';
 
 function Home() {
-  const { user } = useUser();
+  const { user, setUser } = useUser();
+
+  const { data } = useQuery('getUser', getUser, {
+    onSuccess: (data) => {
+      setUser(data);
+    },
+  });
 
   const {
     isLoading,

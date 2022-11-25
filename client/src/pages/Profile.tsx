@@ -48,6 +48,11 @@ function Profile() {
       });
       toast.success('Profile updated successfully');
       setOpen(false);
+      setPageUser({
+        ...pageUser!,
+        bio,
+        linkedin,
+      });
     } catch (error) {
       toast.error('Something went wrong');
     }

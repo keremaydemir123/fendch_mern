@@ -110,7 +110,7 @@ exports.createProject = asyncHandler(async (req, res) => {
 });
 
 exports.getProjectById = asyncHandler(async (req, res) => {
-  const project = await Project.findById(req.params.id);
+  const project = await Project.findById(req.params.id).populate("comments");
 
   if (project) {
     res.status(200).json(project);
@@ -145,10 +145,9 @@ exports.likeProject = asyncHandler(async (req, res) => {
     _id: req.body.userId,
   });
 
-  if (project.likes.includes(userLiked._id)) {
-    project.likes.remove(userLiked._id);
-  } else {
+  if (!project.likes.includes(userLiked._id)) {
     project.likes.push(userLiked._id);
+    project.likeCount += 1;
     if (projectUser.username != userLiked.username) {
       await sendNotification({
         sender: userLiked.username,
@@ -156,6 +155,28 @@ exports.likeProject = asyncHandler(async (req, res) => {
         message: `${userLiked.username} liked your project`,
       });
     }
+  }
+
+  await project.save();
+
+  res.status(200).json(project.likes);
+});
+
+exports.dislikeProject = asyncHandler(async (req, res) => {
+  const project = await Project.findById(req.params.id);
+
+  if (!project) {
+    res.status(404).send(`No project with id: ${project._id}`);
+    throw new Error("Project not found");
+  }
+
+  const userDisliked = await User.findOne({
+    _id: req.body.userId,
+  });
+
+  if (project.likes.includes(userDisliked._id)) {
+    project.likes.remove(userDisliked._id);
+    project.likeCount -= 1;
   }
   await project.save();
 
@@ -283,5 +304,7 @@ exports.likeComment = asyncHandler(async (req, res) => {
   }
   await comment.save();
 
-  res.status(200).json(notification);
+  res.status(200).json(comment);
 });
+
+exports.dislikeComment = asyncHandler(async (req, res) => {});

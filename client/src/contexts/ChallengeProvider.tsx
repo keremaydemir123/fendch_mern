@@ -22,14 +22,13 @@ export function useChallenge() {
 
 export function ChallengeProvider({ children }: { children: React.ReactNode }) {
   const { id } = useParams();
+  const [comments, setComments] = useState<CommentProps[]>([]);
 
   const {
     isLoading,
     error,
     data: challenge,
   } = useQuery<ChallengeProps>(['getChallenge', id], () => getChallenge(id!));
-
-  const [comments, setComments] = useState<CommentProps[]>([]);
 
   useEffect(() => {
     if (challenge?.comments == null) return;
@@ -42,7 +41,6 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
 
   const commentsByParentId = useMemo((): groupProps => {
     const groups: groupProps = {};
-    console.log('comments: ', comments);
 
     comments?.forEach((comment) => {
       if (comment.parentId) {

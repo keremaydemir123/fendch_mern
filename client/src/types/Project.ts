@@ -10,5 +10,7 @@ export type ProjectProps = {
   description: string;
   submittedAt: Date;
   likes: string[];
+  likeCount: number;
+  likedByMe: boolean;
   comments: CommentProps[];
 };

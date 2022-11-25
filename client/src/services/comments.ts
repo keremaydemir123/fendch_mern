@@ -8,6 +8,13 @@ export async function getCommentsByChallengeId(challengeId: string) {
   return response.data;
 }
 
+export async function getCommentsByProjectId(projectId: string) {
+  const response = await axios.get(
+    `${SERVER_URL}/projects/${projectId}/comments`
+  );
+  return response.data;
+}
+
 export async function createComment({
   challengeId,
   message,
@@ -100,6 +107,104 @@ export async function replyComment({
 }) {
   const response = await axios.post(
     `${SERVER_URL}/challenges/${challengeId}/comments/${parentId}/reply`,
+    { message, userId, parentId }
+  );
+  return response.data;
+}
+
+// comments for projects
+export async function createProjectComment({
+  projectId,
+  message,
+  parentId = 'null',
+  userId,
+}: {
+  projectId: string;
+  message: string;
+  parentId?: string;
+  userId: string;
+}) {
+  const response = await axios.post(
+    `${SERVER_URL}/projects/${projectId}/comments`,
+    { message, parentId, userId }
+  );
+  return response.data;
+}
+
+export async function updateProjectComment({
+  projectId,
+  message,
+  id,
+}: {
+  projectId: string;
+  message: string;
+  id: string;
+}) {
+  const response = await axios.patch(
+    `${SERVER_URL}/projects/${projectId}/comments/${id}`,
+    { message }
+  );
+  return response.data;
+}
+
+export async function deleteProjectComment({
+  projectId,
+  id,
+}: {
+  projectId: string;
+  id: string;
+}) {
+  const response = await axios.delete(
+    `${SERVER_URL}/projects/${projectId}/comments/${id}`
+  );
+  return response.data;
+}
+
+export async function likeProjectComment({
+  id,
+  projectId,
+  userId,
+}: {
+  id: string;
+  projectId: string;
+  userId: string;
+}) {
+  const response = await axios.post(
+    `${SERVER_URL}/projects/${projectId}/comments/${id}/like`,
+    { userId }
+  );
+  return response.data;
+}
+
+export async function dislikeProjectComment({
+  id,
+  projectId,
+  userId,
+}: {
+  id: string;
+  projectId: string;
+  userId: string;
+}) {
+  const response = await axios.post(
+    `${SERVER_URL}/projects/${projectId}/comments/${id}/like`,
+    { userId }
+  );
+  return response.data;
+}
+
+export async function replyProjectComment({
+  projectId,
+  message,
+  parentId,
+  userId,
+}: {
+  projectId: string;
+  message: string;
+  parentId: string;
+  userId: string;
+}) {
+  const response = await axios.post(
+    `${SERVER_URL}/projects/${projectId}/comments/${parentId}/reply`,
     { message, userId, parentId }
   );
   return response.data;

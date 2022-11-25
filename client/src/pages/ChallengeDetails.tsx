@@ -1,6 +1,5 @@
 import { useRef, useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import Button from '../components/Button';
 import CommentForm from '../components/CommentForm';
@@ -47,6 +46,7 @@ function ChallengeDetails() {
     try {
       await createProject({ challengeId, description, git, userId: user._id });
       toast.success('Project submitted successfully');
+      setOpen(false);
     } catch (error: any) {
       toast.error(error.response.data);
     }
@@ -59,7 +59,6 @@ function ChallengeDetails() {
         message,
         userId: user?._id!,
       });
-      toast.success('Comment created successfully');
       return createLocalComment(comment);
     } catch (error: any) {
       toast.error(error.response.data);
@@ -92,7 +91,7 @@ function ChallengeDetails() {
       <CommentForm onSubmit={onCommentCreate} />
       <div>
         {rootComments != null && rootComments.length > 0 && (
-          <CommentList comments={rootComments} />
+          <CommentList comments={rootComments} place="challenge" />
         )}
       </div>
     </div>

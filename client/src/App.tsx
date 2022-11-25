@@ -1,5 +1,4 @@
 import { Routes, Route } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import ChallengeDetails from './pages/ChallengeDetails';
@@ -24,34 +23,6 @@ import AdminGetSuggestions from './pages/Admin/AdminGetSuggestions';
 
 function App() {
   const { user, setUser } = useUser();
-  const [session] = useState(
-    document.cookie.split(';').find((c) => c == 'session')
-  );
-
-  useEffect(() => {
-    const getUser = () => {
-      fetch('http://localhost:4000/auth/login/success', {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Credentials': true,
-        },
-      })
-        .then((response) => {
-          if (response.status === 200) return response.json();
-          throw new Error('authentication has been failed!');
-        })
-        .then((user) => {
-          setUser(user);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    };
-    getUser();
-  }, [session]);
 
   return (
     <div className="App bg-dark text-light min-h-screen">
