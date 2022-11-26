@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import Button from './Button';
 import CustomLink from './CustomLink';
-import { User } from '../contexts/UserProvider';
 import Badge from './Badge';
+import { UserProps } from '../types';
 
-function Navbar({ user }: { user: User }) {
+function Navbar({ user }: { user: UserProps | null }) {
   const loginWithGithub = () => {
     window.open('http://localhost:4000/auth/github', '_self');
   };

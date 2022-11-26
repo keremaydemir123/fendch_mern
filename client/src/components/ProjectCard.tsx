@@ -5,9 +5,11 @@ import dateFormatter from '../utils/dateFormatter';
 import Button from './Button';
 import CustomLink from './CustomLink';
 import Modal from './Modal';
-import { likeProject } from '../services/projects';
+import { dislikeProject, likeProject } from '../services/projects';
 import { useUser } from '../contexts/UserProvider';
 import toast, { Toaster } from 'react-hot-toast';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { useProject } from '../contexts/ProjectProvider';
 
 function ProjectCard({ project }: { project: ProjectProps }) {
   const { user } = useUser();
@@ -19,14 +21,6 @@ function ProjectCard({ project }: { project: ProjectProps }) {
 
   const projectUser = project.user;
   const challenge = project.challenge;
-
-  const like = async () => {
-    if (!user) {
-      toast.error('You must be logged in to like a project');
-      return;
-    }
-    await likeProject({ projectId: project._id!, userId: user._id! });
-  };
 
   return (
     <div className="flex flex-col rounded-xl bg-gray overflow-hidden w-full h-max shadow-lg shadow-secondary">
@@ -56,15 +50,11 @@ function ProjectCard({ project }: { project: ProjectProps }) {
           <span>Github Repo</span>
         </a>
         <div className="h-max">
-          <p>Current Likes: {project.likes?.length}</p>
           <CustomLink to={`/projects/${project._id}`}>
             Project Details
           </CustomLink>
           <Button onClick={seePreview} type="button">
             Preview
-          </Button>
-          <Button onClick={like} type="button">
-            Like
           </Button>
         </div>
       </div>

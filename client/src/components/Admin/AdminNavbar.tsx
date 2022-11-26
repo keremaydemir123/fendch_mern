@@ -8,6 +8,7 @@ function AdminNavbar() {
       <CustomLink to="challenges/secret">Secret Challenges</CustomLink>
       <CustomLink to="challenges/old">Old Challenges</CustomLink>
       <CustomLink to="challenges/active">Active Challenges</CustomLink>
+      <CustomLink to="suggestions">Suggestions</CustomLink>
     </nav>
   );
 }

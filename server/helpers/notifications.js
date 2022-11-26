@@ -1,11 +1,21 @@
-// function sendNotification(userId, message) {}
+const Notification = require("../models/NotificationModel.js");
 
-const sendNotification = async (userId, message) => {
-  const notification = await Notification.create({
-    message: `${userId.username} ${message}`,
-    sender: user.username,
-    receiver: req.body.receiverUsername,
+const sendNotification = async ({
+  sender,
+  receiver,
+  message,
+  project,
+  comment,
+  challenge,
+}) => {
+  await Notification.create({
+    message,
+    sender,
+    receiver,
+    project,
+    comment,
+    challenge,
   });
 };
 
-("/users/:userId/getnotifications/");
+module.exports = sendNotification;
