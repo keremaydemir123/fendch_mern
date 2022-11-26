@@ -4,6 +4,7 @@ const userSchema = mongoose.Schema(
   {
     githubId: { type: String, required: true, unique: true },
     username: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
     avatar: { type: String, required: true },
     profileUrl: { type: String, required: true },
     bio: { type: String, default: "" },
@@ -19,7 +20,7 @@ const userSchema = mongoose.Schema(
     joinedAt: { type: Date, default: Date.now },
     projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project", default: [] }],
     comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment", default: [] }],
-
+    repos: [String],
     notifications: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Notification" },
     ],

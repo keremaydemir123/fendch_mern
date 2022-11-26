@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const asyncHandler = require("express-async-handler");
 const userController = require("../controller/userController");
 const notificationController = require("../controller/notificationController");
 
