@@ -4,6 +4,7 @@ import Button from '../components/Button';
 import Loading from '../components/Loading';
 import Pagination from '../components/Pagination';
 import ProjectCard from '../components/ProjectCard';
+import ProjectList from '../components/ProjectList';
 import { Select, SelectOption } from '../components/Select';
 import { getProjects } from '../services/projects';
 import { ProjectProps } from '../types/Project';
@@ -52,7 +53,6 @@ function Projects() {
   if (error) return <p>Error</p>;
 
   const projects = data.projects;
-  const totalProjects = data.totalProjects;
 
   return (
     <div className="wrapper">
@@ -66,17 +66,17 @@ function Projects() {
           />
           <Button onClick={search}>Search</Button>
         </div>
-        <div className="w-full h-full flex flex-wrap justify-between gap-4 items-center">
-          {projects.map((project: ProjectProps) => (
-            <ProjectCard key={project._id} project={project} />
-          ))}
-        </div>
-        <Pagination
-          page={page}
-          setPage={setPage}
-          limit={data.limit}
-          total={totalProjects}
-        />
+
+        <ProjectList projects={projects} />
+
+        {data.totalPages > data.limit && (
+          <Pagination
+            page={page}
+            setPage={setPage}
+            limit={data.limit}
+            total={data.totalProjects}
+          />
+        )}
       </div>
     </div>
   );

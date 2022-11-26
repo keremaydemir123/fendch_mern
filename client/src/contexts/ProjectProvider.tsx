@@ -1,14 +1,21 @@
 import { createContext, useContext, useMemo, useState, useEffect } from 'react';
-import { getChallenge } from '../services/challenges';
 import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import Loading from '../components/Loading';
-import { ChallengeProps, CommentProps } from '../types';
+import { CommentProps, ProjectProps } from '../types';
+import { getProject } from '../services/projects';
+import { useUser } from './UserProvider';
+
+type groupProps = {
+  [key: string]: CommentProps[];
+};
 
 const Context = createContext({
-  challenge: {} as ChallengeProps,
+  project: {} as ProjectProps,
   getReplies: (parentId: string): CommentProps[] => [],
   rootComments: [] as CommentProps[],
+  likeLocalProject: (projectId: string) => {},
+  dislikeLocalProject: (projectId: string) => {},
   createLocalComment: (comment: CommentProps) => {},
   updateLocalComment: (id: string, message: string) => {},
   deleteLocalComment: (id: string) => {},
@@ -16,34 +23,41 @@ const Context = createContext({
   dislikeLocalComment: (id: string) => {},
 });
 
-export function useChallenge() {
+export function useProject() {
   return useContext(Context);
 }
 
-export function ChallengeProvider({ children }: { children: React.ReactNode }) {
+export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const { id } = useParams();
+  const { user } = useUser();
+  const [project, setProject] = useState<ProjectProps>({} as ProjectProps);
   const [comments, setComments] = useState<CommentProps[]>([]);
 
-  const {
-    isLoading,
-    error,
-    data: challenge,
-  } = useQuery<ChallengeProps>(['getChallenge', id], () => getChallenge(id!));
+  const { isLoading, error } = useQuery<ProjectProps>(
+    ['getProject', id],
+    () => getProject(id!),
+    {
+      onSuccess: (data) => {
+        setProject({
+          ...data,
+          likedByMe: data.likes.includes(user?._id!),
+        });
+      },
+    }
+  );
 
   useEffect(() => {
-    if (challenge?.comments == null) return;
-    setComments(challenge.comments);
-  }, [challenge?.comments]);
-
-  type groupProps = {
-    [key: string]: CommentProps[];
-  };
+    if (project?.comments == null) return;
+    setComments(project.comments);
+  }, [project?.comments]);
 
   const commentsByParentId = useMemo((): groupProps => {
     const groups: groupProps = {};
 
     comments?.forEach((comment) => {
       if (comment.parentId) {
+        console.log(comment.parentId);
+
         if (groups[comment.parentId]) {
           groups[comment.parentId].push(comment);
         } else {
@@ -54,6 +68,33 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
 
     return groups;
   }, [comments]);
+
+  function likeLocalProject(id: string) {
+    setProject((prev) => {
+      if (prev._id === id) {
+        return {
+          ...project,
+          likeCount: project.likeCount + 1,
+          likedByMe: true,
+        };
+      } else {
+        return project;
+      }
+    });
+  }
+  function dislikeLocalProject(id: string) {
+    setProject((prev) => {
+      if (prev._id === id) {
+        return {
+          ...project,
+          likeCount: project.likeCount - 1,
+          likedByMe: false,
+        };
+      } else {
+        return project;
+      }
+    });
+  }
 
   function createLocalComment(comment: CommentProps) {
     setComments((prevComments) => [comment, ...prevComments]);
@@ -116,9 +157,11 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
   return (
     <Context.Provider
       value={{
-        challenge: { ...challenge! },
+        project: { ...project! },
         getReplies,
         rootComments: commentsByParentId['null'],
+        likeLocalProject,
+        dislikeLocalProject,
         createLocalComment,
         updateLocalComment,
         deleteLocalComment,

@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const asyncHandler = require("express-async-handler");
 const userController = require("../controller/userController");
 const notificationController = require("../controller/notificationController");
 
@@ -14,19 +13,15 @@ router.route("/:id").get(userController.getUserById);
 
 //Notification
 
-router.route("/:userId/notifications")
-  .get(notificationController.getNotifications)
+router
+  .route("/:username/notifications")
+  .get(notificationController.getNotifications);
+
+router.route("/:username/follow").post(userController.followUser);
+router.route("/:username/unfollow").post(userController.unfollowUser);
 
 router
-  .route("/:userId/notifications/userFollowed")
-  .post(notificationController.createFollowNotification);
-
-router
-  .route("/:userId/notifications/projectLiked")
-  .post(notificationController.createLikeNotification);
-  
-router
-  .route("/:userId/notifications/:notificationId")
+  .route("/:userId/notifications/:id")
   .delete(notificationController.deleteNotification);
 
 module.exports = router;

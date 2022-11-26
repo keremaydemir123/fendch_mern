@@ -1,6 +1,8 @@
 const asyncHandler = require("express-async-handler");
 
 const User = require("../models/UserModel.js");
+const sendMail = require("../mail/mailSender.js");
+
 
 exports.getUsers = asyncHandler(async (req, res) => {
   const users = await User.find();
@@ -22,6 +24,8 @@ exports.getUserByUsername = asyncHandler(async (req, res) => {
       ],
     })
     .select("-notifications -_id -__v");
+
+    sendMail() // ---------------------
 
   if (user) {
     res.status(200).json(user);
@@ -60,18 +64,45 @@ exports.getUserById = asyncHandler(async (req, res) => {
 });
 
 exports.followUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
+  const followedUser = await User.findOne({ username: req.params.username });
+  const followingUser = await User.findById(req.body.followerId);
 
-  if (user) {
-    if (user.followers.includes(req.body.followerId)) {
+  if (followedUser) {
+    if (followedUser.followers.includes(req.body.followerId)) {
       res.status(400);
       throw new Error("You already follow this user");
     }
 
-    user.followers.push(req.body.followerId);
-    await user.save();
+    followedUser.followers.push(req.body.followerId);
+    await followedUser.save();
+
+    followingUser.following.push(followedUser._id);
+    await followingUser.save();
 
     res.status(200).json({ message: "User followed" });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
+});
+
+exports.unfollowUser = asyncHandler(async (req, res) => {
+  const followedUser = await User.findOne({ username: req.params.username });
+  const followingUser = await User.findById(req.body.followerId);
+
+  if (followedUser) {
+    if (!followedUser.followers.includes(req.body.followerId)) {
+      res.status(400);
+      throw new Error("You don't follow this user");
+    }
+
+    followedUser.followers.pull(req.body.followerId);
+    await followedUser.save();
+
+    followingUser.following.pull(followedUser._id);
+    await followingUser.save();
+
+    res.status(200).json({ message: "User unfollowed" });
   } else {
     res.status(404);
     throw new Error("User not found");

@@ -6,7 +6,7 @@ const User = require("../models/UserModel.js");
 
 const CLIENT_URL = process.env.CLIENT_URL;
 
-router.get("/github", passport.authenticate("github", { scope: ["profile"] }));
+router.get("/github", passport.authenticate("github", { scope: ["profile", "user:email"] }));
 
 router.get(
   "/github/callback",
@@ -33,6 +33,7 @@ router.get(
           username: req.user.username,
           avatar: req.user.photos[0].value,
           profileUrl: req.user.profileUrl,
+          email: req.user.emails[0].value,
         });
         res.status(200).json(newUser);
       }

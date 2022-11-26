@@ -44,7 +44,22 @@ export async function likeProject({
   projectId: string;
 }) {
   const response = await axios.patch(
-    `${SERVER_URL}/projects/${projectId}/like`
+    `${SERVER_URL}/projects/${projectId}/like`,
+    { userId }
+  );
+  return response.data;
+}
+
+export async function dislikeProject({
+  userId,
+  projectId,
+}: {
+  userId: string;
+  projectId: string;
+}) {
+  const response = await axios.patch(
+    `${SERVER_URL}/projects/${projectId}/dislike`,
+    { userId }
   );
   return response.data;
 }

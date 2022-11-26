@@ -1,25 +1,25 @@
 import IconButton from './IconButton';
 import { FaEdit, FaHeart, FaRegHeart, FaReply, FaTrash } from 'react-icons/fa';
-import { useChallenge } from '../contexts/ChallengeProvider';
 import CommentList from './CommentList';
 import { useState } from 'react';
 import CommentForm from './CommentForm';
 import {
-  deleteComment,
-  dislikeComment,
-  likeComment,
-  replyComment,
-  updateComment,
+  deleteProjectComment,
+  dislikeProjectComment,
+  likeProjectComment,
+  replyProjectComment,
+  updateProjectComment,
 } from '../services/comments';
 import { CommentProps } from '../types/Comment';
 import { useUser } from '../contexts/UserProvider';
+import { useProject } from '../contexts/ProjectProvider';
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
   dateStyle: 'medium',
   timeStyle: 'short',
 });
 
-function Comment({
+function CommentCardForProject({
   _id,
   message,
   username,
@@ -31,14 +31,14 @@ function Comment({
   const [areChildrenHidden, setAreChildrenHidden] = useState(false);
 
   const {
-    challenge,
+    project,
     getReplies,
     createLocalComment,
     updateLocalComment,
     deleteLocalComment,
     likeLocalComment,
     dislikeLocalComment,
-  } = useChallenge();
+  } = useProject();
 
   const { user: currentUser } = useUser();
   const childComments = getReplies(_id);
@@ -46,8 +46,8 @@ function Comment({
   const [isEditing, setIsEditing] = useState(false);
 
   async function onCommentReply(message: string) {
-    const comment = await replyComment({
-      challengeId: challenge?._id!,
+    const comment = await replyProjectComment({
+      projectId: project?._id!,
       message,
       parentId: _id,
       userId: currentUser?._id!,
@@ -57,35 +57,35 @@ function Comment({
   }
 
   async function onCommentEdit(message: string) {
-    const comment = await updateComment({
-      challengeId: challenge?._id!,
+    await updateProjectComment({
+      projectId: project?._id!,
       message,
       id: _id,
     });
     setIsEditing(false);
-    updateLocalComment(_id, comment.message);
+    updateLocalComment(_id, message);
   }
   async function onCommentDelete() {
-    const comment = await deleteComment({
-      challengeId: challenge?._id!,
+    await deleteProjectComment({
+      projectId: project?._id!,
       id: _id,
     });
-    deleteLocalComment(comment._id);
+    deleteLocalComment(_id);
   }
 
   async function onCommentLike() {
-    await likeComment({
+    await likeProjectComment({
       id: _id,
-      challengeId: challenge?._id!,
+      projectId: project?._id!,
       userId: currentUser?._id!,
     });
     likeLocalComment(_id);
   }
 
   async function onCommentDislike() {
-    await dislikeComment({
+    await dislikeProjectComment({
       id: _id,
-      challengeId: challenge?._id!,
+      projectId: project?._id!,
       userId: currentUser?._id!,
     });
     dislikeLocalComment(_id);
@@ -168,7 +168,7 @@ function Comment({
                 onClick={() => setAreChildrenHidden(true)}
               />
               <div className="pl-2 flex-grow">
-                <CommentList comments={childComments} place="challenge" />
+                <CommentList comments={childComments} place="project" />
               </div>
             </div>
             <button
@@ -184,4 +184,4 @@ function Comment({
   );
 }
 
-export default Comment;
+export default CommentCardForProject;

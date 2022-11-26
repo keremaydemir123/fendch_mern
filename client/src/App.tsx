@@ -1,5 +1,4 @@
 import { Routes, Route } from 'react-router-dom';
-import { useEffect, useState } from 'react';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import ChallengeDetails from './pages/ChallengeDetails';
@@ -18,86 +17,74 @@ import AdminCreateChallenge from './pages/Admin/AdminCreateChallenge';
 import AdminChallengeEdit from './pages/Admin/AdminChallengeEdit';
 import Footer from './components/Footer';
 import { ChallengeProvider } from './contexts/ChallengeProvider';
+import { ProjectProvider } from './contexts/ProjectProvider';
+import AboutUs from './pages/AboutUs';
+import AdminGetSuggestions from './pages/Admin/AdminGetSuggestions';
 
 function App() {
   const { user, setUser } = useUser();
-  const [session] = useState(
-    document.cookie.split(';').find((c) => c == 'session')
-  );
-
-  useEffect(() => {
-    const getUser = () => {
-      fetch('http://localhost:4000/auth/login/success', {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Credentials': true,
-        },
-      })
-        .then((response) => {
-          if (response.status === 200) return response.json();
-          throw new Error('authentication has been failed!');
-        })
-        .then((user) => {
-          setUser(user);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    };
-    getUser();
-  }, [session]);
 
   return (
     <div className="App bg-dark text-light min-h-screen">
       <Navbar user={user} />
-      <Routes>
-        <Route path="/" element={<Home />} />
+      <div className="min-h-[calc(100vh-8rem)]">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<AboutUs />} />
 
-        <Route path="/challenges" element={<Challenges />} />
-        <Route
-          path="/challenges/:id"
-          element={
-            <ChallengeProvider>
-              <ChallengeDetails />
-            </ChallengeProvider>
-          }
-        />
-
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/projects/:id" element={<ProjectDetails />} />
-
-        <Route path="/profile/:username" element={<Profile />} />
-
-        <Route path="/admin" element={<Admin />}>
-          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/challenges" element={<Challenges />} />
           <Route
-            path="/admin/create-challenge"
-            element={<AdminCreateChallenge />}
+            path="/challenges/:id"
+            element={
+              <ChallengeProvider>
+                <ChallengeDetails />
+              </ChallengeProvider>
+            }
           />
-          <Route
-            path="/admin/challenges/secret"
-            element={<AdminSecretChallenges />}
-          />
-          <Route
-            path="/admin/challenges/old"
-            element={<AdminOldChallenges />}
-          />
-          <Route
-            path="/admin/challenges/active"
-            element={<AdminActiveChallenges />}
-          />
-          <Route
-            path="/admin/challenges/secret/:id/edit"
-            element={<AdminChallengeEdit />}
-          />
-        </Route>
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          <Route path="/projects" element={<Projects />} />
+          <Route
+            path="/projects/:id"
+            element={
+              <ProjectProvider>
+                <ProjectDetails />
+              </ProjectProvider>
+            }
+          />
 
+          <Route path="/profile/:username" element={<Profile />} />
+
+          <Route path="/admin" element={<Admin />}>
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route
+              path="/admin/suggestions"
+              element={<AdminGetSuggestions />}
+            />
+            <Route
+              path="/admin/create-challenge"
+              element={<AdminCreateChallenge />}
+            />
+            <Route
+              path="/admin/challenges/secret"
+              element={<AdminSecretChallenges />}
+            />
+            <Route
+              path="/admin/challenges/old"
+              element={<AdminOldChallenges />}
+            />
+            <Route
+              path="/admin/challenges/active"
+              element={<AdminActiveChallenges />}
+            />
+            <Route
+              path="/admin/challenges/secret/:id/edit"
+              element={<AdminChallengeEdit />}
+            />
+          </Route>
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
       <Footer />
     </div>
   );

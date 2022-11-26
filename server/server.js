@@ -40,6 +40,7 @@ app.use("/auth", require("./routes/authRoutes"));
 app.use("/challenges", require("./routes/challengeRoutes"));
 app.use("/projects", require("./routes/projectRoutes"));
 app.use("/users", require("./routes/userRoutes"));
+app.use("/suggestions", require("./routes/suggestionRoutes"));
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {

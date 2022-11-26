@@ -17,9 +17,9 @@ function ChallengeCard({
       <div className={styles.card}>
         <div className={styles.front}>
           <div className={styles.frontHeader}>
-            <p className={styles.frontWeek}>week {challenge.week}</p>
-            <h1 className={styles.frontTech}>{challenge.tech}</h1>
-            <h3 className={styles.frontTask}>{challenge.objective}</h3>
+            <p className={styles.frontWeek}>week {challenge?.week}</p>
+            <h1 className={styles.frontTech}>{challenge?.tech}</h1>
+            <h3 className={styles.frontTask}>{challenge?.objective}</h3>
             {isActive && (
               <h1>
                 On Proggress
@@ -36,9 +36,9 @@ function ChallengeCard({
           </div>
         </div>
         <div className={styles.back}>
-          <h1>{challenge.description}</h1>
-          <CustomCTA href={`${challenge.liveExample}`}>LiveExample</CustomCTA>
-          {challenge._id ? (
+          <h1>{challenge?.description}</h1>
+          <CustomCTA href={`${challenge?.liveExample}`}>Live Example</CustomCTA>
+          {challenge?._id ? (
             <CustomLink to={`/challenges/${challenge._id}`}>
               See Details
             </CustomLink>

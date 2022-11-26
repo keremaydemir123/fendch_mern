@@ -2,9 +2,11 @@ const Project = require("../models/ProjectModel");
 const Challenge = require("../models/ChallengeModel");
 const User = require("../models/UserModel");
 const Comment = require("../models/CommentModel");
+const sendNotification = require("../helpers/notifications.js");
 
 const asyncHandler = require("express-async-handler");
 
+//! error here
 exports.getAllProjects = asyncHandler(async (req, res) => {
   //! returns 3 documents
   req.query.limit = "3";
@@ -108,7 +110,7 @@ exports.createProject = asyncHandler(async (req, res) => {
 });
 
 exports.getProjectById = asyncHandler(async (req, res) => {
-  const project = await Project.findById(req.params.id);
+  const project = await Project.findById(req.params.id).populate("comments");
 
   if (project) {
     res.status(200).json(project);
@@ -119,11 +121,20 @@ exports.getProjectById = asyncHandler(async (req, res) => {
 });
 
 exports.deleteProject = asyncHandler(async (req, res) => {
+  const project = await Project.findById(req.params.id);
 
-})
+  if (project) {
+    await project.remove();
+    res.json({ message: "Project removed" });
+  } else {
+    res.status(404);
+    throw new Error("Project not found");
+  }
+});
 
 exports.likeProject = asyncHandler(async (req, res) => {
   const project = await Project.findById(req.params.id);
+  const projectUser = await User.findById(project.user);
 
   if (!project) {
     res.status(404).send(`No project with id: ${project._id}`);
@@ -134,11 +145,38 @@ exports.likeProject = asyncHandler(async (req, res) => {
     _id: req.body.userId,
   });
 
-
-  if (project.likes.includes(userLiked._id)) {
-    project.likes.remove(userLiked._id)
-  } else {
+  if (!project.likes.includes(userLiked._id)) {
     project.likes.push(userLiked._id);
+    project.likeCount += 1;
+    if (projectUser.username != userLiked.username) {
+      await sendNotification({
+        sender: userLiked.username,
+        receiver: projectUser.username,
+        message: `${userLiked.username} liked your project`,
+      });
+    }
+  }
+
+  await project.save();
+
+  res.status(200).json(project.likes);
+});
+
+exports.dislikeProject = asyncHandler(async (req, res) => {
+  const project = await Project.findById(req.params.id);
+
+  if (!project) {
+    res.status(404).send(`No project with id: ${project._id}`);
+    throw new Error("Project not found");
+  }
+
+  const userDisliked = await User.findOne({
+    _id: req.body.userId,
+  });
+
+  if (project.likes.includes(userDisliked._id)) {
+    project.likes.remove(userDisliked._id);
+    project.likeCount -= 1;
   }
   await project.save();
 
@@ -146,16 +184,23 @@ exports.likeProject = asyncHandler(async (req, res) => {
 });
 
 exports.getComments = asyncHandler(async (req, res) => {
-  const { comments } = await Project.findById(req.params.id)
+  const { comments } = await Challenge.findById(req.params.id)
     .populate("comments")
     .select("comments");
 
   res.status(200).json(comments);
-})
+});
+
+exports.getCommentsByUserId = asyncHandler(async (req, res) => {
+  const comments = await User.find();
+
+  res.status(200).json(comments);
+});
 
 exports.createComment = asyncHandler(async (req, res) => {
   const project = await Project.findById(req.params.id);
   const user = await User.findById(req.body.userId);
+  const projectUser = await User.findById(project.user);
 
   if (!req.body.message) {
     res.status(400).json("Please provide a message");
@@ -171,16 +216,95 @@ exports.createComment = asyncHandler(async (req, res) => {
     username: user.username,
     message: req.body.message,
     parentId: req.body.parentId,
+    avatar: user.avatar,
   });
 
   user.comments.push(comment._id);
   await user.save();
-  project.comments.push(comment._id); //just like will be in project
+  project.comments.push(comment._id);
   await project.save();
 
+  if (comment.username !== projectUser.username) {
+    await sendNotification({
+      message: `${user.username} commented on your project`,
+      sender: user.username,
+      receiver: projectUser.username,
+      project: project._id,
+    });
+  }
+
   res.status(200).json(comment);
-})
+});
+
+exports.updateComment = asyncHandler(async (req, res) => {
+  const comment = await Comment.findById(req.params.commentId);
+
+  if (!comment) {
+    res.status(400).json("Comment not found");
+    throw new Error("Comment not found");
+  }
+
+  if (req.body.message) {
+    comment.message = req.body.message;
+  }
+
+  await comment.save();
+
+  res.status(200).json(comment);
+});
+
+exports.deleteComment = asyncHandler(async (req, res) => {
+  const comment = await Comment.findById(req.params.commentId);
+  const childrenComments = await Comment.find({ parentId: comment._id });
+
+  if (!comment) {
+    res.status(400).json("Comment not found");
+    throw new Error("Comment not found");
+  }
+
+  await comment.remove();
+  // remove all children comments
+  childrenComments.forEach(async (comment) => {
+    await comment.remove();
+  });
+
+  res.status(200).json("Comment deleted");
+});
 
 exports.likeComment = asyncHandler(async (req, res) => {
-  
-})
+  const comment = await Comment.findById(req.params.commentId);
+  const project = await Project.findById(req.params.id);
+
+  if (!comment) {
+    res.status(404).send(`No comment with id: ${comment._id}`);
+    throw new Error("Comment not found");
+  }
+  if (!project) {
+    res.status(400).json("Challenge not found");
+    throw new Error("Challenge not found");
+  }
+
+  const userLiked = await User.findOne({
+    _id: req.body.userId,
+  });
+
+  console.log("project: ", project);
+
+  if (comment.likes.includes(userLiked._id)) {
+    comment.likes.remove(userLiked._id);
+  } else {
+    comment.likes.push(userLiked._id);
+    if (comment.username !== userLiked.username) {
+      await sendNotification({
+        message: `${userLiked.username} has liked your "${comment.message}" comment`,
+        sender: userLiked.username,
+        receiver: comment.username,
+      });
+    }
+  }
+  await comment.save();
+
+  res.status(200).json(comment);
+});
+
+exports.dislikeComment = asyncHandler(async (req, res) => {});
