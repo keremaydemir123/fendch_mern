@@ -1,6 +1,7 @@
 import Comment from './Comment';
 import CommentCardForProject from './CommentCardForProject';
 import { CommentProps } from '../types/Comment';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function CommentList({
   comments,
@@ -10,17 +11,28 @@ function CommentList({
   place: 'project' | 'challenge';
 }) {
   return (
-    <div>
+    <AnimatePresence>
       {comments.map((comment) => (
-        <div key={comment._id} className="comment-stack my-4">
+        <motion.div
+          key={comment._id}
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1, transition: { duration: 0.3 } }}
+          exit={{
+            scale: 0,
+            opacity: 0,
+            transition: { duration: 0.3 },
+            animation: 'easeInOut',
+          }}
+          className="comment-stack my-4"
+        >
           {place === 'project' ? (
             <CommentCardForProject {...comment} />
           ) : (
             <Comment {...comment} />
           )}
-        </div>
+        </motion.div>
       ))}
-    </div>
+    </AnimatePresence>
   );
 }
 

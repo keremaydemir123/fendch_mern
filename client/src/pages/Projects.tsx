@@ -22,7 +22,7 @@ function Projects() {
     selectOptions[0],
   ]);
   const [page, setPage] = useState(1);
-  const [queryString, setQueryString] = useState('');
+  const [queryString, setQueryString] = useState('page=1&tech=All');
 
   const { isLoading, error, data } = useQuery(['projects', queryString], () =>
     getProjects(queryString)
