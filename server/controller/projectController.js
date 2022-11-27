@@ -33,6 +33,8 @@ exports.getAllProjects = asyncHandler(async (req, res) => {
 
   totalProjects = projects.length;
 
+  console.log("projects", projects);
+
   projects = projects.slice(skip, skip + limit);
 
   res.status(200).json({

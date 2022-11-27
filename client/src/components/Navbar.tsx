@@ -18,6 +18,7 @@ function Navbar({ user }: { user: UserProps | null }) {
           </Link>
           <Link to="/challenges">Challenges</Link>
           <Link to="/projects">Projects</Link>
+          <Link to="/solutions">Solutions</Link>
         </div>
         <div className="right flex items-center gap-4">
           {user ? (

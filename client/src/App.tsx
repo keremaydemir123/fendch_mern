@@ -20,6 +20,7 @@ import { ChallengeProvider } from './contexts/ChallengeProvider';
 import { ProjectProvider } from './contexts/ProjectProvider';
 import AboutUs from './pages/AboutUs';
 import AdminGetSuggestions from './pages/Admin/AdminGetSuggestions';
+import Solutions from './pages/Solutions';
 
 function App() {
   const { user, setUser } = useUser();
@@ -41,7 +42,7 @@ function App() {
               </ChallengeProvider>
             }
           />
-
+          <Route path="/solutions" element={<Solutions />} />
           <Route path="/projects" element={<Projects />} />
           <Route
             path="/projects/:id"

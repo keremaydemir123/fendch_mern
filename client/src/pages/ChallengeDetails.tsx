@@ -5,6 +5,7 @@ import Button from '../components/Button';
 import CommentForm from '../components/CommentForm';
 import CommentList from '../components/CommentList';
 import Input from '../components/Input';
+import MarkdownTest from '../components/MarkdownTest';
 import Modal from '../components/Modal';
 import Textarea from '../components/Textarea';
 import YoutubePlayer from '../components/YoutubePlayer';
@@ -59,11 +60,22 @@ function ChallengeDetails() {
         message,
         userId: user?._id!,
       });
-      return createLocalComment(comment);
+      createLocalComment(comment);
     } catch (error: any) {
       toast.error(error.response.data);
     }
   };
+
+  const mdText = `
+  # Heading 1
+  sdasdasda
+  asdasd
+  ## Heading 2
+  asda
+  ~~~js
+  console.log('hello world') 
+  ~~~
+  `;
 
   return (
     <div className="wrapper">
@@ -72,6 +84,7 @@ function ChallengeDetails() {
         <div className="w-full rounded-lg bg-primary p-8">
           <h1 className="text-center">{challenge?.tech}</h1>
           <h3 className="text-center">{challenge?.objective}</h3>
+          <MarkdownTest markdown={mdText} />
           {/* <div className="p-8">
             <YoutubePlayer embedId="E1E08i2UJGI" />
           </div> */}
