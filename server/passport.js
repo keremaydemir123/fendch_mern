@@ -10,6 +10,7 @@ passport.use(
       clientID: GITHUB_CLIENT_ID,
       clientSecret: GITHUB_CLIENT_SECRET,
       callbackURL: "/auth/github/callback",
+      scope: ["user:email"],
     },
     function (accessToken, refreshToken, profile, done) {
       // User.findOrCreate({ githubId: profile.id }, function (err, user) {
