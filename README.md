@@ -45,5 +45,4 @@ GOALS:
 - s3 img
 - https://uploadcare.com/
 
- 
 
