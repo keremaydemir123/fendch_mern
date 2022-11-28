@@ -8,6 +8,7 @@ GOALS:
 
 ## Any bugs?
 1- startDate is not working for Date input
+2- exit animations doesnt work
 
 ## Whats next?
 
