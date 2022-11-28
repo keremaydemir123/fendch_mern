@@ -15,9 +15,9 @@ const projectSchema = mongoose.Schema(
     comments: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Comment", default: [] },
     ],
-    description: {
+    markdown: {
       type: String,
-      required: [true, "Please enter a description"],
+      required: [true, "Please enter a markdown description"],
     },
     tags: [String],
     selectedFile: String,

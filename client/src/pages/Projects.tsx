@@ -22,7 +22,7 @@ function Projects() {
     selectOptions[0],
   ]);
   const [page, setPage] = useState(1);
-  const [queryString, setQueryString] = useState('');
+  const [queryString, setQueryString] = useState('page=1&tech=All');
 
   const { isLoading, error, data } = useQuery(['projects', queryString], () =>
     getProjects(queryString)
@@ -55,29 +55,27 @@ function Projects() {
   const projects = data.projects;
 
   return (
-    <div className="wrapper">
-      <div className="flex flex-col justify-between h-full w-full  gap-4">
-        <div className="flex justify-between w-full bg-secondary p-4 py-2 rounded-md ">
-          <Select
-            multiple={true}
-            options={selectOptions}
-            onChange={(value) => setSelectValue(value)}
-            value={selectValue}
-          />
-          <Button onClick={search}>Search</Button>
-        </div>
-
-        <ProjectList projects={projects} />
-
-        {data.totalPages > data.limit && (
-          <Pagination
-            page={page}
-            setPage={setPage}
-            limit={data.limit}
-            total={data.totalProjects}
-          />
-        )}
+    <div className="flex flex-col justify-between h-full w-full  gap-4">
+      <div className="flex justify-between w-full bg-secondary p-4 py-2 rounded-md ">
+        <Select
+          multiple={true}
+          options={selectOptions}
+          onChange={(value) => setSelectValue(value)}
+          value={selectValue}
+        />
+        <Button onClick={search}>Search</Button>
       </div>
+
+      <ProjectList projects={projects} />
+
+      {data.totalPages > data.limit && (
+        <Pagination
+          page={page}
+          setPage={setPage}
+          limit={data.limit}
+          total={data.totalProjects}
+        />
+      )}
     </div>
   );
 }

@@ -20,6 +20,9 @@ import { ChallengeProvider } from './contexts/ChallengeProvider';
 import { ProjectProvider } from './contexts/ProjectProvider';
 import AboutUs from './pages/AboutUs';
 import AdminGetSuggestions from './pages/Admin/AdminGetSuggestions';
+import Solutions from './pages/Solutions';
+import LeftSidebar from './components/LeftSidebar';
+import RightSidebar from './components/RightSidebar';
 
 function App() {
   const { user, setUser } = useUser();
@@ -27,63 +30,67 @@ function App() {
   return (
     <div className="App bg-dark text-light min-h-screen">
       <Navbar user={user} />
-      <div className="min-h-[calc(100vh-8rem)]">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<AboutUs />} />
+      <div className="flex">
+        <LeftSidebar />
+        <div className="wrapper">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<AboutUs />} />
 
-          <Route path="/challenges" element={<Challenges />} />
-          <Route
-            path="/challenges/:id"
-            element={
-              <ChallengeProvider>
-                <ChallengeDetails />
-              </ChallengeProvider>
-            }
-          />
+            <Route path="/challenges" element={<Challenges />} />
+            <Route
+              path="/challenges/:id"
+              element={
+                <ChallengeProvider>
+                  <ChallengeDetails />
+                </ChallengeProvider>
+              }
+            />
+            <Route path="/solutions" element={<Solutions />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route
+              path="/projects/:id"
+              element={
+                <ProjectProvider>
+                  <ProjectDetails />
+                </ProjectProvider>
+              }
+            />
 
-          <Route path="/projects" element={<Projects />} />
-          <Route
-            path="/projects/:id"
-            element={
-              <ProjectProvider>
-                <ProjectDetails />
-              </ProjectProvider>
-            }
-          />
+            <Route path="/profile/:username" element={<Profile />} />
 
-          <Route path="/profile/:username" element={<Profile />} />
+            <Route path="/admin" element={<Admin />}>
+              <Route path="/admin/users" element={<AdminUsers />} />
+              <Route
+                path="/admin/suggestions"
+                element={<AdminGetSuggestions />}
+              />
+              <Route
+                path="/admin/create-challenge"
+                element={<AdminCreateChallenge />}
+              />
+              <Route
+                path="/admin/challenges/secret"
+                element={<AdminSecretChallenges />}
+              />
+              <Route
+                path="/admin/challenges/old"
+                element={<AdminOldChallenges />}
+              />
+              <Route
+                path="/admin/challenges/active"
+                element={<AdminActiveChallenges />}
+              />
+              <Route
+                path="/admin/challenges/secret/:id/edit"
+                element={<AdminChallengeEdit />}
+              />
+            </Route>
 
-          <Route path="/admin" element={<Admin />}>
-            <Route path="/admin/users" element={<AdminUsers />} />
-            <Route
-              path="/admin/suggestions"
-              element={<AdminGetSuggestions />}
-            />
-            <Route
-              path="/admin/create-challenge"
-              element={<AdminCreateChallenge />}
-            />
-            <Route
-              path="/admin/challenges/secret"
-              element={<AdminSecretChallenges />}
-            />
-            <Route
-              path="/admin/challenges/old"
-              element={<AdminOldChallenges />}
-            />
-            <Route
-              path="/admin/challenges/active"
-              element={<AdminActiveChallenges />}
-            />
-            <Route
-              path="/admin/challenges/secret/:id/edit"
-              element={<AdminChallengeEdit />}
-            />
-          </Route>
-
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
+        <RightSidebar />
       </div>
       <Footer />
     </div>

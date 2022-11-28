@@ -1,8 +1,8 @@
 import { useRef } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import Button from '../components/Button';
 import Textarea from '../components/Textarea';
 import { sendSuggestion } from '../services/suggestions';
-import toast, { Toaster } from 'react-hot-toast';
 
 function AboutUs() {
   const suggestionRef = useRef<HTMLTextAreaElement>(null);
@@ -18,7 +18,7 @@ function AboutUs() {
   }
 
   return (
-    <div className="wrapper">
+    <div>
       <Toaster />
       <h1>Selam ben Kerem</h1>
       <p>

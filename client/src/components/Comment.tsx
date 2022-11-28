@@ -1,5 +1,6 @@
 import IconButton from './IconButton';
 import { FaEdit, FaHeart, FaRegHeart, FaReply, FaTrash } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useChallenge } from '../contexts/ChallengeProvider';
 import CommentList from './CommentList';
 import { useState } from 'react';
@@ -93,18 +94,17 @@ function Comment({
 
   return (
     <>
-      <div className="w-full flex flex-col bg-primary rounded-md mt-4 overflow-hidden">
-        <div className="flex justify-between items-center p-2 bg-secondary">
-          <span className="font-medium flex gap-2">
-            <img src={avatar} alt="avatar" className="rounded-full h-6 w-6" />
-            {username}
-          </span>
-          <span className="font-light italic text-light text-sm">
-            {dateFormatter.format(Date.parse(createdAt))}
-          </span>
-        </div>
-
-        <div>
+      <AnimatePresence>
+        <div className="w-full flex flex-col bg-primary rounded-md mt-4 overflow-hidden">
+          <div className="flex justify-between items-center p-2 bg-secondary">
+            <span className="font-medium flex gap-2">
+              <img src={avatar} alt="avatar" className="rounded-full h-6 w-6" />
+              {username}
+            </span>
+            <span className="font-light italic text-light text-sm">
+              {dateFormatter.format(Date.parse(createdAt))}
+            </span>
+          </div>
           {isEditing ? (
             <CommentForm
               autoFocus={true}
@@ -114,72 +114,66 @@ function Comment({
           ) : (
             <div className="font-light break-words p-2">{message}</div>
           )}
-        </div>
-
-        <div className="flex items-center justify-between px-2">
-          <IconButton
-            Icon={likedByMe ? FaHeart : FaRegHeart}
-            aria-label={likedByMe ? 'Unlike' : 'Like'}
-            onClick={likedByMe ? onCommentDislike : onCommentLike}
-          >
-            {likeCount}
-          </IconButton>
-          <IconButton
-            Icon={FaReply}
-            aria-label={isReplying ? 'Cancel Reply' : 'Reply'}
-            onClick={() => setIsReplying((prev) => !prev)}
-            isActive={isReplying}
-          />
-
-          {username === currentUser?.username && (
-            <>
-              <IconButton
-                Icon={FaEdit}
-                aria-label={isEditing ? 'Cancel Edit' : 'Edit'}
-                onClick={() => setIsEditing((prev) => !prev)}
-                isActive={isEditing}
-              />
-              <IconButton
-                Icon={FaTrash}
-                aria-label="Delete"
-                color="text-red-500"
-                onClick={() => onCommentDelete()}
-              />
-            </>
-          )}
-        </div>
-      </div>
-
-      <div>
-        {isReplying && (
-          <div className="mt-1 ml-3">
-            <CommentForm autoFocus={true} onSubmit={onCommentReply} />
-          </div>
-        )}
-      </div>
-
-      <div>
-        {childComments?.length > 0 && (
-          <>
-            <div className={`flex ${areChildrenHidden ? 'hidden' : ''}`}>
-              <button
-                className="collapse-line"
-                aria-label="Hide Replies"
-                onClick={() => setAreChildrenHidden(true)}
-              />
-              <div className="pl-2 flex-grow">
-                <CommentList comments={childComments} place="challenge" />
-              </div>
-            </div>
-            <button
-              className={`btn mt-1 ${!areChildrenHidden ? 'hidden' : ''}`}
-              onClick={() => setAreChildrenHidden(false)}
+          <div className="flex items-center justify-between px-2">
+            <IconButton
+              Icon={likedByMe ? FaHeart : FaRegHeart}
+              aria-label={likedByMe ? 'Unlike' : 'Like'}
+              onClick={likedByMe ? onCommentDislike : onCommentLike}
             >
-              Show Replies
-            </button>
-          </>
-        )}
-      </div>
+              {likeCount}
+            </IconButton>
+            <IconButton
+              Icon={FaReply}
+              aria-label={isReplying ? 'Cancel Reply' : 'Reply'}
+              onClick={() => setIsReplying((prev) => !prev)}
+              isActive={isReplying}
+            />
+
+            {username === currentUser?.username && (
+              <>
+                <IconButton
+                  Icon={FaEdit}
+                  aria-label={isEditing ? 'Cancel Edit' : 'Edit'}
+                  onClick={() => setIsEditing((prev) => !prev)}
+                  isActive={isEditing}
+                />
+                <IconButton
+                  Icon={FaTrash}
+                  aria-label="Delete"
+                  color="text-red-500"
+                  onClick={() => onCommentDelete()}
+                />
+              </>
+            )}
+          </div>
+        </div>
+      </AnimatePresence>
+
+      {isReplying && (
+        <div className="mt-1 ml-3">
+          <CommentForm autoFocus={true} onSubmit={onCommentReply} />
+        </div>
+      )}
+      {childComments?.length > 0 && (
+        <>
+          <div className={`flex ${areChildrenHidden ? 'hidden' : ''}`}>
+            <button
+              className="collapse-line"
+              aria-label="Hide Replies"
+              onClick={() => setAreChildrenHidden(true)}
+            />
+            <div className="pl-2 flex-grow">
+              <CommentList comments={childComments} place="challenge" />
+            </div>
+          </div>
+          <button
+            className={`btn mt-1 ${!areChildrenHidden ? 'hidden' : ''}`}
+            onClick={() => setAreChildrenHidden(false)}
+          >
+            Show Replies
+          </button>
+        </>
+      )}
     </>
   );
 }

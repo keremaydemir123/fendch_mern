@@ -1,4 +1,7 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import { AiFillCloseCircle } from 'react-icons/ai';
+import { motion } from 'framer-motion';
 
 function Modal({
   open,
@@ -17,22 +20,23 @@ function Modal({
 
   return (
     <div
-      className="overlay absolute w-screen h-screen top-0 left-0 bottom-0 right-0 bg-dark bg-opacity-80 z-10"
+      className="overlay fixed top-0 bottom-0 left-0 right-0 flex justify-center items-center bg-dark bg-opacity-80 z-10"
       onClick={onClose}
     >
-      <div
-        className="modal fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1/3 h-max bg-gray p-8 z-50 rounded-lg min-w-[300px]"
+      <motion.div
+        className="modal relative h-max bg-gray p-8 z-50 rounded-lg md:w-1/2 w-11/12"
         onClick={(e) => e.stopPropagation()}
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0 }}
       >
-        <>
-          <AiFillCloseCircle
-            onClick={onClose}
-            className="absolute right-1 top-1 cursor-pointer text-2xl text-light hover:text-light-gray transition-all"
-          />
+        <AiFillCloseCircle
+          onClick={onClose}
+          className="absolute right-2 top-2 cursor-pointer text-2xl text-light hover:text-light-gray transition-all"
+        />
 
-          {children}
-        </>
-      </div>
+        {children}
+      </motion.div>
     </div>
   );
 }
