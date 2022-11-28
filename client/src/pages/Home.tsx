@@ -25,12 +25,10 @@ function Home() {
   if (!activeChallenges) return <div>No active challenges</div>;
 
   return (
-    <div className="wrapper">
-      <div className="flex flex-wrap justify-center items-center gap-4">
-        {activeChallenges.map((challenge: any) => (
-          <ChallengeCard key={challenge._id} challenge={challenge} />
-        ))}
-      </div>
+    <div className="flex flex-wrap justify-center items-center gap-4">
+      {activeChallenges.map((challenge: any) => (
+        <ChallengeCard key={challenge._id} challenge={challenge} />
+      ))}
     </div>
   );
 }

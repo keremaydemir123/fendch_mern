@@ -78,7 +78,7 @@ function ChallengeDetails() {
   `;
 
   return (
-    <div className="relative wrapper">
+    <>
       <Modal open={open} onClose={() => setOpen(false)}>
         <form onSubmit={handleModalSubmit} className="flex flex-col gap-4">
           <Input label="Git" id="git" type="text" ref={gitRef} />
@@ -107,7 +107,7 @@ function ChallengeDetails() {
           <CommentList comments={rootComments} place="challenge" />
         )}
       </div>
-    </div>
+    </>
   );
 }
 

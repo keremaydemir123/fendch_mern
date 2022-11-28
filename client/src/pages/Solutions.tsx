@@ -3,7 +3,7 @@ import SolutionCard from '../components/SolutionCard';
 
 function Solutions() {
   return (
-    <div className="wrapper">
+    <>
       <div className="border-2 border-blue p-2 ">
         <h1>Subscribe to see all solutions</h1>
         <Button>Subsrice (10$/month)</Button>
@@ -19,7 +19,7 @@ function Solutions() {
         <SolutionCard sideBorder="left" />
         <SolutionCard sideBorder="right" />
       </div>
-    </div>
+    </>
   );
 }
 

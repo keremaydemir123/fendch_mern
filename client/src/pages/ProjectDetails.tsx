@@ -80,65 +80,63 @@ function ProjectDetails() {
   };
 
   return (
-    <div className="wrapper">
-      <div className="w-full flex flex-col">
-        <h1>Project Details</h1>
-        <div className="w-full h-96 min-h-max bg-secondary rounded-md flex flex-col justify-between">
-          <div className="h-full p-2">
-            {open ? (
-              <Textarea
-                value={markdown}
-                className="h-full"
-                onChange={(e) => setMarkdown(e.target.value)}
-              />
-            ) : (
-              <MarkdownTest markdown={markdown} />
-            )}
-          </div>
-          <div className="bg-primary h-max p-2 flex justify-between items-center">
-            <div>
-              {user && user._id === project.user && (
-                <div>
-                  <Button
-                    type="button"
-                    onClick={
-                      open
-                        ? () => submitEditedMarkdown(markdown)
-                        : () => setOpen(true)
-                    }
-                  >
-                    {open ? 'Submit' : 'Edit'}
-                  </Button>
-                  {open && (
-                    <Button
-                      type="button"
-                      onClick={() => {
-                        setOpen(false);
-                        setMarkdown(project.markdown);
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                  )}
-                </div>
-              )}
-            </div>
-            {project.likedByMe ? (
-              <Button onClick={onProjectDislike}>
-                Dislike {project.likeCount}
-              </Button>
-            ) : (
-              <Button onClick={onProjectLike}>Like {project.likeCount}</Button>
-            )}
-          </div>
-        </div>
-        <h1>Comments</h1>
-        {user && <CommentForm onSubmit={onCommentCreate} />}
-        <div>
-          {rootComments != null && rootComments.length > 0 && (
-            <CommentList comments={rootComments} place="project" />
+    <div className="w-full flex flex-col">
+      <h1>Project Details</h1>
+      <div className="w-full h-96 min-h-max bg-secondary rounded-md flex flex-col justify-between">
+        <div className="h-full p-2">
+          {open ? (
+            <Textarea
+              value={markdown}
+              className="h-full"
+              onChange={(e) => setMarkdown(e.target.value)}
+            />
+          ) : (
+            <MarkdownTest markdown={markdown} />
           )}
         </div>
+        <div className="bg-primary h-max p-2 flex justify-between items-center">
+          <div>
+            {user && user._id === project.user && (
+              <div>
+                <Button
+                  type="button"
+                  onClick={
+                    open
+                      ? () => submitEditedMarkdown(markdown)
+                      : () => setOpen(true)
+                  }
+                >
+                  {open ? 'Submit' : 'Edit'}
+                </Button>
+                {open && (
+                  <Button
+                    type="button"
+                    onClick={() => {
+                      setOpen(false);
+                      setMarkdown(project.markdown);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+          {project.likedByMe ? (
+            <Button onClick={onProjectDislike}>
+              Dislike {project.likeCount}
+            </Button>
+          ) : (
+            <Button onClick={onProjectLike}>Like {project.likeCount}</Button>
+          )}
+        </div>
+      </div>
+      <h1>Comments</h1>
+      {user && <CommentForm onSubmit={onCommentCreate} />}
+      <div>
+        {rootComments != null && rootComments.length > 0 && (
+          <CommentList comments={rootComments} place="project" />
+        )}
       </div>
     </div>
   );
