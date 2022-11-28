@@ -1,20 +1,20 @@
-import SERVER_URL from './baseURL';
 import axios from 'axios';
+import SERVER_URL from './baseURL';
 
 export async function createProject({
   git,
   challengeId,
   userId,
-  description,
+  markdown,
 }: {
   git: string;
   challengeId: string;
   userId: string;
-  description: string;
+  markdown: string;
 }) {
   const response = await axios.post(
     `${SERVER_URL}/projects/challenges/${challengeId}/projects`,
-    { git, description, userId }
+    { git, markdown, userId }
   );
   return response.data;
 }
@@ -60,6 +60,20 @@ export async function dislikeProject({
   const response = await axios.patch(
     `${SERVER_URL}/projects/${projectId}/dislike`,
     { userId }
+  );
+  return response.data;
+}
+
+export async function updateProjectMarkdown({
+  projectId,
+  markdown,
+}: {
+  projectId: string;
+  markdown: string;
+}) {
+  const response = await axios.patch(
+    `${SERVER_URL}/projects/${projectId}/updateMarkdown`,
+    { markdown }
   );
   return response.data;
 }

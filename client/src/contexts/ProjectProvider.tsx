@@ -6,7 +6,7 @@ import { CommentProps, ProjectProps } from '../types';
 import { getProject } from '../services/projects';
 import { useUser } from './UserProvider';
 
-type groupProps = {
+type GroupProps = {
   [key: string]: CommentProps[];
 };
 
@@ -21,6 +21,7 @@ const Context = createContext({
   deleteLocalComment: (id: string) => {},
   likeLocalComment: (id: string) => {},
   dislikeLocalComment: (id: string) => {},
+  updateLocalProjectMarkdown: (markdown: string) => {},
 });
 
 export function useProject() {
@@ -51,8 +52,8 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     setComments(project.comments);
   }, [project?.comments]);
 
-  const commentsByParentId = useMemo((): groupProps => {
-    const groups: groupProps = {};
+  const commentsByParentId = useMemo((): GroupProps => {
+    const groups: GroupProps = {};
 
     comments?.forEach((comment) => {
       if (comment.parentId) {
@@ -154,6 +155,12 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     return commentsByParentId[parentId];
   }
 
+  function updateLocalProjectMarkdown(markdown: string) {
+    setProject((prev) => {
+      return { ...prev, markdown };
+    });
+  }
+
   return (
     <Context.Provider
       value={{
@@ -167,6 +174,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         deleteLocalComment,
         likeLocalComment,
         dislikeLocalComment,
+        updateLocalProjectMarkdown,
       }}
     >
       {isLoading ? (

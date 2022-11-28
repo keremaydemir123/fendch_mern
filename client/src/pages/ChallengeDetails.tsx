@@ -27,9 +27,9 @@ function ChallengeDetails() {
   const handleModalSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const git = gitRef.current?.value;
-    const description = descriptionRef.current?.value;
+    const markdown = descriptionRef.current?.value;
 
-    if (!git || !description) {
+    if (!git || !markdown) {
       toast.error('Please fill all the fields');
       return;
     }
@@ -45,7 +45,7 @@ function ChallengeDetails() {
     }
 
     try {
-      await createProject({ challengeId, description, git, userId: user._id });
+      await createProject({ challengeId, markdown, git, userId: user._id });
       toast.success('Project submitted successfully');
       setOpen(false);
     } catch (error: any) {
@@ -78,26 +78,26 @@ function ChallengeDetails() {
   `;
 
   return (
-    <div className="wrapper">
+    <>
+      <Modal open={open} onClose={() => setOpen(false)}>
+        <form onSubmit={handleModalSubmit} className="flex flex-col gap-4">
+          <Input label="Git" id="git" type="text" ref={gitRef} />
+          <Textarea label="Description" id="desc" ref={descriptionRef} />
+          <Button type="submit">Submit</Button>
+        </form>
+      </Modal>
       <div className="w-full flex flex-col items-center mb-4">
         <Toaster />
         <div className="w-full rounded-lg bg-primary p-8">
           <h1 className="text-center">{challenge?.tech}</h1>
           <h3 className="text-center">{challenge?.objective}</h3>
-          <MarkdownTest markdown={mdText} />
-          {/* <div className="p-8">
+          <div className="p-8">
             <YoutubePlayer embedId="E1E08i2UJGI" />
-          </div> */}
+          </div>
+          <MarkdownTest markdown={mdText} />
           <div className="text-right px-8">
             <Button onClick={() => setOpen(true)}>Submit</Button>
           </div>
-          <Modal open={open} onClose={() => setOpen(false)}>
-            <form onSubmit={handleModalSubmit} className="flex flex-col gap-4">
-              <Input label="Git" id="git" type="text" ref={gitRef} />
-              <Textarea label="Description" id="desc" ref={descriptionRef} />
-              <Button type="submit">Submit</Button>
-            </form>
-          </Modal>
         </div>
       </div>
       <h1>Comments</h1>
@@ -107,7 +107,7 @@ function ChallengeDetails() {
           <CommentList comments={rootComments} place="challenge" />
         )}
       </div>
-    </div>
+    </>
   );
 }
 
