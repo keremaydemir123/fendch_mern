@@ -19,6 +19,10 @@ router
   .patch(projectController.updateProject)
   .delete(projectController.deleteProject);
 
+router
+  .route("/:id/updateMarkdown")
+  .patch(projectController.updateProjectMarkdown);
+
 router.route("/:id/like").patch(projectController.likeProject);
 router.route("/:id/dislike").patch(projectController.dislikeProject);
 

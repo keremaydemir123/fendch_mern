@@ -1,8 +1,7 @@
-import React from 'react';
-import Button from './Button';
-import { useInView } from 'react-intersection-observer';
 import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { motion, useAnimation } from 'framer-motion';
+import Button from './Button';
 import CustomLink from './CustomLink';
 
 const solutionVariants = {

@@ -15,7 +15,7 @@ function TextArea(
   ref: React.Ref<HTMLTextAreaElement>
 ) {
   return (
-    <>
+    <div className="flex flex-col gap-1 h-full">
       <label htmlFor={id} className="text-light font-semibold font-lg">
         {label}
       </label>
@@ -28,8 +28,18 @@ function TextArea(
         value={value}
         className={`p-2 border border-primary rounded-md text-primary outline-none ${className}`}
       />
-    </>
+    </div>
   );
 }
+
+TextArea.defaultProps = {
+  label: '',
+  placeholder: '',
+  onChange: () => {},
+  name: '',
+  id: '',
+  value: '',
+  className: '',
+};
 
 export default forwardRef(TextArea);

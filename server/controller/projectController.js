@@ -69,7 +69,7 @@ exports.createProject = asyncHandler(async (req, res) => {
   if (
     !req.params.challengeId ||
     !req.body.git ||
-    !req.body.description ||
+    !req.body.markdown ||
     !req.body.userId
   ) {
     res.status(400).send("Error");
@@ -94,7 +94,7 @@ exports.createProject = asyncHandler(async (req, res) => {
   const project = await Project.create({
     challenge: challenge,
     git: req.body.git,
-    description: req.body.description,
+    markdown: req.body.markdown,
     user: user,
   });
 
@@ -109,6 +109,23 @@ exports.createProject = asyncHandler(async (req, res) => {
       project,
     });
   }
+});
+
+exports.updateProjectMarkdown = asyncHandler(async (req, res) => {
+  const project = await Project.findById(req.params.id);
+
+  if (!project) {
+    res.status(404).send(`No project with id: ${id}`);
+    throw new Error("Project not found");
+  }
+
+  const newProject = await Project.findByIdAndUpdate(
+    req.params.id,
+    { markdown: req.body.markdown },
+    { new: true }
+  );
+
+  res.status(200).json(newProject);
 });
 
 exports.getProjectById = asyncHandler(async (req, res) => {

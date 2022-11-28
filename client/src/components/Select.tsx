@@ -76,6 +76,9 @@ export function Select({ multiple, value, onChange, options }: SelectProps) {
         case 'Escape':
           setIsOpen(false);
           break;
+
+        default:
+          break;
       }
     };
     containerRef.current?.addEventListener('keydown', handler);

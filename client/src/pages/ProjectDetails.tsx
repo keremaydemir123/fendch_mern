@@ -1,24 +1,33 @@
+import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Button from '../components/Button';
 import CommentForm from '../components/CommentForm';
 import CommentList from '../components/CommentList';
+import MarkdownTest from '../components/MarkdownTest';
+import Textarea from '../components/Textarea';
 import { useProject } from '../contexts/ProjectProvider';
 import { useUser } from '../contexts/UserProvider';
 import { createProjectComment } from '../services/comments';
-import { dislikeProject, likeProject } from '../services/projects';
+import {
+  dislikeProject,
+  likeProject,
+  updateProjectMarkdown,
+} from '../services/projects';
 
 function ProjectDetails() {
   const { id } = useParams<{ id: string }>();
   const { user } = useUser();
+  const [open, setOpen] = useState(false);
   const {
     project,
     createLocalComment,
     dislikeLocalProject,
     likeLocalProject,
     rootComments,
+    updateLocalProjectMarkdown,
   } = useProject();
 
-  console.log(project);
+  const [markdown, setMarkdown] = useState(project.markdown);
 
   const onCommentCreate = async (message: string) => {
     try {
@@ -56,13 +65,64 @@ function ProjectDetails() {
     }
   };
 
+  const submitEditedMarkdown = async (markdown: string) => {
+    try {
+      await updateProjectMarkdown({
+        projectId: id!,
+        markdown,
+      });
+      setMarkdown(markdown);
+      setOpen(false);
+      updateLocalProjectMarkdown(markdown);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="wrapper">
       <div className="w-full flex flex-col">
         <h1>Project Details</h1>
-        <div className="w-full h-96 bg-secondary rounded-md flex flex-col justify-between">
-          <div className="h-full p-2">some explanations here</div>
-          <div className="bg-primary h-max p-2">
+        <div className="w-full h-96 min-h-max bg-secondary rounded-md flex flex-col justify-between">
+          <div className="h-full p-2">
+            {open ? (
+              <Textarea
+                value={markdown}
+                className="h-full"
+                onChange={(e) => setMarkdown(e.target.value)}
+              />
+            ) : (
+              <MarkdownTest markdown={markdown} />
+            )}
+          </div>
+          <div className="bg-primary h-max p-2 flex justify-between items-center">
+            <div>
+              {user && user._id === project.user && (
+                <div>
+                  <Button
+                    type="button"
+                    onClick={
+                      open
+                        ? () => submitEditedMarkdown(markdown)
+                        : () => setOpen(true)
+                    }
+                  >
+                    {open ? 'Submit' : 'Edit'}
+                  </Button>
+                  {open && (
+                    <Button
+                      type="button"
+                      onClick={() => {
+                        setOpen(false);
+                        setMarkdown(project.markdown);
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
             {project.likedByMe ? (
               <Button onClick={onProjectDislike}>
                 Dislike {project.likeCount}
