@@ -33,8 +33,6 @@ exports.getAllProjects = asyncHandler(async (req, res) => {
 
   totalProjects = projects.length;
 
-  console.log("projects", projects);
-
   projects = projects.slice(skip, skip + limit);
 
   res.status(200).json({
@@ -306,8 +304,6 @@ exports.likeComment = asyncHandler(async (req, res) => {
   const userLiked = await User.findOne({
     _id: req.body.userId,
   });
-
-  console.log("project: ", project);
 
   if (comment.likes.includes(userLiked._id)) {
     comment.likes.remove(userLiked._id);
