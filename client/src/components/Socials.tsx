@@ -2,8 +2,8 @@ import { FaLinkedin, FaDiscord, FaYoutube, FaTelegram } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 function Socials() {
-  const circleClasses = 'inline-block p-3 rounded-full w-max mx-auto bg-green';
-  const iconStyles = { color: 'white', fontSize: '1.5em' };
+  const circleClasses = 'inline-block p-3 rounded-full w-12 mx-auto';
+  const iconStyles = { color: 'white', fontSize: '1.5rem' };
   return (
     <div className="flex flex-col gap-2 item-center justify-start h-full">
       <div className="flex items-center gap-2">
