@@ -7,6 +7,7 @@ const passport = require("passport");
 const morgan = require("morgan");
 
 require("./passport");
+require("./cronJobs");
 
 const connectDB = require("./config/db.js");
 
