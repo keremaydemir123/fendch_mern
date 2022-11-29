@@ -70,7 +70,6 @@ exports.createChallenge = asyncHandler(async (req, res) => {
     objective: req.body.objective,
     tech: req.body.tech,
   });
-  console.log(objectiveExist);
   if (objectiveExist.length > 0) {
     res
       .status(400)
@@ -147,7 +146,6 @@ exports.getCommentsByUserId = asyncHandler(async (req, res) => {
 });
 
 exports.createComment = asyncHandler(async (req, res, next) => {
-  console.log(req);
   const challenge = await Challenge.findById(req.params.id);
   const user = await User.findById(req.body.userId);
 
@@ -205,6 +203,7 @@ exports.updateComment = asyncHandler(async (req, res) => {
 });
 
 exports.deleteComment = asyncHandler(async (req, res) => {
+  const challenge = await Challenge.findById(req.params.id);
   const comment = await Comment.findById(req.params.commentId);
   const childrenComments = await Comment.find({ parentId: comment._id });
 
@@ -214,16 +213,19 @@ exports.deleteComment = asyncHandler(async (req, res) => {
     res.status(400).json("Comment not found");
     throw new Error("Comment not found");
   }
+  
+  challenge.comments.remove(comment._id)
+  user.comments.remove(comment._id);
 
-  user.comments.pull(comment._id);
-
-  await comment.remove();
+  await comment.delete(comment._id);
   // remove all children comments
   childrenComments.forEach(async (comment) => {
-    await comment.remove();
+    comment.remove();
     user.comments.pull(comment._id);
+    challenge.comments.remove(comment._id)
   });
 
+  await challenge.save();
   await user.save();
 
   res.status(200).json(comment);
