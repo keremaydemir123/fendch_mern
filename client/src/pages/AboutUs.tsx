@@ -3,6 +3,7 @@ import toast, { Toaster } from 'react-hot-toast';
 import Button from '../components/Button';
 import Textarea from '../components/Textarea';
 import { sendSuggestion } from '../services/suggestions';
+import BuyMeACoffeeButton from '../components/BuyMeCoffeeButton';
 
 function AboutUs() {
   const suggestionRef = useRef<HTMLTextAreaElement>(null);
@@ -41,6 +42,7 @@ function AboutUs() {
         <Textarea ref={suggestionRef} className="w-full" />
         <Button type="submit">Send</Button>
       </form>
+      <BuyMeACoffeeButton />
     </div>
   );
 }
