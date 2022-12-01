@@ -1,143 +1,191 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import Button from '../../components/Button';
 import ChallengeCard from '../../components/ChallengeCard';
 import Input from '../../components/Input';
 import { createChallenge } from '../../services/admin';
-import { ChallengeProps } from '../../types/Challenge';
+import { Select } from '../../components/Select';
+
+const tagOptions = [
+  { value: 'react', label: 'React' },
+  { value: 'javascript', label: 'JavaScript' },
+  { value: 'html', label: 'HTML' },
+  { value: 'css', label: 'CSS' },
+];
 
 function AdminCreateChallenge() {
-  const techRef = useRef<HTMLInputElement | null>(null);
-  const objectiveRef = useRef<HTMLInputElement | null>(null);
-  const tasksRef = useRef<HTMLInputElement | null>(null);
-  const descriptionRef = useRef<HTMLInputElement | null>(null);
-  const tagsRef = useRef<HTMLInputElement | null>(null);
-  const weekRef = useRef<HTMLInputElement | null>(null);
-  const startDateRef = useRef<HTMLInputElement | null>(null);
-  const liveExampleRef = useRef<HTMLInputElement | null>(null);
-
-  const [challenge, setChallenge] = useState<ChallengeProps>({
+  const [challenge, setChallenge] = useState({
     tech: '',
     objective: '',
-    tasks: [],
     description: '',
+    tasksMd: '',
+    tasksVideo: '',
+    solutionMd: '',
+    solutionVideo: '',
     tags: [],
     week: 0,
-    startDate: '',
     liveExample: '',
+    thumbnail: '',
   });
 
-  const seePreview = async () => {
-    const tech = techRef.current?.value;
-    const objective = objectiveRef.current?.value;
-    const description = descriptionRef.current?.value;
-    const tasks = tasksRef.current?.value.split(',');
-    const tags = tagsRef.current?.value.split(',');
-    const week = Number(weekRef.current?.value);
-    const startDate = startDateRef.current?.value;
-    const liveExample = liveExampleRef.current?.value;
-
-    if (
-      !tech ||
-      !objective ||
-      !description ||
-      !tags ||
-      !tasks ||
-      !week ||
-      !startDate ||
-      !liveExample
-    ) {
-      toast.error('Please fill all the fields');
-      return;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await createChallenge(challenge);
+      toast.success('Challenge created successfully!');
+    } catch (error) {
+      console.log(error);
+      toast.error("Couldn't create challenge");
     }
-
-    setChallenge({
-      tech,
-      objective,
-      description,
-      tasks,
-      tags,
-      week,
-      startDate,
-      liveExample,
-    });
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    seePreview();
-    try {
-      await createChallenge(challenge);
-      toast.success('Challenge created successfully');
-    } catch (error) {
-      toast.error('Something went wrong');
-    }
+  // handle file import
+  let fileReader: any;
+  const handleFileRead = (e) => {
+    const content = fileReader.result;
+    console.log(content);
+  };
+
+  const handleFileChosen = (file: any) => {
+    const fileReader = new FileReader();
+    fileReader.onloadend = handleFileRead;
+    fileReader.readAsText(file);
   };
 
   return (
-    <div className="w-full flex bg-primary p-4 justify-center gap-8">
+    <div className="mt-8 flex gap-4">
       <Toaster />
-      <div className="w-96 bg-secondary p-8">
-        <h1 className="border-b-2 border-light mb-2">Create Challenge</h1>
-        <form
-          className="flex flex-col gap-1 text-primary"
-          onSubmit={handleSubmit}
-        >
-          <Input type="text" id="tech" label="Tech" ref={techRef} />
-          <Input
-            type="text"
-            id="objective"
-            label="Objective"
-            ref={objectiveRef}
-          />
-          <Input
-            type="text"
-            id="tasks"
-            label="Tasks"
-            placeholder="comma seperated values"
-            ref={tasksRef}
-          />
-          <Input
-            type="text"
-            id="tags"
-            label="Tags"
-            placeholder="comma seperated values"
-            ref={tagsRef}
-          />
-          <Input
-            type="text"
-            id="description"
-            label="Description"
-            ref={descriptionRef}
-          />
-          <Input type="number" id="week" label="week" ref={weekRef} />
-          <Input
-            type="date"
-            id="startDate"
-            label="Start Date"
-            ref={startDateRef}
-          />
-          <Input
-            type="text"
-            id="liveExample"
-            label="Live Example"
-            ref={liveExampleRef}
-          />
+      <form
+        onSubmit={handleSubmit}
+        className="w-96 bg-secondary p-8 flex flex-col gap-2"
+      >
+        <h1>Create Challenge</h1>
+        <Input
+          label="Tech"
+          id="tech"
+          type="text"
+          value={challenge.tech}
+          onChange={(e) =>
+            setChallenge({
+              ...challenge,
+              tech: e.target.value,
+            })
+          }
+        />
+        <Input
+          label="Objective"
+          id="objective"
+          type="text"
+          value={challenge.objective}
+          onChange={(e) =>
+            setChallenge({
+              ...challenge,
+              objective: e.target.value,
+            })
+          }
+        />
+        <Input
+          label="Description"
+          id="desc"
+          type="text"
+          value={challenge.description}
+          onChange={(e) =>
+            setChallenge({
+              ...challenge,
+              description: e.target.value,
+            })
+          }
+        />
+        <Select
+          multiple
+          value={[tagOptions[0]]}
+          options={tagOptions}
+          onChange={(value) => setChallenge({ ...challenge, tags: value })}
+        />
+        <Input
+          label="Tasks Markdown"
+          id="tasksMd"
+          type="file"
+          value={challenge.tasksMd}
+          onChange={(e) => handleFileChosen(e.target.files[0])}
+        />
+        <Input
+          label="Tasks Video"
+          id="tasksVideo"
+          type="text"
+          value={challenge.tasksVideo}
+          onChange={(e) =>
+            setChallenge({
+              ...challenge,
+              tasksVideo: e.target.value,
+            })
+          }
+        />
+        <Input
+          label="Solution Markdown"
+          id="solutionMd"
+          type="file"
+          value={challenge.solutionMd}
+          onChange={(e) =>
+            setChallenge({
+              ...challenge,
+              solutionMd: e.target.value,
+            })
+          }
+        />
+        <Input
+          label="Live Example"
+          id="liveExample"
+          type="text"
+          value={challenge.liveExample}
+          onChange={(e) =>
+            setChallenge({
+              ...challenge,
+              liveExample: e.target.value,
+            })
+          }
+        />
+        <Input
+          label="Solution Video"
+          id="solutionVideo"
+          type="text"
+          value={challenge.solutionVideo}
+          onChange={(e) =>
+            setChallenge({
+              ...challenge,
+              solutionVideo: e.target.value,
+            })
+          }
+        />
+        <Input
+          label="Week"
+          id="week"
+          type="number"
+          value={challenge.week.toString()}
+          onChange={(e) =>
+            setChallenge({
+              ...challenge,
+              week: Number(e.target.value),
+            })
+          }
+        />
+        <Input
+          label="Thumbnail"
+          id="thumbnail"
+          type="text"
+          value={challenge.thumbnail}
+          onChange={(e) =>
+            setChallenge({
+              ...challenge,
+              thumbnail: e.target.value,
+            })
+          }
+        />
+        <Button type="submit">Submit</Button>
+      </form>
 
-          <Button
-            type="button"
-            onClick={() => seePreview()}
-            className="mt-2 border-blue"
-          >
-            See Preview
-          </Button>
-          <Button type="submit" className="mt-2 border-green">
-            Submit Challenge
-          </Button>
-        </form>
-      </div>
-      <div className=" bg-secondary p-8">
-        <h1 className="border-b-2 border-light mb-8">Preview</h1>
+      <div className="w-96 bg-secondary p-8 flex flex-col items-center gap-2">
+        <h1>Challenge Preview</h1>
         <ChallengeCard challenge={challenge} />
       </div>
     </div>

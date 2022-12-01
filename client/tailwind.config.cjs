@@ -33,6 +33,7 @@ module.exports = {
 
     container: {
       center: true,
+      maxWidth: '100%',
     },
 
     extend: {},

@@ -32,7 +32,6 @@ function App() {
     <div className="App bg-dark text-light min-h-screen">
       <Navbar user={user} />
       <div className="flex">
-        <LeftSidebar />
         <div className="wrapper">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -93,7 +92,6 @@ function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </div>
-        <RightSidebar />
       </div>
       <Footer />
     </div>

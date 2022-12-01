@@ -20,7 +20,7 @@ cron.schedule("40 59 23 * * Sunday", async () => {
     console.log("no active challenges");
   }
 
-  // 2) get challenges from static/challenges folder and create new challenges
+  // 2) get secret challenges and update them
   const currentDate = new Date();
   const startDate = new Date(currentDate.getFullYear(), 0, 1);
   const days = Math.floor((currentDate - startDate) / (24 * 60 * 60 * 1000));
@@ -28,16 +28,17 @@ cron.schedule("40 59 23 * * Sunday", async () => {
 
   const nextWeek = currentWeek - START_WEEK + 1;
 
-  const folders = fs.readdirSync(`${__dirname}/static/challenges/week_1/`);
-
-  for (let i = 0; i < folders.length; i++) {
-    const challenge = require(`./static/challenges/week_${nextWeek}/${folders[i]}/index`);
-    try {
-      await Challenge.create(challenge);
-      console.log("challenge created");
-    } catch (error) {
-      console.log(error);
-    }
+  try {
+    const secretChallenges = await Challenge.find({
+      isSecret: true,
+      week: nextWeek,
+    });
+    secretChallenges.forEach(async (challenge) => {
+      challenge.isSecret = false;
+      await challenge.save();
+    });
+  } catch (error) {
+    console.log("no secret challenges");
   }
 });
 

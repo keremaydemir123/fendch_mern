@@ -28,12 +28,15 @@ const challengeSchema = mongoose.Schema({
     type: Date,
     default: new Date(),
   },
-  tasks: String,
   totalSubmits: {
     type: Number,
     default: 0,
   },
   isActive: {
+    type: Boolean,
+    default: true,
+  },
+  isSecret: {
     type: Boolean,
     default: true,
   },

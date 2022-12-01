@@ -1,5 +1,7 @@
+import Socials from './Socials';
+
 function RightSidebar() {
-  return <div className="md:w-96 md:flex hidden p-2">right</div>;
+  return <div className="md:w-64 sm:flex sm:flex-col sm:w-16 hidden p-2"></div>;
 }
 
 export default RightSidebar;

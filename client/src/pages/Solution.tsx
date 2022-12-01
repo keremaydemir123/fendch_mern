@@ -20,8 +20,10 @@ function Solution() {
       <div className="bg-secondary rounded-md p-4">
         <h1>{challenge?.tech}</h1>
         <h2>{challenge?.objective}</h2>
-        <img src={challenge?.tumbnail} alt="tumbnail" />
-        <MarkdownTest markdown={challenge?.solutionMd} />
+        <img src={challenge?.thumbnail} alt="tumbnail" width={500} />
+        <div className="p-2 bg-dark rounded-md">
+          <MarkdownTest markdown={challenge?.solutionMd} />
+        </div>
       </div>
     </div>
   );
