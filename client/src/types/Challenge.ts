@@ -6,10 +6,14 @@ export type ChallengeProps = {
   tech: string;
   description: string;
   tags: string[];
-  tasks: string[];
+  tasksMd: string;
   week: number;
   startDate: string;
   objective: string;
   liveExample: string;
   comments: CommentProps[];
+  solutionMd: string;
+  thumbnail: string;
+  tasksVideo: string;
+  solutionVideo: string;
 } | null;

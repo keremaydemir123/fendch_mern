@@ -20,9 +20,10 @@ import { ChallengeProvider } from './contexts/ChallengeProvider';
 import { ProjectProvider } from './contexts/ProjectProvider';
 import AboutUs from './pages/AboutUs';
 import AdminGetSuggestions from './pages/Admin/AdminGetSuggestions';
-import Solutions from './pages/Solutions';
+import SolutionList from './pages/SolutionList';
 import LeftSidebar from './components/LeftSidebar';
 import RightSidebar from './components/RightSidebar';
+import Solution from './pages/Solution';
 
 function App() {
   const { user, setUser } = useUser();
@@ -46,7 +47,9 @@ function App() {
                 </ChallengeProvider>
               }
             />
-            <Route path="/solutions" element={<Solutions />} />
+            <Route path="/solutions" element={<SolutionList />} />
+            <Route path="/solutions/:id" element={<Solution />} />
+
             <Route path="/projects" element={<Projects />} />
             <Route
               path="/projects/:id"
