@@ -10,8 +10,12 @@ const challengeSchema = mongoose.Schema({
     type: String,
     required: [true, "Please enter a challenge objective"],
   },
-  projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project", default: [] }],
-  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment", default: [] }],
+  projects: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "Project", default: [] },
+  ],
+  comments: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "Comment", default: [] },
+  ],
   description: {
     type: String,
     required: [true, "Please enter a description"],
@@ -24,26 +28,40 @@ const challengeSchema = mongoose.Schema({
     type: Date,
     default: new Date(),
   },
-  tasks: [String],
+  tasks: String,
   totalSubmits: {
     type: Number,
     default: 0,
   },
-  images: [String],
-  logos: [String],
-  isSecret: {
-    type: Boolean,
-    default: true,
-  },
   isActive: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   week: {
     type: Number,
     required: true,
   },
   liveExample: {
+    type: String,
+    required: true,
+  },
+  tumbnail: {
+    type: String,
+    required: true,
+  },
+  solutionVideo: {
+    type: String,
+    required: true,
+  },
+  tasksVideo: {
+    type: String,
+    required: true,
+  },
+  solutionMd: {
+    type: String,
+    required: true,
+  },
+  tasksMd: {
     type: String,
     required: true,
   },
