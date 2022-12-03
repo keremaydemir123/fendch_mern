@@ -17,6 +17,5 @@
     "jsx": "react-jsx"
   },
   "include": ["src/**/*"],
-  "files": ["./.eslintrc.cjs","./.prettierrc.cjs","./tailwind.config.cjs"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
