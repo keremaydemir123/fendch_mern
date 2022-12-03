@@ -26,7 +26,7 @@ function ChallengeCard({
                 <span className="ml-1">
                   <PulseLoader
                     color="#36d7b7"
-                    loading={true}
+                    loading
                     speedMultiplier={0.8}
                     size={10}
                   />
@@ -43,7 +43,7 @@ function ChallengeCard({
               See Details
             </CustomLink>
           ) : (
-            <CustomLink to={``}>See Details</CustomLink>
+            <CustomLink to="">See Details</CustomLink>
           )}
         </div>
       </div>

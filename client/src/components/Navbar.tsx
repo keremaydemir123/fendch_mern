@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import Button from './Button';
 import { useState } from 'react';
 import { FaBars } from 'react-icons/fa';
+import Button from './Button';
 import CustomLink from './CustomLink';
 import Badge from './Badge';
 import { UserProps } from '../types';

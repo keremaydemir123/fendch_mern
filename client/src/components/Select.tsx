@@ -38,9 +38,7 @@ export function Select({ multiple, value, onChange, options }: SelectProps) {
       } else {
         onChange([...value, option]);
       }
-    } else {
-      if (option !== value) onChange(option);
-    }
+    } else if (option !== value) onChange(option);
   }
 
   function isOptionSelected(option: SelectOption) {
@@ -122,8 +120,8 @@ export function Select({ multiple, value, onChange, options }: SelectProps) {
       >
         &times;
       </button>
-      <div className={styles.divider}></div>
-      <div className={styles.caret}></div>
+      <div className={styles.divider} />
+      <div className={styles.caret} />
       <ul className={`${styles.options} ${isOpen ? styles.show : ''}`}>
         {options.map((option, index) => (
           <li
