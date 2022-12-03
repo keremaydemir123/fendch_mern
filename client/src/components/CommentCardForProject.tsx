@@ -1,7 +1,6 @@
-import IconButton from './IconButton';
 import { FaEdit, FaHeart, FaRegHeart, FaReply, FaTrash } from 'react-icons/fa';
-import CommentList from './CommentList';
 import { useState } from 'react';
+import IconButton from './IconButton';
 import CommentForm from './CommentForm';
 import {
   deleteProjectComment,
@@ -107,7 +106,7 @@ function CommentCardForProject({
         <div>
           {isEditing ? (
             <CommentForm
-              autoFocus={true}
+              autoFocus
               onSubmit={onCommentEdit}
               initialValue={message}
             />
@@ -153,7 +152,7 @@ function CommentCardForProject({
       <div>
         {isReplying && (
           <div className="mt-1 ml-3">
-            <CommentForm autoFocus={true} onSubmit={onCommentReply} />
+            <CommentForm autoFocus onSubmit={onCommentReply} />
           </div>
         )}
       </div>

@@ -21,12 +21,10 @@ import { ProjectProvider } from './contexts/ProjectProvider';
 import AboutUs from './pages/AboutUs';
 import AdminGetSuggestions from './pages/Admin/AdminGetSuggestions';
 import SolutionList from './pages/SolutionList';
-import LeftSidebar from './components/LeftSidebar';
-import RightSidebar from './components/RightSidebar';
 import Solution from './pages/Solution';
 
 function App() {
-  const { user, setUser } = useUser();
+  const { user } = useUser();
 
   return (
     <div className="App bg-dark text-light min-h-screen">

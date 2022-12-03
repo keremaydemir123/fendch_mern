@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo, useState, useEffect } from 'react';
-import { getChallenge } from '../services/challenges';
 import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
+import { getChallenge } from '../services/challenges';
 import Loading from '../components/Loading';
 import { ChallengeProps, CommentProps } from '../types';
 
@@ -64,9 +64,8 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
       return prevComments.map((comment) => {
         if (comment._id === id) {
           return { ...comment, message };
-        } else {
-          return comment;
         }
+        return comment;
       });
     });
   }
@@ -86,9 +85,8 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
             likeCount: comment.likeCount + 1,
             likedByMe: true,
           };
-        } else {
-          return comment;
         }
+        return comment;
       });
     });
   }
@@ -102,9 +100,8 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
             likeCount: comment.likeCount - 1,
             likedByMe: false,
           };
-        } else {
-          return comment;
         }
+        return comment;
       });
     });
   }
@@ -118,7 +115,7 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
       value={{
         challenge: { ...challenge! },
         getReplies,
-        rootComments: commentsByParentId['null'],
+        rootComments: commentsByParentId.null,
         createLocalComment,
         updateLocalComment,
         deleteLocalComment,

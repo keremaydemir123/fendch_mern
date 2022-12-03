@@ -33,7 +33,7 @@ function Projects() {
 
   const filterProjects = () => {
     let str;
-    let techStr = selectValue.map((tech) => tech.label).join(',');
+    const techStr = selectValue.map((tech) => tech.label).join(',');
     if (techStr.length < 1) str = `page=${page}`;
     else str = `page=${page}&tech=${techStr}`;
 
@@ -47,13 +47,13 @@ function Projects() {
   if (isLoading) return <Loading />;
   if (error) return <p>Error</p>;
 
-  const projects = data.projects;
+  const { projects } = data;
 
   return (
     <div className="flex flex-col h-full w-full  gap-4">
       <div className="flex justify-between w-full bg-secondary p-4 py-2 rounded-md ">
         <Select
-          multiple={true}
+          multiple
           options={selectOptions}
           onChange={(value) => setSelectValue(value)}
           value={selectValue}

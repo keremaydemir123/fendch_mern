@@ -1,5 +1,5 @@
-import SERVER_URL from './baseURL';
 import axios from 'axios';
+import SERVER_URL from './baseURL';
 import { ChallengeProps } from '../types/Challenge';
 
 export async function getOldChallenges() {

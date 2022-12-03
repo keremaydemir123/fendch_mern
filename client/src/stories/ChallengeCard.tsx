@@ -12,7 +12,7 @@ function ChallengeCard() {
               width="183"
               height="150"
               style={{ objectFit: 'cover' }}
-            ></img>
+            />
           </div>
           <div className={styles.main}>
             <div className={styles.objective}>Challenge Objective</div>

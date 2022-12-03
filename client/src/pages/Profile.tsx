@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { FcSettings } from 'react-icons/fc';
 import { FaLinkedin, FaGithub } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
-import { useUser } from '../contexts/UserProvider';
 import { useQuery } from 'react-query';
+import toast, { Toaster } from 'react-hot-toast';
+import { useUser } from '../contexts/UserProvider';
 import { getUserByUsername, updateMe } from '../services/user';
 import { UserProps } from '../types';
 import Modal from '../components/Modal';
 import Input from '../components/Input';
-import toast, { Toaster } from 'react-hot-toast';
 import Button from '../components/Button';
 import ProjectCard from '../components/ProjectCard';
 import Loading from '../components/Loading';
@@ -85,7 +85,7 @@ function Profile() {
   function calculateTotalLikes() {
     let likeCount = 0;
     pageUser?.projects?.map((project) => {
-      likeCount = likeCount + project.likes.length;
+      likeCount += project.likes.length;
     });
     return likeCount;
   }
@@ -155,7 +155,7 @@ function Profile() {
                   <FaLinkedin fill="#eee" />
                 </a>
               )}
-              <a href={pageUser?.profileUrl} target="_blank">
+              <a href={pageUser?.profileUrl} target="_blank" rel="noreferrer">
                 <FaGithub fill="#eee" />
               </a>
             </div>

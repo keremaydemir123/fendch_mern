@@ -1,7 +1,7 @@
+import { motion, AnimatePresence } from 'framer-motion';
 import Comment from './Comment';
 import CommentCardForProject from './CommentCardForProject';
 import { CommentProps } from '../types/Comment';
-import { motion, AnimatePresence } from 'framer-motion';
 
 function CommentList({
   comments,

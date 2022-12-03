@@ -1,6 +1,6 @@
+import { useQuery } from 'react-query';
 import ChallengeCard from '../components/ChallengeCard';
 import { useUser } from '../contexts/UserProvider';
-import { useQuery } from 'react-query';
 import { getActiveChallenges } from '../services/challenges';
 import Loading from '../components/Loading';
 import { getUser } from '../services/auth';
