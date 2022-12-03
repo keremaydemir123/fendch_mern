@@ -1,9 +1,9 @@
-import IconButton from './IconButton';
 import { FaEdit, FaHeart, FaRegHeart, FaReply, FaTrash } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react';
+import IconButton from './IconButton';
 import { useChallenge } from '../contexts/ChallengeProvider';
 import CommentList from './CommentList';
-import { useState } from 'react';
 import CommentForm from './CommentForm';
 import {
   deleteComment,
@@ -107,7 +107,7 @@ function Comment({
           </div>
           {isEditing ? (
             <CommentForm
-              autoFocus={true}
+              autoFocus
               onSubmit={onCommentEdit}
               initialValue={message}
             />
@@ -151,7 +151,7 @@ function Comment({
 
       {isReplying && (
         <div className="mt-1 ml-3">
-          <CommentForm autoFocus={true} onSubmit={onCommentReply} />
+          <CommentForm autoFocus onSubmit={onCommentReply} />
         </div>
       )}
       {childComments?.length > 0 && (

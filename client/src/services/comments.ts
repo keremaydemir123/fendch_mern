@@ -1,5 +1,5 @@
-import SERVER_URL from './baseURL';
 import axios from 'axios';
+import SERVER_URL from './baseURL';
 
 export async function getCommentsByChallengeId(challengeId: string) {
   const response = await axios.get(

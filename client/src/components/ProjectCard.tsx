@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { ProjectProps } from '../types/Project';
 import dateFormatter from '../utils/dateFormatter';
 import Button from './Button';
@@ -7,8 +9,6 @@ import CustomLink from './CustomLink';
 import Modal from './Modal';
 import { dislikeProject, likeProject } from '../services/projects';
 import { useUser } from '../contexts/UserProvider';
-import toast, { Toaster } from 'react-hot-toast';
-import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { useProject } from '../contexts/ProjectProvider';
 
 function ProjectCard({ project }: { project: ProjectProps }) {
@@ -20,7 +20,7 @@ function ProjectCard({ project }: { project: ProjectProps }) {
   };
 
   const projectUser = project.user;
-  const challenge = project.challenge;
+  const { challenge } = project;
 
   return (
     <div className="flex flex-col rounded-xl bg-gray overflow-hidden w-full h-max shadow-lg shadow-secondary">

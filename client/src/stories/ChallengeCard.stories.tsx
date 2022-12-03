@@ -6,4 +6,6 @@ export default {
 };
 
 // example video: https://www.youtube.com/watch?v=FUKpWgRyPlU
-export const Default = () => <ChallengeCard />;
+export function Default() {
+  return <ChallengeCard />;
+}

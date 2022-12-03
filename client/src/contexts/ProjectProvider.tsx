@@ -78,9 +78,8 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
           likeCount: project.likeCount + 1,
           likedByMe: true,
         };
-      } else {
-        return project;
       }
+      return project;
     });
   }
   function dislikeLocalProject(id: string) {
@@ -91,9 +90,8 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
           likeCount: project.likeCount - 1,
           likedByMe: false,
         };
-      } else {
-        return project;
       }
+      return project;
     });
   }
 
@@ -106,9 +104,8 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       return prevComments.map((comment) => {
         if (comment._id === id) {
           return { ...comment, message };
-        } else {
-          return comment;
         }
+        return comment;
       });
     });
   }
@@ -128,9 +125,8 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
             likeCount: comment.likeCount + 1,
             likedByMe: true,
           };
-        } else {
-          return comment;
         }
+        return comment;
       });
     });
   }
@@ -144,9 +140,8 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
             likeCount: comment.likeCount - 1,
             likedByMe: false,
           };
-        } else {
-          return comment;
         }
+        return comment;
       });
     });
   }
@@ -166,7 +161,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
       value={{
         project: { ...project! },
         getReplies,
-        rootComments: commentsByParentId['null'],
+        rootComments: commentsByParentId.null,
         likeLocalProject,
         dislikeLocalProject,
         createLocalComment,
