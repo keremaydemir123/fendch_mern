@@ -63,7 +63,7 @@ function Projects() {
 
       <ProjectList projects={projects} />
 
-      {data.totalPages > data.limit && (
+      {data.totalProjects > data.limit && (
         <Pagination
           page={page}
           setPage={setPage}
