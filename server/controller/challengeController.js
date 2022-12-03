@@ -54,16 +54,25 @@ exports.getChallenge = asyncHandler(async (req, res) => {
 // @route POST /api/
 // @access private
 exports.createChallenge = asyncHandler(async (req, res) => {
+  console.log(req.body);
   if (
-    !req.body.objective ||
     !req.body.tech ||
+    !req.body.objective ||
+    !req.body.tasksMd ||
+    !req.body.tasksVideo ||
+    !req.body.solutionMd ||
+    !req.body.solutionVideo ||
+    !req.body.week ||
+    !req.body.thumbnail ||
     !req.body.description ||
-    !req.body.week
+    !req.body.liveExample
   ) {
     res
       .status(400)
-      .send("Don't forget to enter a title, techs and description");
-    throw new Error("Don't forget to enter a title, techs and description");
+      .send(
+        "Don't forget to enter a tech, objective, description, tasksMd, soltionMd, tasksVideo, solutionVideo, liveExample, thumbnail, week"
+      );
+    throw new Error("Insufficent data");
   }
 
   const objectiveExist = await Challenge.find({
@@ -213,8 +222,8 @@ exports.deleteComment = asyncHandler(async (req, res) => {
     res.status(400).json("Comment not found");
     throw new Error("Comment not found");
   }
-  
-  challenge.comments.remove(comment._id)
+
+  challenge.comments.remove(comment._id);
   user.comments.remove(comment._id);
 
   await comment.delete(comment._id);
@@ -222,7 +231,7 @@ exports.deleteComment = asyncHandler(async (req, res) => {
   childrenComments.forEach(async (comment) => {
     comment.remove();
     user.comments.pull(comment._id);
-    challenge.comments.remove(comment._id)
+    challenge.comments.remove(comment._id);
   });
 
   await challenge.save();

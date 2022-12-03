@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from 'react-query';
 import ChallengeCard from '../../components/ChallengeCard';
 import CustomLink from '../../components/CustomLink';
@@ -20,12 +19,12 @@ function AdminSecretChallenges() {
         {secretChallenges?.map((challenge: ChallengeProps) => {
           return (
             <div
-              key={challenge._id}
+              key={challenge?._id}
               className="flex flex-col gap-2 w-max items-center"
             >
               <ChallengeCard challenge={challenge} />
               <CustomLink
-                to={`${challenge._id}/edit`}
+                to={`${challenge?._id}/edit`}
                 className=" border-blue w-16 text-center text-lg font-semibold border-2"
               >
                 Edit

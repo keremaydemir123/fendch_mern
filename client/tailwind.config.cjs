@@ -26,8 +26,14 @@ module.exports = {
       'bubble-gum': '#ff77e9',
       bermuda: '#78dcca',
     },
+
     fontFamily: {
       sans: ['Poppins', 'sans-serif'],
+    },
+
+    container: {
+      center: true,
+      maxWidth: '100%',
     },
 
     extend: {},
