@@ -66,16 +66,7 @@ function ChallengeDetails() {
     }
   };
 
-  const mdText = `
-  # Heading 1
-  sdasdasda
-  asdasd
-  ## Heading 2
-  asda
-  ~~~js
-  console.log('hello world') 
-  ~~~
-  `;
+  console.log(challenge);
 
   return (
     <>
@@ -91,10 +82,11 @@ function ChallengeDetails() {
         <div className="w-full rounded-lg bg-primary p-8">
           <h1 className="text-center">{challenge?.tech}</h1>
           <h3 className="text-center">{challenge?.objective}</h3>
+          <img src={challenge?.thumbnail} alt="thumbnail" />
           <div className="p-8">
-            <YoutubePlayer embedId="E1E08i2UJGI" />
+            <YoutubePlayer embedId={challenge?.tasksVideo!} />
           </div>
-          <MarkdownTest markdown={mdText} />
+          <MarkdownTest markdown={challenge?.tasksMd!} />
           <div className="text-right px-8">
             <Button onClick={() => setOpen(true)}>Submit</Button>
           </div>

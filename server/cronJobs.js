@@ -1,19 +1,45 @@
 const cron = require("node-cron");
+const fs = require("fs");
 const Challenge = require("./models/ChallengeModel.js");
 
 // node-cron docs: https://www.npmjs.com/package/node-cron
-// this will work every every Sunday at 23:59:59
+// this will work every every Sunday at 23:59:40
 
-cron.schedule("59 59 23 * * Sunday", async () => {
+const START_WEEK = 48;
+
+cron.schedule("40 59 23 * * Sunday", async () => {
   // manipulate challenges here
   // 1) get active challenges and update them
-  const activeChallenges = await Challenge.find({ isActive: true });
-  activeChallenges.forEach(async (challenge) => {
-    challenge.isActive = false;
-    await challenge.save();
-  });
+  try {
+    const activeChallenges = await Challenge.find({ isActive: true });
+    activeChallenges.forEach(async (challenge) => {
+      challenge.isActive = false;
+      await challenge.save();
+    });
+  } catch (error) {
+    console.log("no active challenges");
+  }
 
-  // 2) get challenges from static/challenges folder and create new challenges
+  // 2) get secret challenges and update them
+  const currentDate = new Date();
+  const startDate = new Date(currentDate.getFullYear(), 0, 1);
+  const days = Math.floor((currentDate - startDate) / (24 * 60 * 60 * 1000));
+  const currentWeek = Math.ceil(days / 7);
+
+  const nextWeek = currentWeek - START_WEEK + 1;
+
+  try {
+    const secretChallenges = await Challenge.find({
+      isSecret: true,
+      week: nextWeek,
+    });
+    secretChallenges.forEach(async (challenge) => {
+      challenge.isSecret = false;
+      await challenge.save();
+    });
+  } catch (error) {
+    console.log("no secret challenges");
+  }
 });
 
 cron.schedule("0 10 0 * * Monday", () => {

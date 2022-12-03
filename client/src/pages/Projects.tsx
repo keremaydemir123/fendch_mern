@@ -3,11 +3,9 @@ import { useQuery } from 'react-query';
 import Button from '../components/Button';
 import Loading from '../components/Loading';
 import Pagination from '../components/Pagination';
-import ProjectCard from '../components/ProjectCard';
 import ProjectList from '../components/ProjectList';
 import { Select, SelectOption } from '../components/Select';
 import { getProjects } from '../services/projects';
-import { ProjectProps } from '../types/Project';
 
 const selectOptions = [
   { label: 'All', value: 'all' },
@@ -38,11 +36,8 @@ function Projects() {
     let techStr = selectValue.map((tech) => tech.label).join(',');
     if (techStr.length < 1) str = `page=${page}`;
     else str = `page=${page}&tech=${techStr}`;
-    console.log(str);
 
     setQueryString(str);
-
-    console.log(str);
   };
 
   useEffect(() => {
@@ -55,7 +50,7 @@ function Projects() {
   const projects = data.projects;
 
   return (
-    <div className="flex flex-col justify-between h-full w-full  gap-4">
+    <div className="flex flex-col h-full w-full  gap-4">
       <div className="flex justify-between w-full bg-secondary p-4 py-2 rounded-md ">
         <Select
           multiple={true}

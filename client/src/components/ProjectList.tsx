@@ -2,8 +2,6 @@ import { ProjectProps } from '../types';
 import ProjectCard from './ProjectCard';
 
 function ProjectList({ projects }: { projects: ProjectProps[] }) {
-  console.log('projects', projects);
-
   return (
     <div>
       {projects.map((project) => (
