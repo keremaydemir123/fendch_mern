@@ -1,11 +1,5 @@
-import Socials from './Socials';
-
 function LeftSidebar() {
-  return (
-    <div className=" md:w-96 w-16 p-2">
-      <Socials />
-    </div>
-  );
+  return <div className="md:w-64 sm:w-16 sm:flex  hidden p-2">Left</div>;
 }
 
 export default LeftSidebar;

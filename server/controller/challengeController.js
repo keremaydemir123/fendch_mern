@@ -54,23 +54,31 @@ exports.getChallenge = asyncHandler(async (req, res) => {
 // @route POST /api/
 // @access private
 exports.createChallenge = asyncHandler(async (req, res) => {
+  console.log(req.body);
   if (
-    !req.body.objective ||
     !req.body.tech ||
+    !req.body.objective ||
+    !req.body.tasksMd ||
+    !req.body.tasksVideo ||
+    !req.body.solutionMd ||
+    !req.body.solutionVideo ||
+    !req.body.week ||
+    !req.body.thumbnail ||
     !req.body.description ||
-    !req.body.week
+    !req.body.liveExample
   ) {
     res
       .status(400)
-      .send("Don't forget to enter a title, techs and description");
-    throw new Error("Don't forget to enter a title, techs and description");
+      .send(
+        "Don't forget to enter a tech, objective, description, tasksMd, soltionMd, tasksVideo, solutionVideo, liveExample, thumbnail, week"
+      );
+    throw new Error("Insufficent data");
   }
 
   const objectiveExist = await Challenge.find({
     objective: req.body.objective,
     tech: req.body.tech,
   });
-  console.log(objectiveExist);
   if (objectiveExist.length > 0) {
     res
       .status(400)
@@ -147,7 +155,6 @@ exports.getCommentsByUserId = asyncHandler(async (req, res) => {
 });
 
 exports.createComment = asyncHandler(async (req, res, next) => {
-  console.log(req);
   const challenge = await Challenge.findById(req.params.id);
   const user = await User.findById(req.body.userId);
 
@@ -205,6 +212,7 @@ exports.updateComment = asyncHandler(async (req, res) => {
 });
 
 exports.deleteComment = asyncHandler(async (req, res) => {
+  const challenge = await Challenge.findById(req.params.id);
   const comment = await Comment.findById(req.params.commentId);
   const childrenComments = await Comment.find({ parentId: comment._id });
 
@@ -215,15 +223,18 @@ exports.deleteComment = asyncHandler(async (req, res) => {
     throw new Error("Comment not found");
   }
 
-  user.comments.pull(comment._id);
+  challenge.comments.remove(comment._id);
+  user.comments.remove(comment._id);
 
-  await comment.remove();
+  await comment.delete(comment._id);
   // remove all children comments
   childrenComments.forEach(async (comment) => {
-    await comment.remove();
+    comment.remove();
     user.comments.pull(comment._id);
+    challenge.comments.remove(comment._id);
   });
 
+  await challenge.save();
   await user.save();
 
   res.status(200).json(comment);
