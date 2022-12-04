@@ -1,8 +1,6 @@
 const asyncHandler = require("express-async-handler");
 
 const User = require("../models/UserModel.js");
-const sendMail = require("../mail/mailSender.js");
-
 
 exports.getUsers = asyncHandler(async (req, res) => {
   const users = await User.find();
@@ -24,8 +22,6 @@ exports.getUserByUsername = asyncHandler(async (req, res) => {
       ],
     })
     .select("-notifications -_id -__v");
-
-    sendMail() // ---------------------
 
   if (user) {
     res.status(200).json(user);
@@ -108,3 +104,13 @@ exports.unfollowUser = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 });
+
+
+exports.getMails = asyncHandler(async (req, res) => {
+  
+  const email = {};
+  const users = await User.find(email).select({email:1, _id:0})
+
+  console.log(users); 
+}
+)

@@ -1,6 +1,9 @@
 const cron = require("node-cron");
 const fs = require("fs");
 const Challenge = require("./models/ChallengeModel.js");
+const userController = require("./controller/userController");
+const sendMail = require("./mail/mailSender.js");
+
 
 // node-cron docs: https://www.npmjs.com/package/node-cron
 // this will work every every Sunday at 23:59:40
@@ -42,6 +45,7 @@ cron.schedule("40 59 23 * * Sunday", async () => {
   }
 });
 
-cron.schedule("0 10 0 * * Monday", () => {
-  // send mail to everyone about new challenges
+cron.schedule("30 * * * * sunday", () => { // 0 10 0 * * Monday
+  userController.getMails()  
+  //sendMail()// send mail to everyone about new challenges
 });

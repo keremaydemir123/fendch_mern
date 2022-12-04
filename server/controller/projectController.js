@@ -19,7 +19,13 @@ exports.getAllProjects = asyncHandler(async (req, res) => {
   if (req.query.tech.includes(",")) techs = req.query.tech.split(",");
   else techs = [req.query.tech];
 
-  let projects = await Project.find().populate("challenge").populate("user");
+  let projects = await Project.find()
+    .populate({
+      path: "challenge",
+      select: { objective: 1, tech: 1, week: 1, submittedAt: 1, _id: 0 },
+    })
+    .populate({ path: "user", select: { username: 1, _id: 0 } })
+    .select("-__v -likedByMe -markdown -git -comments -_id");
 
   projects = projects.filter((project) => {
     if (techs.includes("All")) return project;

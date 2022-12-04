@@ -39,6 +39,9 @@ GOALS:
 - like a project: project.likes.push(liker.id)
 - Mail nodemailer mailgun 
 - Change challenge fields with time
+- Some security checks[x]
+- request trim [x]
+
 
 ### Check later
 - web socket
