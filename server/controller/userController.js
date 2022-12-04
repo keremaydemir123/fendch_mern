@@ -104,13 +104,3 @@ exports.unfollowUser = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 });
-
-
-exports.getMails = asyncHandler(async (req, res) => {
-  
-  const email = {};
-  const users = await User.find(email).select({email:1, _id:0})
-
-  console.log(users); 
-}
-)

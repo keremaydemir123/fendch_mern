@@ -3,6 +3,7 @@ const fs = require("fs");
 const Challenge = require("./models/ChallengeModel.js");
 const userController = require("./controller/userController");
 const sendMail = require("./mail/mailSender.js");
+const User = require("./models/UserModel.js");
 
 
 // node-cron docs: https://www.npmjs.com/package/node-cron
@@ -45,7 +46,9 @@ cron.schedule("40 59 23 * * Sunday", async () => {
   }
 });
 
-cron.schedule("30 * * * * sunday", () => { // 0 10 0 * * Monday
-  userController.getMails()  
+cron.schedule("30 * * * * sunday", async () => { // 0 10 0 * * Monday
+  // const mails = await User.find().select({email:1, _id:0})
+  // mails.forEach(async (user) => await sendMail(user.email))
+  // console.log(mails);
   //sendMail()// send mail to everyone about new challenges
 });

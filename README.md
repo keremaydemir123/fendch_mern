@@ -33,14 +33,15 @@ GOALS:
 - all card containers must be responsive
 
 #### Server:
-- When a comment deleted, delete all references from project,challange and user
+- When a comment deleted, delete all references from project, challange and user
 - Middleware that checks time and changing isSecret and isActive states
 - Pagination functionality for challenges and projects
 - like a project: project.likes.push(liker.id)
 - Mail nodemailer mailgun 
 - Change challenge fields with time
 - Some security checks[x]
-- request trim [x]
+- response trim [x]
+- private message []
 
 
 ### Check later
