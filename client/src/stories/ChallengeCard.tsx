@@ -1,10 +1,10 @@
 import styles from './ChallengeCard.module.css';
 
-function ChallengeCard() {
+function ChallengeCard(props: any) {
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.card}>
-        <div className={styles.tech}>Challenge Title</div>
+    <div className={`${styles.wrapper} ${props.backgroundColor}`} style={{backgroundColor: props.backgroundColor, borderColor: props.outerBorderColor}}>
+      <div className={styles.card} style={{borderColor: props.innerBorderColor}}>
+        <div className={styles.tech}>React</div>
         <div className={styles.body}>
           <div className={styles['image-holder']}>
             <img
