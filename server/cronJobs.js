@@ -46,9 +46,9 @@ cron.schedule("40 59 23 * * Sunday", async () => {
   }
 });
 
-cron.schedule("30 * * * * sunday", async () => { // 0 10 0 * * Monday
-  // const mails = await User.find().select({email:1, _id:0})
-  // mails.forEach(async (user) => await sendMail(user.email))
-  // console.log(mails);
+cron.schedule("30 * * * * sunday", async () => { // 0 10 0 * * Monday   foreach -> sendMail(user.email)
+  const mails = await User.find().select({email:1, _id:0})
+  mails.forEach((user) => sendMail(user.email))
+  console.log(mails);
   //sendMail()// send mail to everyone about new challenges
 });

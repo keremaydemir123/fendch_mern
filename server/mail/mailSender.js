@@ -4,14 +4,19 @@ const nodemailer = require("nodemailer");
 const mail = require("./mail");
 
 const MAIL_ROOT = process.env.MAIL_ROOT;
-const EMAIL_PASSWORD = process.env.MAIL_PASSWORD;
+const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
 
 // const mails = userController.getMails()
 
 function sendMail (email) {
   
   const transporter = nodemailer.createTransport({
-    service: "outlook",
+    service: "outlook", //smtp-mail.outlook.com
+  //   secureConnection: false,
+  //   port: 587,
+  //   tls: {
+  //     ciphers:'SSLv3'
+  //  },
     auth: {
       user: MAIL_ROOT,
       pass: EMAIL_PASSWORD,
