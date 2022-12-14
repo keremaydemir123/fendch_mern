@@ -11,7 +11,7 @@ const sendNotification = require("../helpers/notifications");
 // @route GET /api/active/
 // @access public
 exports.getActiveChallenges = asyncHandler(async (req, res) => {
-  const challenge = await Challenge.find();
+  const challenge = await Challenge.find().select("-projects -__v");
 
   filteredChallenge = challenge.filter(
     (secretChallenge) =>
@@ -25,7 +25,7 @@ exports.getActiveChallenges = asyncHandler(async (req, res) => {
 // @route GET /api/
 // @access public
 exports.getOldChallenges = asyncHandler(async (req, res) => {
-  const features = new APIFeatures(Challenge.find(), req.query)
+  const features = new APIFeatures(Challenge.find().select("-comments -projects"), req.query)
     .filter()
     .sort()
     .limitFields()
