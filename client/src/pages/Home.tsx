@@ -1,19 +1,10 @@
 import { useQuery } from 'react-query';
 import ChallengeCard from '../components/ChallengeCard';
-import { useUser } from '../contexts/UserProvider';
 import { getActiveChallenges } from '../services/challenges';
 import Loading from '../components/Loading';
-import { getUser } from '../services/auth';
+import { ChallengeProps } from '../types';
 
 function Home() {
-  const { user, setUser } = useUser();
-
-  const { data } = useQuery('getUser', getUser, {
-    onSuccess: (data) => {
-      setUser(data);
-    },
-  });
-
   const {
     isLoading,
     error,
@@ -26,8 +17,8 @@ function Home() {
 
   return (
     <div className="flex flex-wrap justify-center items-center gap-4">
-      {activeChallenges.map((challenge: any) => (
-        <ChallengeCard key={challenge._id} challenge={challenge} />
+      {activeChallenges.map((challenge: ChallengeProps) => (
+        <ChallengeCard key={challenge?._id} challenge={challenge} />
       ))}
     </div>
   );

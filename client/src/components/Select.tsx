@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './Select.module.css';
 
 export type SelectOption = {
   label: string;
-  value: string | number;
+  value: string;
 };
 
 type MultipleSelectProps = {
@@ -28,18 +28,21 @@ export function Select({ multiple, value, onChange, options }: SelectProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   function clearOptions() {
-    multiple ? onChange([]) : onChange(undefined);
+    return multiple ? onChange([]) : onChange(undefined);
   }
 
-  function selectOption(option: SelectOption) {
-    if (multiple) {
-      if (value.includes(option)) {
-        onChange(value.filter((o) => o !== option));
-      } else {
-        onChange([...value, option]);
-      }
-    } else if (option !== value) onChange(option);
-  }
+  const selectOption = useCallback(
+    (option: SelectOption) => {
+      if (multiple) {
+        if (value.includes(option)) {
+          onChange(value.filter((o) => o !== option));
+        } else {
+          onChange([...value, option]);
+        }
+      } else if (option !== value) onChange(option);
+    },
+    [multiple, value, onChange]
+  );
 
   function isOptionSelected(option: SelectOption) {
     return multiple ? value.includes(option) : option === value;
@@ -51,7 +54,7 @@ export function Select({ multiple, value, onChange, options }: SelectProps) {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.target != containerRef.current) return;
+      if (e.target !== containerRef.current) return;
       switch (e.code) {
         case 'Enter':
         case 'Space':
@@ -81,10 +84,11 @@ export function Select({ multiple, value, onChange, options }: SelectProps) {
     };
     containerRef.current?.addEventListener('keydown', handler);
 
+    const refCopy = containerRef.current;
     return () => {
-      containerRef.current?.removeEventListener('keydown', handler);
+      refCopy?.removeEventListener('keydown', handler);
     };
-  }, [isOpen, highlightedIndex, options]);
+  }, [isOpen, highlightedIndex, options, selectOption]);
 
   return (
     <div
@@ -93,6 +97,7 @@ export function Select({ multiple, value, onChange, options }: SelectProps) {
       onClick={() => setIsOpen((prev) => !prev)}
       tabIndex={0}
       className={styles.container}
+      role="button"
     >
       <span className={styles.value}>
         {multiple
@@ -103,6 +108,7 @@ export function Select({ multiple, value, onChange, options }: SelectProps) {
                   e.stopPropagation();
                   selectOption(v);
                 }}
+                type="button"
                 className={styles['option-badge']}
               >
                 {v.label}
@@ -116,6 +122,7 @@ export function Select({ multiple, value, onChange, options }: SelectProps) {
           e.stopPropagation();
           clearOptions();
         }}
+        type="button"
         className={styles['clear-btn']}
       >
         &times;
@@ -124,7 +131,7 @@ export function Select({ multiple, value, onChange, options }: SelectProps) {
       <div className={styles.caret} />
       <ul className={`${styles.options} ${isOpen ? styles.show : ''}`}>
         {options.map((option, index) => (
-          <li
+          <div
             onClick={(e) => {
               e.stopPropagation();
               selectOption(option);
@@ -137,7 +144,7 @@ export function Select({ multiple, value, onChange, options }: SelectProps) {
             } ${index === highlightedIndex ? styles.highlighted : ''}`}
           >
             {option.label}
-          </li>
+          </div>
         ))}
       </ul>
     </div>

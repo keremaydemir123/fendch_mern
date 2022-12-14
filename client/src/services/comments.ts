@@ -71,6 +71,10 @@ export async function likeComment({
   challengeId: string;
   userId: string;
 }) {
+  console.log('challengeId', challengeId);
+  console.log('id', id);
+  console.log('userId', userId);
+
   const response = await axios.post(
     `${SERVER_URL}/challenges/${challengeId}/comments/${id}/like`,
     { userId }

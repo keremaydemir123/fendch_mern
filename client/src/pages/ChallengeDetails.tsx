@@ -20,6 +20,8 @@ function ChallengeDetails() {
   const { id: challengeId } = useParams<{ id: string }>();
 
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const gitRef = useRef<HTMLInputElement | null>(null);
   const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
@@ -48,31 +50,33 @@ function ChallengeDetails() {
       await createProject({ challengeId, markdown, git, userId: user._id });
       toast.success('Project submitted successfully');
       setOpen(false);
-    } catch (error: any) {
-      toast.error(error.response.data);
+    } catch (err: unknown) {
+      toast.error("Couldn't submit project");
     }
   };
 
   const onCommentCreate = async (message: string) => {
+    if (!user) return;
+    setLoading(true);
     try {
       const comment = await createComment({
-        challengeId: challengeId!,
+        challengeId: challengeId as string,
         message,
-        userId: user?._id!,
+        userId: user?._id as string,
       });
       createLocalComment(comment);
-    } catch (error: any) {
-      toast.error(error.response.data);
+      setLoading(false);
+    } catch (err: unknown) {
+      toast.error("Couldn't create comment");
+      setError('Something went wrong');
     }
   };
-
-  console.log(challenge);
 
   return (
     <>
       <Modal open={open} onClose={() => setOpen(false)}>
         <form onSubmit={handleModalSubmit} className="flex flex-col gap-4">
-          <Input label="Git" id="git" type="text" ref={gitRef} />
+          <Input label="Git" type="text" ref={gitRef} />
           <Textarea label="Description" id="desc" ref={descriptionRef} />
           <Button type="submit">Submit</Button>
         </form>
@@ -84,16 +88,16 @@ function ChallengeDetails() {
           <h3 className="text-center">{challenge?.objective}</h3>
           <img src={challenge?.thumbnail} alt="thumbnail" />
           <div className="p-8">
-            <YoutubePlayer embedId={challenge?.tasksVideo!} />
+            <YoutubePlayer embedId={challenge?.tasksVideo as string} />
           </div>
-          <MarkdownTest markdown={challenge?.tasksMd!} />
+          <MarkdownTest markdown={challenge?.tasksMd as string} />
           <div className="text-right px-8">
             <Button onClick={() => setOpen(true)}>Submit</Button>
           </div>
         </div>
       </div>
       <h1>Comments</h1>
-      <CommentForm onSubmit={onCommentCreate} />
+      <CommentForm onSubmit={onCommentCreate} loading={loading} error={error} />
       <div>
         {rootComments != null && rootComments.length > 0 && (
           <CommentList comments={rootComments} place="challenge" />

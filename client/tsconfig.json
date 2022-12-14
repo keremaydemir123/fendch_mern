@@ -17,5 +17,6 @@
     "jsx": "react-jsx"
   },
   "include": ["src/**/*"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [{ "path": "./tsconfig.node.json" }],
+  "files": ["vite.config.ts",".eslintrc.cjs",".prettierrc.cjs","postcss.config.cjs","tailwind.config.cjs"]
 }

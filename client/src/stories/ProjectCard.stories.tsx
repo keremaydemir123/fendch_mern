@@ -7,7 +7,7 @@ export default {
 
 // example video: https://www.youtube.com/watch?v=FUKpWgRyPlU
 export function Default() {
-  return <ProjectCard />;
+  return <ProjectCard layout="default" />;
 }
 export function Grid() {
   return <ProjectCard layout="grid" />;

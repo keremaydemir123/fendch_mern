@@ -62,7 +62,7 @@ a:hover {
 
 .wrapper {
   width: 100%;
-  max-width: 1000px;
+  max-width: 1080px;
   min-height: calc(100vh - 8rem);
   margin: 0 auto;
   padding: 1rem 1rem;

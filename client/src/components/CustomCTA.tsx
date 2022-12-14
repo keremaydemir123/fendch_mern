@@ -21,4 +21,8 @@ function CustomCTA({
   );
 }
 
+CustomCTA.defaultProps = {
+  className: '',
+};
+
 export default CustomCTA;

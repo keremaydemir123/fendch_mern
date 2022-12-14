@@ -1,5 +1,6 @@
 import { FaEdit, FaHeart, FaRegHeart, FaReply, FaTrash } from 'react-icons/fa';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
+import { toast, Toaster } from 'react-hot-toast';
 import { useState } from 'react';
 import IconButton from './IconButton';
 import { useChallenge } from '../contexts/ChallengeProvider';
@@ -45,55 +46,92 @@ function Comment({
   const childComments = getReplies(_id);
   const [isReplying, setIsReplying] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  async function onCommentReply(message: string) {
-    const comment = await replyComment({
-      challengeId: challenge?._id!,
-      message,
-      parentId: _id,
-      userId: currentUser?._id!,
-    });
+  const onCommentReply = async (msg: string) => {
+    if (!currentUser?._id) {
+      toast.error('You must be logged in to reply to a comment');
+      return;
+    }
+    setLoading(true);
+    setIsReplying(true);
+    try {
+      const comment = await replyComment({
+        challengeId: challenge?._id as string,
+        message: msg,
+        parentId: _id,
+        userId: currentUser?._id,
+      });
+      createLocalComment(comment);
+    } catch (err) {
+      setError('Error replying to comment');
+    }
+    setLoading(false);
     setIsReplying(false);
-    createLocalComment(comment);
-  }
+  };
 
-  async function onCommentEdit(message: string) {
-    const comment = await updateComment({
-      challengeId: challenge?._id!,
-      message,
-      id: _id,
-    });
+  const onCommentEdit = async (msg: string) => {
+    if (!currentUser?._id) {
+      toast.error('You must be logged in to edit a comment');
+      return;
+    }
+
+    setIsEditing(true);
+    setLoading(true);
+    try {
+      const comment = await updateComment({
+        challengeId: challenge?._id as string,
+        message: msg,
+        id: _id,
+      });
+      updateLocalComment(_id, comment.message);
+    } catch (err) {
+      setError('Error updating comment');
+    }
+    setLoading(false);
     setIsEditing(false);
-    updateLocalComment(_id, comment.message);
-  }
-  async function onCommentDelete() {
-    const comment = await deleteComment({
-      challengeId: challenge?._id!,
-      id: _id,
-    });
-    deleteLocalComment(comment._id);
-  }
+  };
+  const onCommentDelete = async () => {
+    try {
+      const comment = await deleteComment({
+        challengeId: challenge?._id as string,
+        id: _id,
+      });
+      deleteLocalComment(comment._id);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-  async function onCommentLike() {
+  const onCommentLike = async () => {
+    if (!currentUser?._id) {
+      toast.error('You must be logged in to like to a comment');
+      return;
+    }
     await likeComment({
       id: _id,
-      challengeId: challenge?._id!,
-      userId: currentUser?._id!,
+      challengeId: challenge?._id as string,
+      userId: currentUser?._id,
     });
     likeLocalComment(_id);
-  }
+  };
 
-  async function onCommentDislike() {
+  const onCommentDislike = async () => {
+    if (!currentUser?._id) {
+      throw new Error('You must be logged in to dislike to a comment');
+    }
     await dislikeComment({
       id: _id,
-      challengeId: challenge?._id!,
-      userId: currentUser?._id!,
+      challengeId: challenge?._id as string,
+      userId: currentUser?._id,
     });
     dislikeLocalComment(_id);
-  }
+  };
 
   return (
     <>
+      <Toaster />
       <AnimatePresence>
         <div className="w-full flex flex-col bg-primary rounded-md mt-4 overflow-hidden">
           <div className="flex justify-between items-center p-2 bg-secondary">
@@ -110,6 +148,8 @@ function Comment({
               autoFocus
               onSubmit={onCommentEdit}
               initialValue={message}
+              loading={loading}
+              error={error}
             />
           ) : (
             <div className="font-light break-words p-2">{message}</div>
@@ -151,7 +191,12 @@ function Comment({
 
       {isReplying && (
         <div className="mt-1 ml-3">
-          <CommentForm autoFocus onSubmit={onCommentReply} />
+          <CommentForm
+            autoFocus
+            onSubmit={onCommentReply}
+            loading={loading}
+            error={error}
+          />
         </div>
       )}
       {childComments?.length > 0 && (
@@ -160,6 +205,7 @@ function Comment({
             <button
               className="collapse-line"
               aria-label="Hide Replies"
+              type="button"
               onClick={() => setAreChildrenHidden(true)}
             />
             <div className="pl-2 flex-grow">
@@ -169,6 +215,7 @@ function Comment({
           <button
             className={`btn mt-1 ${!areChildrenHidden ? 'hidden' : ''}`}
             onClick={() => setAreChildrenHidden(false)}
+            type="button"
           >
             Show Replies
           </button>

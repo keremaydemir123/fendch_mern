@@ -1,5 +1,3 @@
-import { Dispatch } from 'react';
-
 type PaginationProps = {
   page: number;
   total: number;
@@ -16,6 +14,7 @@ function Pagination({ total, limit, page, setPage }: PaginationProps) {
         </div>
         <div className="flex gap-4">
           <button
+            type="button"
             className="p-2 rounded-full bg-primary text-light hover:bg-dark hover:cursor-pointer"
             onClick={() => setPage((prev: number) => prev - 1)}
             disabled={page === 1}
@@ -36,6 +35,7 @@ function Pagination({ total, limit, page, setPage }: PaginationProps) {
             </svg>
           </button>
           <button
+            type="button"
             className="p-2 rounded-full bg-primary text-light hover:bg-dark hover:cursor-pointer"
             onClick={() => setPage((prev: number) => prev + 1)}
             disabled={page === Math.ceil(total / limit)}
