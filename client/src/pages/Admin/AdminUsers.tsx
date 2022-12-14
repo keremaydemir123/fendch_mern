@@ -1,12 +1,15 @@
 import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 import Button from '../../components/Button';
-import { User } from '../../contexts/UserProvider';
+import Loading from '../../components/Loading';
 import { getUsers } from '../../services/admin';
-import dateFormatter from '../../utils/dateFormatter';
+import { UserProps } from '../../types';
 
 function AdminUsers() {
   const { isLoading, error, data: users } = useQuery('users', getUsers);
+
+  if (isLoading) return <Loading />;
+  if (error) return <div>Something went wrong...</div>;
 
   return (
     <div className="bg-primary text-light px-4 py-2">
@@ -15,7 +18,7 @@ function AdminUsers() {
         <h3>Total Users: {users?.length}</h3>
       </div>
       <div className=" bg-secondary mt-4">
-        {users?.map((user: User) => (
+        {users?.map((user: UserProps) => (
           <div
             key={user.githubId}
             className="p-2 bg-dark flex justify-between items-center rounded-md"
@@ -25,12 +28,9 @@ function AdminUsers() {
               <Link to={`/profile/${user.username}`}> {user.username}</Link>
             </p>
             <p>projects: 0</p>
-            <p>joined at: {dateFormatter(new Date(user.joinedAt))}</p>
-            <div>
-              <Button type="button" className="border-red">
-                Delete
-              </Button>
-            </div>
+            <Button type="button" className="border-red">
+              Delete
+            </Button>
           </div>
         ))}
       </div>

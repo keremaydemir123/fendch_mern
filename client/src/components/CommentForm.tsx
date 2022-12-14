@@ -5,8 +5,8 @@ import Button from './Button';
 
 type CommentFormProps = {
   onSubmit: (message: string) => Promise<void>;
-  loading?: boolean;
-  error?: string;
+  loading: boolean;
+  error: string;
   autoFocus?: boolean;
   initialValue?: string;
 };
@@ -14,16 +14,16 @@ type CommentFormProps = {
 function CommentForm({
   loading,
   error,
-  autoFocus = false,
+  autoFocus,
   onSubmit,
   initialValue = '',
 }: CommentFormProps) {
-  const [message, setMessage] = useState(initialValue);
+  const [message, setMessage] = useState<string>(initialValue);
   const { user } = useUser();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    onSubmit(message).then(() => setMessage(''));
+    if (message?.trim() !== '') onSubmit(message).then(() => setMessage(''));
   }
 
   return (
@@ -39,13 +39,19 @@ function CommentForm({
           }
           disabled={!user || loading}
         />
-        <Button className="btn" type="submit">
+        <Button type="submit" disabled={loading}>
           {loading ? 'Loading' : 'Post'}
         </Button>
+        <Button disabled={loading}>Cancel</Button>
       </div>
       <div className="error-msg">{error}</div>
     </form>
   );
 }
+
+CommentForm.defaultProps = {
+  autoFocus: false,
+  initialValue: '',
+};
 
 export default CommentForm;

@@ -1,46 +1,56 @@
-import { createContext, useContext, useMemo, useState, useEffect } from 'react';
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import { getChallenge } from '../services/challenges';
 import Loading from '../components/Loading';
 import { ChallengeProps, CommentProps } from '../types';
 
-const Context = createContext({
-  challenge: {} as ChallengeProps,
-  getReplies: (parentId: string): CommentProps[] => [],
-  rootComments: [] as CommentProps[],
-  createLocalComment: (comment: CommentProps) => {},
-  updateLocalComment: (id: string, message: string) => {},
-  deleteLocalComment: (id: string) => {},
-  likeLocalComment: (id: string) => {},
-  dislikeLocalComment: (id: string) => {},
-});
+interface IChallengeContext {
+  challenge: ChallengeProps | undefined;
+  getReplies: (parentId: string) => CommentProps[];
+  rootComments: CommentProps[];
+  createLocalComment: (comment: CommentProps) => void;
+  updateLocalComment: (id: string, message: string) => void;
+  deleteLocalComment: (id: string) => void;
+  likeLocalComment: (id: string) => void;
+  dislikeLocalComment: (id: string) => void;
+}
+
+const Context = createContext<IChallengeContext>({} as IChallengeContext);
 
 export function useChallenge() {
   return useContext(Context);
 }
 
 export function ChallengeProvider({ children }: { children: React.ReactNode }) {
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const [comments, setComments] = useState<CommentProps[]>([]);
+  const [challenge, setChallenge] = useState<ChallengeProps>();
 
-  const {
-    isLoading,
-    error,
-    data: challenge,
-  } = useQuery<ChallengeProps>(['getChallenge', id], () => getChallenge(id!));
+  const { isLoading } = useQuery(['getChallenge', id], () => getChallenge(id), {
+    onSuccess: (data) => {
+      setChallenge(data);
+    },
+  });
 
   useEffect(() => {
     if (challenge?.comments == null) return;
     setComments(challenge.comments);
   }, [challenge?.comments]);
 
-  type groupProps = {
+  type GroupProps = {
     [key: string]: CommentProps[];
   };
 
-  const commentsByParentId = useMemo((): groupProps => {
-    const groups: groupProps = {};
+  const commentsByParentId = useMemo((): GroupProps => {
+    const groups: GroupProps = {};
 
     comments?.forEach((comment) => {
       if (comment.parentId) {
@@ -59,10 +69,10 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
     setComments((prevComments) => [comment, ...prevComments]);
   }
 
-  function updateLocalComment(id: string, message: string) {
+  function updateLocalComment(commentId: string, message: string) {
     setComments((prevComments) => {
       return prevComments.map((comment) => {
-        if (comment._id === id) {
+        if (comment._id === commentId) {
           return { ...comment, message };
         }
         return comment;
@@ -70,16 +80,16 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
     });
   }
 
-  function deleteLocalComment(id: string) {
+  function deleteLocalComment(commentId: string) {
     setComments((prevComments) => {
-      return prevComments.filter((comment) => comment._id !== id);
+      return prevComments.filter((comment) => comment._id !== commentId);
     });
   }
 
-  function likeLocalComment(id: string) {
+  function likeLocalComment(commentId: string) {
     setComments((prevComments) => {
       return prevComments.map((comment) => {
-        if (comment._id === id) {
+        if (comment._id === commentId) {
           return {
             ...comment,
             likeCount: comment.likeCount + 1,
@@ -91,10 +101,10 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
     });
   }
 
-  function dislikeLocalComment(id: string) {
+  function dislikeLocalComment(commentId: string) {
     setComments((prevComments) => {
       return prevComments.map((comment) => {
-        if (comment._id === id) {
+        if (comment._id === commentId) {
           return {
             ...comment,
             likeCount: comment.likeCount - 1,
@@ -106,30 +116,33 @@ export function ChallengeProvider({ children }: { children: React.ReactNode }) {
     });
   }
 
-  function getReplies(parentId: string) {
-    return commentsByParentId[parentId];
-  }
+  const getReplies = useCallback(
+    (parentId: string) => {
+      return commentsByParentId[parentId];
+    },
+    [commentsByParentId]
+  );
+
+  const contextValues = useMemo(
+    () => ({
+      challenge,
+      getReplies,
+      rootComments: commentsByParentId.null,
+      createLocalComment,
+      updateLocalComment,
+      deleteLocalComment,
+      likeLocalComment,
+      dislikeLocalComment,
+    }),
+    [challenge, commentsByParentId, getReplies]
+  );
 
   return (
-    <Context.Provider
-      value={{
-        challenge: { ...challenge! },
-        getReplies,
-        rootComments: commentsByParentId.null,
-        createLocalComment,
-        updateLocalComment,
-        deleteLocalComment,
-        likeLocalComment,
-        dislikeLocalComment,
-      }}
-    >
-      {isLoading ? (
-        <Loading />
-      ) : error ? (
-        <h1>Something went wrong</h1>
-      ) : (
-        children
-      )}
+    <Context.Provider value={contextValues}>
+      <>
+        {isLoading && <Loading />}
+        {children}
+      </>
     </Context.Provider>
   );
 }

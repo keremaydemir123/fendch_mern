@@ -12,6 +12,7 @@ import {
 import { CommentProps } from '../types/Comment';
 import { useUser } from '../contexts/UserProvider';
 import { useProject } from '../contexts/ProjectProvider';
+import CommentList from './CommentList';
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
   dateStyle: 'medium',
@@ -28,6 +29,8 @@ function CommentCardForProject({
   likedByMe,
 }: CommentProps) {
   const [areChildrenHidden, setAreChildrenHidden] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const {
     project,
@@ -44,48 +47,73 @@ function CommentCardForProject({
   const [isReplying, setIsReplying] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
-  async function onCommentReply(message: string) {
-    const comment = await replyProjectComment({
-      projectId: project?._id!,
-      message,
-      parentId: _id,
-      userId: currentUser?._id!,
-    });
-    setIsReplying(false);
-    createLocalComment(comment);
+  async function onCommentReply(msg: string) {
+    if (!currentUser?._id) return;
+    if (!project?._id) return;
+    setLoading(true);
+    setIsReplying(true);
+    try {
+      const comment = await replyProjectComment({
+        projectId: project?._id,
+        message: msg,
+        parentId: _id,
+        userId: currentUser?._id,
+      });
+      setLoading(false);
+      setIsReplying(false);
+      createLocalComment(comment);
+    } catch (err) {
+      setError("Couldn't reply to comment");
+    }
   }
 
-  async function onCommentEdit(message: string) {
-    await updateProjectComment({
-      projectId: project?._id!,
-      message,
-      id: _id,
-    });
-    setIsEditing(false);
-    updateLocalComment(_id, message);
+  async function onCommentEdit(msg: string) {
+    if (!project?._id) return;
+    setIsEditing(true);
+    setLoading(true);
+    try {
+      await updateProjectComment({
+        projectId: project?._id,
+        message: msg,
+        id: _id,
+      });
+      setLoading(false);
+      setIsEditing(false);
+      updateLocalComment(_id, message);
+    } catch (err) {
+      setError("Couldn't edit comment");
+    }
   }
   async function onCommentDelete() {
+    if (!project?._id) return;
+
     await deleteProjectComment({
-      projectId: project?._id!,
+      projectId: project?._id,
       id: _id,
     });
     deleteLocalComment(_id);
   }
 
   async function onCommentLike() {
+    if (!currentUser?._id) return;
+    if (!project?._id) return;
+
     await likeProjectComment({
       id: _id,
-      projectId: project?._id!,
-      userId: currentUser?._id!,
+      projectId: project?._id,
+      userId: currentUser?._id,
     });
     likeLocalComment(_id);
   }
 
   async function onCommentDislike() {
+    if (!currentUser?._id) return;
+    if (!project?._id) return;
+
     await dislikeProjectComment({
       id: _id,
-      projectId: project?._id!,
-      userId: currentUser?._id!,
+      projectId: project?._id,
+      userId: currentUser?._id,
     });
     dislikeLocalComment(_id);
   }
@@ -107,8 +135,10 @@ function CommentCardForProject({
           {isEditing ? (
             <CommentForm
               autoFocus
-              onSubmit={onCommentEdit}
+              onSubmit={() => onCommentEdit(message)}
               initialValue={message}
+              loading={loading}
+              error={error}
             />
           ) : (
             <div className="font-light break-words p-2">{message}</div>
@@ -141,7 +171,7 @@ function CommentCardForProject({
               <IconButton
                 Icon={FaTrash}
                 aria-label="Delete"
-                color="text-red-500"
+                color="#f33"
                 onClick={() => onCommentDelete()}
               />
             </>
@@ -152,7 +182,13 @@ function CommentCardForProject({
       <div>
         {isReplying && (
           <div className="mt-1 ml-3">
-            <CommentForm autoFocus onSubmit={onCommentReply} />
+            <CommentForm
+              autoFocus
+              onSubmit={() => onCommentReply(message)}
+              initialValue=""
+              loading={loading}
+              error={error}
+            />
           </div>
         )}
       </div>
@@ -164,6 +200,7 @@ function CommentCardForProject({
               <button
                 className="collapse-line"
                 aria-label="Hide Replies"
+                type="button"
                 onClick={() => setAreChildrenHidden(true)}
               />
               <div className="pl-2 flex-grow">
@@ -173,6 +210,7 @@ function CommentCardForProject({
             <button
               className={`btn mt-1 ${!areChildrenHidden ? 'hidden' : ''}`}
               onClick={() => setAreChildrenHidden(false)}
+              type="button"
             >
               Show Replies
             </button>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useQuery } from 'react-query';
 import Button from '../components/Button';
 import Loading from '../components/Loading';
@@ -25,24 +25,23 @@ function Projects() {
   const { isLoading, error, data } = useQuery(['projects', queryString], () =>
     getProjects(queryString)
   );
-
-  const search = () => {
-    setPage(1);
-    filterProjects();
-  };
-
-  const filterProjects = () => {
+  const filterProjects = useCallback(() => {
     let str;
     const techStr = selectValue.map((tech) => tech.label).join(',');
     if (techStr.length < 1) str = `page=${page}`;
     else str = `page=${page}&tech=${techStr}`;
 
     setQueryString(str);
+  }, [page, selectValue]);
+
+  const search = () => {
+    setPage(1);
+    filterProjects();
   };
 
   useEffect(() => {
     filterProjects();
-  }, [page]);
+  }, [filterProjects]);
 
   if (isLoading) return <Loading />;
   if (error) return <p>Error</p>;

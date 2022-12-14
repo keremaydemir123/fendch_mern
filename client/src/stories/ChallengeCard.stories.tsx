@@ -7,5 +7,5 @@ export default {
 
 // example video: https://www.youtube.com/watch?v=FUKpWgRyPlU
 export function Default() {
-  return <ChallengeCard />;
+  return <ChallengeCard style={style} />;
 }

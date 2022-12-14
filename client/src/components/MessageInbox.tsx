@@ -1,4 +1,3 @@
-import React from 'react';
 import { FaEnvelope } from 'react-icons/fa';
 
 function MessageInbox() {

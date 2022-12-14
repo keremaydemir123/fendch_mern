@@ -2,17 +2,18 @@
   position: relative;
   width: 20em;
   min-height: 1.5em;
-  border: 0.05em solid #777;
   display: flex;
   align-items: center;
   gap: 0.5em;
   padding: 0.5em;
   border-radius: 0.25em;
   outline: none;
+
+  @apply border-2 border-gray;
 }
 
 .container:focus {
-  border-color: hsl(200, 100%, 50%);
+  @apply border-purple;
 }
 
 .value {
@@ -24,29 +25,32 @@
 
 .clear-btn {
   background: none;
-  color: #777;
   border: none;
   outline: none;
   cursor: pointer;
   padding: 0;
   font-size: 1.25em;
+
+  @apply text-light-gray;
 }
 
 .clear-btn:focus,
 .clear-btn:hover {
-  color: #333;
+  opacity: 0.8;
 }
 
 .divider {
-  background-color: #777;
   align-self: stretch;
   width: 0.05em;
+
+  @apply bg-light-gray;
 }
 
 .caret {
   translate: 0 25%;
   border: 0.25em solid transparent;
-  border-top-color: #777;
+
+  @apply border-t-light-gray;
 }
 
 .options {
@@ -62,8 +66,9 @@
   width: 100%;
   left: 0;
   top: calc(100% + 0.25em);
-  background-color: white;
   z-index: 100;
+
+  @apply bg-primary text-light;
 }
 
 .options.show {
@@ -76,12 +81,11 @@
 }
 
 .option.selected {
-  background-color: hsl(200, 100%, 70%);
+  @apply bg-dark-purple text-light;
 }
 
 .option.highlighted {
-  background-color: hsl(200, 100%, 50%);
-  color: white;
+  @apply bg-purple text-light;
 }
 
 .option-badge {
@@ -98,13 +102,12 @@
 
 .option-badge:hover,
 .option-badge:focus {
-  background-color: hsl(0, 100%, 90%);
-  border-color: hsl(0, 100%, 50%);
+  @apply bg-purple text-light;
 }
 
 .option-badge:hover > .remove-btn,
 .option-badge:focus > .remove-btn {
-  color: hsl(0, 100%, 50%);
+  @apply text-dark;
 }
 
 .option-badge > .remove-btn {

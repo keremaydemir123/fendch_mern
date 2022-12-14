@@ -18,7 +18,9 @@ module.exports = {
       green: '#25a954',
       red: '#bb0000',
       blue: '#007d97',
+      'light-purple': '#CBC3E3',
       purple: '#553ab8',
+      'dark-purple': '#441aa4',
       midnight: '#121063',
       metal: '#565584',
       tahiti: '#3ab7bf',
@@ -36,7 +38,9 @@ module.exports = {
       maxWidth: '100%',
     },
 
-    extend: {},
+    extend: {
+      colors: {},
+    },
   },
   plugins: [],
 };

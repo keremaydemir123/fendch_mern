@@ -1,7 +1,8 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { motion, AnimatePresence } from 'framer-motion';
-import Comment from './Comment';
 import CommentCardForProject from './CommentCardForProject';
 import { CommentProps } from '../types/Comment';
+import Comment from './Comment';
 
 function CommentList({
   comments,

@@ -1,33 +1,26 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import toast, { Toaster } from 'react-hot-toast';
-import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { ProjectProps } from '../types/Project';
 import dateFormatter from '../utils/dateFormatter';
 import Button from './Button';
 import CustomLink from './CustomLink';
 import Modal from './Modal';
-import { dislikeProject, likeProject } from '../services/projects';
-import { useUser } from '../contexts/UserProvider';
-import { useProject } from '../contexts/ProjectProvider';
 
 function ProjectCard({ project }: { project: ProjectProps }) {
-  const { user } = useUser();
   const [open, setOpen] = useState(false);
 
   const seePreview = () => {
     setOpen(true);
   };
 
-  const projectUser = project.user;
+  const projectUser = project?.user;
   const { challenge } = project;
 
   return (
     <div className="flex flex-col rounded-xl bg-gray overflow-hidden w-full h-max shadow-lg shadow-secondary">
-      <Toaster />
       <div className="flex justify-between bg-primary text-gray-50 p-2 border-b-secondary border-b-2">
-        <Link to={`/profile/${projectUser.username}`}>
-          @{projectUser.username}
+        <Link to={`/profile/${projectUser?.username}`}>
+          @{projectUser?.username}
         </Link>
         <p className="text-sm text-muted">
           {dateFormatter(new Date(project.submittedAt))}
@@ -53,7 +46,7 @@ function ProjectCard({ project }: { project: ProjectProps }) {
           <CustomLink to={`/projects/${project._id}`}>
             Project Details
           </CustomLink>
-          <Button onClick={seePreview} type="button">
+          <Button onClick={seePreview} type="button" disabled={false}>
             Preview
           </Button>
         </div>
@@ -64,6 +57,7 @@ function ProjectCard({ project }: { project: ProjectProps }) {
           <Button
             onClick={() => setOpen(false)}
             className="absolute top-0 right-1"
+            disabled={false}
           >
             X
           </Button>

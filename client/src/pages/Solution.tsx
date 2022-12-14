@@ -1,7 +1,6 @@
-import React from 'react';
 import { useQuery } from 'react-query';
-import { Link, useParams } from 'react-router-dom';
-import Button from '../components/Button';
+import { useParams } from 'react-router-dom';
+import Loading from '../components/Loading';
 import MarkdownTest from '../components/MarkdownTest';
 import { getChallenge } from '../services/challenges';
 
@@ -11,9 +10,10 @@ function Solution() {
     isLoading,
     error,
     data: challenge,
-  } = useQuery('getSolutions', () => getChallenge(id!));
+  } = useQuery('getSolutions', () => getChallenge(id));
 
-  console.log(challenge?.tags);
+  if (isLoading) return <Loading />;
+  if (error) return <div>Something went wrong...</div>;
 
   return (
     <div>

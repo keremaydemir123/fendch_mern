@@ -1,5 +1,3 @@
-import { UserProps } from './User';
-
 export type CommentProps = {
   _id: string;
   message: string;

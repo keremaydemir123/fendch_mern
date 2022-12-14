@@ -1,4 +1,8 @@
-function ProjectCard({ layout = 'default' }) {
+function ProjectCard({
+  layout = 'default',
+}: {
+  layout: 'default' | 'grid' | 'list';
+}) {
   return (
     <div>
       {layout === 'default' && (
