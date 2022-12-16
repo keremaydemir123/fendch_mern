@@ -1,10 +1,8 @@
 const cron = require("node-cron");
 const fs = require("fs");
 const Challenge = require("./models/ChallengeModel.js");
-const userController = require("./controller/userController");
 const sendMail = require("./mail/mailSender.js");
 const User = require("./models/UserModel.js");
-
 
 // node-cron docs: https://www.npmjs.com/package/node-cron
 // this will work every every Sunday at 23:59:40
@@ -46,9 +44,22 @@ cron.schedule("40 59 23 * * Sunday", async () => {
   }
 });
 
-cron.schedule("30 * * * * sunday", async () => { // 0 10 0 * * Monday   foreach -> sendMail(user.email)
-  const mails = await User.find().select({email:1, _id:0})
-  mails.forEach((user) => sendMail(user.email))
-  console.log(mails);
-  //sendMail()// send mail to everyone about new challenges
+cron.schedule("30 20 * * * sunday", async () => {
+  // 0 10 0 * * Monday   // 30 * * * * sunday
+  console.log("worked");
+  const users = await User.find().select({ email: 1, displayName: 1, _id: 0 });
+  const activeChallenges = await Challenge.find({ isActive: true }).select({
+    tech: 1,
+    objective: 1,
+  });
+  for (let i = 0; i < users.length; i++) {
+    sendMail({
+      email: users[i].email,
+      displayName: users[i].displayName,
+      challenge: activeChallenges,
+    });
+  }
+  console.log("worked2");
+
+  // get the active challenge of the week send
 });

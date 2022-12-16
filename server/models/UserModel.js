@@ -4,6 +4,7 @@ const userSchema = mongoose.Schema(
   {
     githubId: { type: String, required: true, unique: true },
     username: { type: String, required: true, unique: true },
+    displayName: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     avatar: { type: String, required: true },
     profileUrl: { type: String, required: true },
