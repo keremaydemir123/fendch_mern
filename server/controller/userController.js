@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 
 const User = require("../models/UserModel.js");
+const Project = require("../models/ProjectModel.js");
 
 exports.getUsers = asyncHandler(async (req, res) => {
   const users = await User.find();
@@ -9,22 +10,22 @@ exports.getUsers = asyncHandler(async (req, res) => {
 });
 
 exports.getUserByUsername = asyncHandler(async (req, res) => {
-  const user = await User.findOne({ username: req.params.username })
+  const user = await User.findOne({ username: req.params.username }).select(
+    "-__v -comments -email -displayName -likedComments -likedProjects -notifications -repos"
+  );
+
+  const projects = await Project.find({ user: user._id })
+    .populate({ path: "user", select: { username: 1, avatar: 1, _id: 0 } })
     .populate({
-      path: "projects",
-      populate: [
-        { path: "user", select: "username", model: "User" },
-        {
-          path: "challenge",
-          select: "week tech objective",
-          model: "Challenge",
-        },
-      ],
+      path: "challenge",
+      select: { tech: 1, objective: 1, week: 1, _id: 1 },
     })
-    .select("-notifications -_id -__v");
+    .select("-__v -markdown -comments -likeCount -likedByMe");
+
+  console.log(projects);
 
   if (user) {
-    res.status(200).json(user);
+    res.status(200).json({ user, projects });
   } else {
     res.status(404);
     throw new Error("User not found");

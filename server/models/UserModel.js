@@ -18,16 +18,28 @@ const userSchema = mongoose.Schema(
       enum: ["user", "admin"],
     },
     joinedAt: { type: Date, default: Date.now },
-    projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project", default: [] }],
-    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment", default: [] }],
-    repos: [String],
+    projects: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Project", default: [] },
+    ],
+    comments: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Comment", default: [] },
+    ],
+    repos_url: String,
     notifications: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Notification" },
     ],
-    followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] }],
-    following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] }],
-    likedComments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment", default: [] }],
-    likedProjects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project", default: [] }],
+    followers: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] },
+    ],
+    following: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] },
+    ],
+    likedComments: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Comment", default: [] },
+    ],
+    likedProjects: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "Project", default: [] },
+    ],
   },
   { timestamp: true }
 );

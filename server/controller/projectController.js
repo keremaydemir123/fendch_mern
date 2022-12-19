@@ -9,7 +9,7 @@ const asyncHandler = require("express-async-handler");
 //! error here
 exports.getAllProjects = asyncHandler(async (req, res) => {
   //! returns 3 documents
-  req.query.limit = "3";
+  req.query.limit = "15";
 
   const page = req.query.page * 1 || 1;
   const limit = req.query.limit * 1 || 10;
@@ -22,10 +22,10 @@ exports.getAllProjects = asyncHandler(async (req, res) => {
   let projects = await Project.find()
     .populate({
       path: "challenge",
-      select: { objective: 1, tech: 1, week: 1, submittedAt: 1, _id: 0 },
+      select: { objective: 1, tech: 1, week: 1, submittedAt: 1, _id: 1 },
     })
-    .populate({ path: "user", select: { username: 1, _id: 0 } })
-    .select("-__v -likedByMe -markdown -git -comments -_id");
+    .populate({ path: "user", select: { username: 1, avatar: 1, _id: 0 } })
+    .select("-__v -likedByMe -markdown -comments_id -likeCount");
 
   projects = projects.filter((project) => {
     if (techs.includes("All")) return project;
@@ -100,6 +100,7 @@ exports.createProject = asyncHandler(async (req, res) => {
     git: req.body.git,
     markdown: req.body.markdown,
     user: user,
+    tags: req.body.tags,
   });
 
   user.projects.push(project._id);
@@ -133,7 +134,12 @@ exports.updateProjectMarkdown = asyncHandler(async (req, res) => {
 });
 
 exports.getProjectById = asyncHandler(async (req, res) => {
-  const project = await Project.findById(req.params.id).populate("comments");
+  const project = await Project.findById(req.params.id)
+    .populate({
+      path: "challenge",
+      select: { objective: 1, tech: 1, week: 1, _id: 1 },
+    })
+    .select("-__v -likedByMe -comments -_id -likeCount");
 
   if (project) {
     res.status(200).json(project);
@@ -207,10 +213,9 @@ exports.dislikeProject = asyncHandler(async (req, res) => {
 });
 
 exports.getComments = asyncHandler(async (req, res) => {
-  const { comments } = await Challenge.findById(req.params.id)
+  const { comments } = await Project.findById(req.params.id)
     .populate("comments")
     .select("comments");
-
   res.status(200).json(comments);
 });
 
@@ -328,4 +333,23 @@ exports.likeComment = asyncHandler(async (req, res) => {
   res.status(200).json(comment);
 });
 
-exports.dislikeComment = asyncHandler(async (req, res) => {});
+exports.dislikeComment = asyncHandler(async (req, res) => {
+  const comment = await Comment.findById(req.params.commentId);
+
+  if (!comment) {
+    res.status(404).send(`No comment with id: ${comment._id}`);
+    throw new Error("Comment not found");
+  }
+
+  const userDisliked = await User.findOne({
+    _id: req.body.userId,
+  });
+  if (comment.likes.includes(userDisliked._id)) {
+    comment.likes.remove(userDisliked._id);
+  } else {
+    comment.likes.push(userDisliked._id);
+  }
+  await comment.save();
+
+  res.status(200).json(comment);
+});
