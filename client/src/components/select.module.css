@@ -1,15 +1,19 @@
+label {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
 .container {
   position: relative;
-  width: 20em;
-  min-height: 1.5em;
+  max-width: 100%;
+  width: 400px;
   display: flex;
   align-items: center;
   gap: 0.5em;
   padding: 0.5em;
   border-radius: 0.25em;
-  outline: none;
 
-  @apply border-2 border-gray;
+  @apply border-2 border-purple;
 }
 
 .container:focus {
@@ -17,21 +21,24 @@
 }
 
 .value {
-  flex-grow: 1;
+  min-height: 40px;
   display: flex;
+  padding: 0 0.5em;
   gap: 0.5em;
   flex-wrap: wrap;
+  overflow: auto;
+  align-items: center;
 }
 
 .clear-btn {
+  @apply text-light-gray;
   background: none;
   border: none;
   outline: none;
   cursor: pointer;
   padding: 0;
-  font-size: 1.25em;
-
-  @apply text-light-gray;
+  font-size: 2em;
+  margin-left: auto;
 }
 
 .clear-btn:focus,
@@ -94,7 +101,7 @@
   border: 0.05em solid #777;
   border-radius: 0.25em;
   padding: 0.15em 0.25em;
-  gap: 0.25em;
+  gap: 0.25em 0.75rem;
   cursor: pointer;
   background: none;
   outline: none;

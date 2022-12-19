@@ -9,6 +9,6 @@ export const getUser = async () => {
 };
 
 export const logout = async () => {
-  const { data } = await axios.get(`${SERVER_URL}/auth/github/logout`);
+  const { data } = await axios.get(`${SERVER_URL}/auth/login/logout`);
   return data;
 };

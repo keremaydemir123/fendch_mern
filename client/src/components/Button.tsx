@@ -20,7 +20,7 @@ function Button({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`hover:border-2 hover:bg-primary border-2 border-gray hover:border-light-gray px-2 py-1 rounded-md bg-dark text-light transition-all duration-300 ease-in-out ${className}`}
+      className={`hover:border-light-purple px-2 py-1 text-md rounded-md bg-gradient-to-tr from-dark-purple to-purple text-light duration-300 flex items-center justify-center gap-1 w-max ${className}`}
     >
       {children}
     </button>

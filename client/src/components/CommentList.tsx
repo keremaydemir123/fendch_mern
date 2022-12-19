@@ -27,9 +27,23 @@ function CommentList({
           className="comment-stack my-4"
         >
           {place === 'project' ? (
-            <CommentCardForProject {...comment} />
+            <CommentCardForProject
+              _id={comment._id}
+              message={comment.message}
+              username={comment.username}
+              avatar={comment.avatar}
+              createdAt={comment.createdAt}
+              likes={comment.likes}
+            />
           ) : (
-            <Comment {...comment} />
+            <Comment
+              _id={comment._id}
+              message={comment.message}
+              username={comment.username}
+              avatar={comment.avatar}
+              createdAt={comment.createdAt}
+              likes={comment.likes}
+            />
           )}
         </motion.div>
       ))}

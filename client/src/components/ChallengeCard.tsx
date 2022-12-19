@@ -10,7 +10,7 @@ function ChallengeCardDefault({ challenge }: { challenge: ChallengeProps }) {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="bg-dark-purple rounded-lg p-6 shadow-md shadow-secondary min-w-[500px] w-[600px]"
+      className="bg-gradient-to-br from-purple to-dark-purple rounded-lg p-6 shadow-md shadow-secondary min-w-[500px] w-[800px]"
     >
       <div className="flex justify-between items-center">
         <GradientTitle>{challenge?.tech}</GradientTitle>
@@ -33,7 +33,7 @@ function ChallengeCardDefault({ challenge }: { challenge: ChallengeProps }) {
       <div className="mt-6 flex items-center justify-between">
         <Link
           to={`/challenges/${challenge?._id}`}
-          className="px-4 py-2 font-bold text-light bg-purple rounded-lg hover:bg-opacity-80 focus:outline-none focus:shadow-outline-purple"
+          className="px-4 py-2 font-bold text-light bg-purple rounded-lg hover:bg-dark-purple focus:outline-none focus:shadow-outline-purple"
         >
           See Details
         </Link>
@@ -48,7 +48,7 @@ function ChallengeCardGrid({ challenge }: { challenge: ChallengeProps }) {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="flex flex-col justify-between bg-dark-purple rounded-lg p-6 shadow-md shadow-secondary h-[320px] w-[250px]"
+      className="flex flex-col justify-between bg-dark-purple rounded-lg p-4 shadow-md shadow-secondary h-80 w-64"
     >
       <div className="flex items-center justify-between">
         <h4 className="font-bold text-muted text-sm mr-3">
@@ -60,7 +60,7 @@ function ChallengeCardGrid({ challenge }: { challenge: ChallengeProps }) {
       </div>
       <div className="flex flex-col h-36 mt-2">
         <GradientTitle>{challenge?.tech}</GradientTitle>
-        <h2 className="text-light-purple font-medium text-lg italic">
+        <h2 className="text-light-purple font-medium text-lg">
           {challenge?.objective}
         </h2>
         <p className="text-light-purple font-light text-base mt-3">
@@ -101,14 +101,12 @@ function ChallengeCardList({ challenge }: { challenge: ChallengeProps }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <GradientTitle>{challenge?.tech}</GradientTitle>
-          <h2 className="text-light-purple font-medium text-lg ml-3">
-            {challenge?.objective}
-          </h2>
+          <h2>{challenge?.objective}</h2>
         </div>
         <LogoContainer tags={challenge?.tags as string[]} />
       </div>
       <div className="flex justify-between items-center">
-        <p className="text-light font-light text-base">
+        <p className="text-light font-light text-base line-clamp-3">
           {challenge?.description}
         </p>
         <Link

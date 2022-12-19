@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 import toast, { Toaster } from 'react-hot-toast';
 import { useUser } from '../contexts/UserProvider';
 import { getUserByUsername, updateMe } from '../services/user';
-import { UserProps } from '../types';
+import { ProjectProps, UserProps } from '../types';
 import Modal from '../components/Modal';
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -16,6 +16,7 @@ import { followUser, unfollowUser } from '../services/follows';
 
 function Profile() {
   const [pageUser, setPageUser] = useState<UserProps | null>(null);
+  const [projects, setProjects] = useState<ProjectProps[] | null>([]);
   const { user } = useUser();
   const [open, setOpen] = useState(false);
   const [bio, setBio] = useState<string>(user?.bio || '');
@@ -27,8 +28,9 @@ function Profile() {
     ['user', username],
     () => getUserByUsername(username as string),
     {
-      onSuccess: (data: UserProps) => {
-        setPageUser(data);
+      onSuccess: (data) => {
+        setPageUser(data.user);
+        setProjects(data.projects);
       },
     }
   );
@@ -78,7 +80,6 @@ function Profile() {
       toast.error('You must be logged in to unfollow a user');
       return;
     }
-
     try {
       await unfollowUser({
         followerId: user?._id,
@@ -90,14 +91,7 @@ function Profile() {
     }
   };
 
-  function calculateTotalLikes() {
-    let likeCount = 0;
-    pageUser?.projects?.map((project) => {
-      likeCount += project.likes.length;
-      return likeCount;
-    });
-    return likeCount;
-  }
+  console.log('pageUser', pageUser);
 
   return (
     <div className="flex flex-col gap-8 items-center justify-center">
@@ -152,11 +146,10 @@ function Profile() {
           </div>
 
           <div className="relative flex flex-col items-start justify-center font-regular text-lg w-2/5 mt-4 h-full">
-            <h3>Projects: {pageUser?.projects.length}</h3>
+            <h3>Projects: {projects?.length}</h3>
             <h3>Comments: {pageUser?.comments?.length}</h3>
-            <h3>Likes: {calculateTotalLikes().toString()}</h3>
-            <h3>Followers: {pageUser?.followers.length}</h3>
-            <h3>Following: {pageUser?.following.length}</h3>
+            <h3>Followers: {pageUser?.followers?.length}</h3>
+            <h3>Following: {pageUser?.following?.length}</h3>
 
             <div className=" flex justify-center gap-2 text-2xl absolute bottom-4">
               {pageUser?.linkedin && (
@@ -192,8 +185,8 @@ function Profile() {
 
       <h1>Projects</h1>
 
-      <div className="flex flex-wrap w-full h-full items-center gap-4 justify-between">
-        {pageUser?.projects?.map((project) => (
+      <div className="flex flex-wrap w-full h-full items-center gap-4 justify-center">
+        {projects?.map((project) => (
           <ProjectCard key={project._id} project={project} />
         ))}
       </div>

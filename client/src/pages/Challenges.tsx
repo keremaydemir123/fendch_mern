@@ -8,7 +8,7 @@ import { ChallengeProps } from '../types';
 import ActiveChallengeBanner from '../components/ActiveChallengeBanner';
 
 function Challenges() {
-  const [layout, setLayout] = useState<'default' | 'list' | 'grid'>('default');
+  const [layout, setLayout] = useState<'list' | 'grid'>('grid');
 
   const { data: oldChallenges, isLoading: isLoadingOld } = useQuery(
     'oldChallenges',
@@ -26,23 +26,19 @@ function Challenges() {
       <div className="flex flex-wrap justify-center items-center gap-4 w-5/6">
         <ActiveChallengeBanner challenges={activeChallenges} />
 
-        <div className="my-4 p-2 flex items-center justify-center bg-dark-purple w-full h-12 rounded-md">
-          <div className="flex items-center text-2xl gap-1">
-            <MdViewStream
-              onClick={() => setLayout('default')}
-              className="bg-purple hover:bg-opacity-50 hover:text-light hover:cursor-pointer border-transparent rounded-md text-light-gray"
-            />
+        <div className="my-4 p-2 px-4 flex items-center justify-end bg-dark-purple w-full h-full rounded-md">
+          <div className="flex items-center text-4xl gap-2">
             <MdViewList
               onClick={() => setLayout('list')}
-              className="bg-purple hover:bg-opacity-50 hover:text-light hover:cursor-pointer border-transparent rounded-md text-light-gray"
+              className="bg-purple hover:bg-opacity-50 hover:text-light hover:cursor-pointer border-transparent rounded-md text-white"
             />
             <MdViewWeek
               onClick={() => setLayout('grid')}
-              className="bg-purple hover:bg-opacity-50 hover:text-light hover:cursor-pointer  border-transparent rounded-md text-light-gray"
+              className="bg-purple hover:bg-opacity-50 hover:text-light hover:cursor-pointer border-transparent rounded-md text-white"
             />
           </div>
         </div>
-        <div className="flex flex-wrap justify-center items-center gap-4">
+        <div className="flex flex-wrap justify-center items-center gap-4 w-full">
           {oldChallenges?.map((challenge: ChallengeProps) => (
             <ChallengeCard
               key={challenge?._id}

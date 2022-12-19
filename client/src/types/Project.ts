@@ -14,4 +14,5 @@ export type ProjectProps = {
   likedByMe: boolean;
   comments: CommentProps[];
   markdown: string;
+  tags: string[];
 };
