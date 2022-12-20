@@ -10,8 +10,12 @@ function AboutUs() {
 
   async function onSendSuggestion(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!suggestionRef.current?.value) {
+      toast.error('Please write your suggestion!');
+      return;
+    }
     try {
-      await sendSuggestion(suggestionRef.current!.value);
+      await sendSuggestion(suggestionRef.current?.value);
       toast.success('Your suggestion has been sent! Thank you!');
     } catch (error) {
       toast.error('Something went wrong! Please try again later.');

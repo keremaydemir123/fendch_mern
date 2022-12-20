@@ -1,28 +1,25 @@
-import { createContext, useContext, useMemo, useState, useEffect } from 'react';
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  useCallback,
+} from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from 'react-query';
 import Loading from '../components/Loading';
-import { CommentProps, ProjectProps } from '../types';
+import { ProjectProps } from '../types';
 import { getProject } from '../services/projects';
 import { useUser } from './UserProvider';
 
-type GroupProps = {
-  [key: string]: CommentProps[];
-};
+interface IProjectContext {
+  project: ProjectProps | undefined;
+  likeLocalProject: (projectId: string) => void;
+  dislikeLocalProject: (projectId: string) => void;
+  updateLocalProjectMarkdown: (markdown: string) => void;
+}
 
-const Context = createContext({
-  project: {} as ProjectProps,
-  getReplies: (parentId: string): CommentProps[] => [],
-  rootComments: [] as CommentProps[],
-  likeLocalProject: (projectId: string) => {},
-  dislikeLocalProject: (projectId: string) => {},
-  createLocalComment: (comment: CommentProps) => {},
-  updateLocalComment: (id: string, message: string) => {},
-  deleteLocalComment: (id: string) => {},
-  likeLocalComment: (id: string) => {},
-  dislikeLocalComment: (id: string) => {},
-  updateLocalProjectMarkdown: (markdown: string) => {},
-});
+const Context = createContext<IProjectContext>({} as IProjectContext);
 
 export function useProject() {
   return useContext(Context);
@@ -30,130 +27,42 @@ export function useProject() {
 
 export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const { id } = useParams();
-  const { user } = useUser();
+  const { user: currentUser } = useUser();
   const [project, setProject] = useState<ProjectProps>({} as ProjectProps);
-  const [comments, setComments] = useState<CommentProps[]>([]);
 
   const { isLoading, error } = useQuery<ProjectProps>(
     ['getProject', id],
-    () => getProject(id!),
+    () => getProject(id),
     {
       onSuccess: (data) => {
         setProject({
           ...data,
-          likedByMe: data.likes.includes(user?._id!),
+          likeCount: data.likes.length,
+          likedByMe: data.likes.includes(currentUser?._id as string),
         });
       },
     }
   );
 
-  useEffect(() => {
-    if (project?.comments == null) return;
-    setComments(project.comments);
-  }, [project?.comments]);
-
-  const commentsByParentId = useMemo((): GroupProps => {
-    const groups: GroupProps = {};
-
-    comments?.forEach((comment) => {
-      if (comment.parentId) {
-        console.log(comment.parentId);
-
-        if (groups[comment.parentId]) {
-          groups[comment.parentId].push(comment);
-        } else {
-          groups[comment.parentId] = [comment];
-        }
-      }
-    });
-
-    return groups;
-  }, [comments]);
-
-  function likeLocalProject(id: string) {
+  const likeLocalProject = useCallback(() => {
     setProject((prev) => {
-      if (prev._id === id) {
-        return {
-          ...project,
-          likeCount: project.likeCount + 1,
-          likedByMe: true,
-        };
-      } else {
-        return project;
-      }
+      return {
+        ...prev,
+        likeCount: project.likeCount + 1,
+        likedByMe: true,
+      };
     });
-  }
-  function dislikeLocalProject(id: string) {
+  }, [project]);
+
+  const dislikeLocalProject = useCallback(() => {
     setProject((prev) => {
-      if (prev._id === id) {
-        return {
-          ...project,
-          likeCount: project.likeCount - 1,
-          likedByMe: false,
-        };
-      } else {
-        return project;
-      }
+      return {
+        ...prev,
+        likeCount: project.likeCount - 1,
+        likedByMe: false,
+      };
     });
-  }
-
-  function createLocalComment(comment: CommentProps) {
-    setComments((prevComments) => [comment, ...prevComments]);
-  }
-
-  function updateLocalComment(id: string, message: string) {
-    setComments((prevComments) => {
-      return prevComments.map((comment) => {
-        if (comment._id === id) {
-          return { ...comment, message };
-        } else {
-          return comment;
-        }
-      });
-    });
-  }
-
-  function deleteLocalComment(id: string) {
-    setComments((prevComments) => {
-      return prevComments.filter((comment) => comment._id !== id);
-    });
-  }
-
-  function likeLocalComment(id: string) {
-    setComments((prevComments) => {
-      return prevComments.map((comment) => {
-        if (comment._id === id) {
-          return {
-            ...comment,
-            likeCount: comment.likeCount + 1,
-            likedByMe: true,
-          };
-        } else {
-          return comment;
-        }
-      });
-    });
-  }
-
-  function dislikeLocalComment(id: string) {
-    setComments((prevComments) => {
-      return prevComments.map((comment) => {
-        if (comment._id === id) {
-          return {
-            ...comment,
-            likeCount: comment.likeCount - 1,
-            likedByMe: false,
-          };
-        } else {
-          return comment;
-        }
-      });
-    });
-  }
-
-  function getReplies(parentId: string) {
-    return commentsByParentId[parentId];
-  }
+  }, [project]);
 
   function updateLocalProjectMarkdown(markdown: string) {
     setProject((prev) => {
@@ -161,29 +70,23 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
     });
   }
 
+  const contextValues = useMemo(
+    () => ({
+      project,
+      likeLocalProject,
+      dislikeLocalProject,
+      updateLocalProjectMarkdown,
+    }),
+    [project, dislikeLocalProject, likeLocalProject]
+  );
+
   return (
-    <Context.Provider
-      value={{
-        project: { ...project! },
-        getReplies,
-        rootComments: commentsByParentId['null'],
-        likeLocalProject,
-        dislikeLocalProject,
-        createLocalComment,
-        updateLocalComment,
-        deleteLocalComment,
-        likeLocalComment,
-        dislikeLocalComment,
-        updateLocalProjectMarkdown,
-      }}
-    >
-      {isLoading ? (
-        <Loading />
-      ) : error ? (
-        <h1>Something went wrong</h1>
-      ) : (
-        children
-      )}
+    <Context.Provider value={contextValues}>
+      <>
+        {isLoading && <Loading />}
+        {error && <h1 className="text-red">Project could&apos;t found</h1>}
+        {children}
+      </>
     </Context.Provider>
   );
 }

@@ -1,7 +1,7 @@
-import SERVER_URL from './baseURL';
 import axios from 'axios';
+import SERVER_URL from './baseURL';
 
-export async function getNotifications(username: string) {
+export async function getNotifications(username: string | undefined) {
   const response = await axios.get(
     `${SERVER_URL}/users/${username}/notifications`
   );

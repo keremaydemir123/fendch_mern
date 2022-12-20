@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
-import Button from './Button';
 import { useState } from 'react';
 import { FaBars } from 'react-icons/fa';
+import Button from './Button';
 import CustomLink from './CustomLink';
 import Badge from './Badge';
 import { UserProps } from '../types';
+import GradientTitle from './GradientTitle';
 
 function Navbar({ user }: { user: UserProps | null }) {
   const [open, setOpen] = useState(false);
@@ -13,12 +14,20 @@ function Navbar({ user }: { user: UserProps | null }) {
     window.open('http://localhost:4000/auth/github', '_self');
   };
 
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 100) {
+      document.querySelector('.navbar')?.classList.add('bg-dark');
+    } else {
+      document.querySelector('.navbar')?.classList.remove('shadow-md');
+    }
+  });
+
   return (
-    <nav className="h-16 w-full sticky top-0 z-50 bg-dark flex items-center px-16 border-b-2 border-primary">
+    <nav className="navbar h-16 w-full sticky top-0 z-50 flex items-center px-16 transition duration-300">
       <div className="container h-full max-w-7xl flex gap-8 items-center justify-between w-full">
         <div className=" flex items-center gap-6">
           <Link to="/" className="text-xl font-bold">
-            FENDCH
+            <GradientTitle>FENDCH</GradientTitle>
           </Link>
           <div className="md:flex hidden items-center gap-4">
             <Link to="/challenges">Challenges</Link>

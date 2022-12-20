@@ -1,5 +1,5 @@
-import SERVER_URL from './baseURL';
 import axios from 'axios';
+import SERVER_URL from './baseURL';
 
 export async function sendSuggestion(suggestion: string) {
   const response = await axios.post(`${SERVER_URL}/suggestions`, {

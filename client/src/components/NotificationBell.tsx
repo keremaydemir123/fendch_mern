@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { FaBell, FaTrash } from 'react-icons/fa';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 import { useUser } from '../contexts/UserProvider';
 import {
   deleteNotification,
@@ -14,15 +14,18 @@ function NotificationBell() {
   const { user } = useUser();
 
   const { error, data: notifications } = useQuery(
-    ['notifications', user?._id],
-    () => getNotifications(user?.username!)
+    ['notifications', user?.username],
+    () => getNotifications(user?.username)
   );
 
-  const mutation = useMutation(
-    ({ userId, notificationId }: { userId: string; notificationId: string }) =>
-      deleteNotification({ userId, notificationId })
-  );
-
+  const onDeleteNotification = async (notificationId: string) => {
+    if (!user?._id) return;
+    try {
+      await deleteNotification({ userId: user?._id, notificationId });
+    } catch (err) {
+      console.log("couldn't delete notification");
+    }
+  };
   return (
     <div className="relative h-max w-max ">
       <FaBell
@@ -62,12 +65,10 @@ function NotificationBell() {
                         <p>{notification.message}</p>
                         <FaTrash
                           className="text-light text-xl hover:cursor-pointer hover:text-light-gray transition duration-100"
-                          onClick={() =>
-                            mutation.mutate({
-                              userId: user?._id!,
-                              notificationId: notification._id!,
-                            })
-                          }
+                          onClick={() => {
+                            if (notification?._id)
+                              onDeleteNotification(notification?._id);
+                          }}
                         />
                       </div>
                     ))}

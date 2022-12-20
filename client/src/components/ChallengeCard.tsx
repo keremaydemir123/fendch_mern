@@ -1,58 +1,144 @@
 import { Link } from 'react-router-dom';
-import { PulseLoader } from 'react-spinners';
-import styles from './ChallengeCard.module.css';
-import CustomCTA from './CustomCTA';
-import CustomLink from './CustomLink';
+import { motion } from 'framer-motion';
 import { ChallengeProps } from '../types/Challenge';
+import dateFormatter from '../utils/dateFormatter';
+import GradientTitle from './GradientTitle';
+import LogoContainer from './LogoContainer';
 
-function ChallengeCard({
-  challenge,
-  isActive = false,
-}: {
-  challenge: ChallengeProps;
-  isActive?: boolean;
-}) {
+function ChallengeCardDefault({ challenge }: { challenge: ChallengeProps }) {
   return (
-    <div className={styles.container}>
-      <div className={styles.card}>
-        <div className={styles.front}>
-          <div className={styles.frontHeader}>
-            <p className={styles.frontWeek}>week {challenge?.week}</p>
-            <h1 className={styles.frontTech}>{challenge?.tech}</h1>
-            <h3 className={styles.frontTask}>{challenge?.objective}</h3>
-            {isActive && (
-              <h1>
-                On Proggress
-                <span className="ml-1">
-                  <PulseLoader
-                    color="#36d7b7"
-                    loading={true}
-                    speedMultiplier={0.8}
-                    size={10}
-                  />
-                </span>
-              </h1>
-            )}
-          </div>
-        </div>
-        <div className={styles.back}>
-          <h1>{challenge?.description}</h1>
-          <CustomCTA href={`${challenge?.liveExample}`}>Live Example</CustomCTA>
-          {challenge?._id ? (
-            <CustomLink to={`/challenges/${challenge._id}`}>
-              See Details
-            </CustomLink>
-          ) : (
-            <CustomLink to={``}>See Details</CustomLink>
-          )}
-        </div>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="bg-gradient-to-br from-purple to-dark-purple rounded-lg p-6 shadow-md shadow-secondary min-w-[500px] w-[800px]"
+    >
+      <div className="flex justify-between items-center">
+        <GradientTitle>{challenge?.tech}</GradientTitle>
+        <h4 className="font-bold text-muted text-sm mr-3">
+          WEEK {challenge?.week}
+        </h4>
       </div>
-    </div>
+      <div className="flex justify-between items-center">
+        <h2 className="text-light-purple font-medium text-lg">
+          {challenge?.objective}
+        </h2>
+        <h6 className="text-muted font-light text-sm mr-3">
+          {dateFormatter(new Date(challenge?.startDate as string))}
+        </h6>
+      </div>
+      <p className="text-light font-light text-base mt-3">
+        {challenge?.description}
+      </p>
+
+      <div className="mt-6 flex items-center justify-between">
+        <Link
+          to={`/challenges/${challenge?._id}`}
+          className="px-4 py-2 font-bold text-light bg-purple rounded-lg hover:bg-dark-purple focus:outline-none focus:shadow-outline-purple"
+        >
+          See Details
+        </Link>
+        <LogoContainer tags={challenge?.tags as string[]} />
+      </div>
+    </motion.div>
   );
 }
 
+function ChallengeCardGrid({ challenge }: { challenge: ChallengeProps }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="flex flex-col justify-between bg-dark-purple rounded-lg p-4 shadow-md shadow-secondary h-80 w-64"
+    >
+      <div className="flex items-center justify-between">
+        <h4 className="font-bold text-muted text-sm mr-3">
+          WEEK {challenge?.week}
+        </h4>
+        <h6 className="text-muted font-light text-sm mr-3">
+          {dateFormatter(new Date(challenge?.startDate as string))}
+        </h6>
+      </div>
+      <div className="flex flex-col h-36 mt-2">
+        <GradientTitle>{challenge?.tech}</GradientTitle>
+        <h2 className="text-light-purple font-medium text-lg">
+          {challenge?.objective}
+        </h2>
+        <p className="text-light-purple font-light text-base mt-3">
+          {challenge?.description}
+        </p>
+      </div>
+
+      <div className="flex flex-col items-center">
+        <LogoContainer tags={challenge?.tags as string[]} className="w-full" />
+        <div className="mt-2 w-full flex items-center justify-between">
+          <Link
+            to={`/challenges/${challenge?._id}`}
+            className="px-4 w-full text-center py-2 font-bold text-light bg-purple rounded-lg hover:bg-opacity-80 focus:outline-none focus:shadow-outline-purple"
+          >
+            See Details
+          </Link>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function ChallengeCardList({ challenge }: { challenge: ChallengeProps }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="bg-dark-purple rounded-lg px-6 py-2 shadow-md shadow-secondary w-full"
+    >
+      <div className="flex justify-between items-center">
+        <h4 className="font-bold text-muted text-sm mr-3">
+          WEEK {challenge?.week}
+        </h4>
+        <h6 className="text-muted font-light text-sm mr-3">
+          {dateFormatter(new Date(challenge?.startDate as string))}
+        </h6>
+      </div>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center">
+          <GradientTitle>{challenge?.tech}</GradientTitle>
+          <h2>{challenge?.objective}</h2>
+        </div>
+        <LogoContainer tags={challenge?.tags as string[]} />
+      </div>
+      <div className="flex justify-between items-center">
+        <p className="text-light font-light text-base line-clamp-3">
+          {challenge?.description}
+        </p>
+        <Link
+          to={`/challenges/${challenge?._id}`}
+          className=" w-max text-center py-1 font-bold text-light rounded-lg hover:bg-opacity-80 focus:outline-none focus:shadow-outline-purple"
+        >
+          See Details
+        </Link>
+      </div>
+    </motion.div>
+  );
+}
+
+function ChallengeCard({
+  challenge,
+  layout,
+}: {
+  challenge: ChallengeProps;
+  layout?: 'default' | 'grid' | 'list';
+}) {
+  if (layout === 'grid') {
+    return <ChallengeCardGrid challenge={challenge} />;
+  }
+  if (layout === 'list') {
+    return <ChallengeCardList challenge={challenge} />;
+  }
+
+  return <ChallengeCardDefault challenge={challenge} />;
+}
+
 ChallengeCard.defaultProps = {
-  onProggress: false,
+  layout: 'default',
 };
 
 export default ChallengeCard;

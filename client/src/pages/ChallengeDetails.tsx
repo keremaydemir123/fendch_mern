@@ -1,35 +1,87 @@
-import { useRef, useState } from 'react';
+import { useState, useEffect } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
+import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import Button from '../components/Button';
 import CommentForm from '../components/CommentForm';
 import CommentList from '../components/CommentList';
-import Input from '../components/Input';
+import Loading from '../components/Loading';
 import MarkdownTest from '../components/MarkdownTest';
 import Modal from '../components/Modal';
+import { Select, SelectOption } from '../components/Select';
 import Textarea from '../components/Textarea';
 import YoutubePlayer from '../components/YoutubePlayer';
 import { useChallenge } from '../contexts/ChallengeProvider';
+import { useComment } from '../contexts/CommentProvider';
 import { useUser } from '../contexts/UserProvider';
-import { createComment } from '../services/comments';
+import { createComment, getCommentsByChallengeId } from '../services/comments';
 import { createProject } from '../services/projects';
+import { getRepos } from '../services/user';
+import { GithubRepoAPIResults, Repo } from '../types/User';
+import tagsSelectValues from '../constants/tags';
+import GradientTitle from '../components/GradientTitle';
+
+const tagsSelectOptions = tagsSelectValues.map((tag) => {
+  return { label: tag, value: tag };
+});
 
 function ChallengeDetails() {
   const { user } = useUser();
-  const { challenge, createLocalComment, rootComments } = useChallenge();
+  const { challenge } = useChallenge();
+  const { onCommentsSet, rootComments, createLocalComment } = useComment();
   const { id: challengeId } = useParams<{ id: string }>();
 
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const gitRef = useRef<HTMLInputElement | null>(null);
-  const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
+  const [git, setGit] = useState<SelectOption>();
+  const [desc, setDesc] = useState<string>('');
+  const [repos, setRepos] = useState<Repo[]>([]);
+  const [tags, setTags] = useState<SelectOption[]>([tagsSelectOptions[0]]);
+
+  const { error: commentError, isLoading: commentLoading } = useQuery(
+    ['comments', challengeId],
+    () => getCommentsByChallengeId(challengeId as string),
+    {
+      onSuccess: (data) => {
+        onCommentsSet(data);
+      },
+    }
+  );
+
+  useQuery(
+    ['repos', user?.repos_url],
+    () => getRepos(user?.repos_url as string),
+    {
+      onSuccess: (data) => {
+        const publicRepos = data.filter(
+          (repo: GithubRepoAPIResults) => !repo.private
+        );
+        const reposArr = publicRepos.map((repo: GithubRepoAPIResults) => ({
+          name: repo.name,
+          html_url: repo.html_url,
+        }));
+        setRepos(reposArr);
+      },
+    }
+  );
+
+  useEffect(() => {
+    console.log(tags);
+  }, [tags]);
+
+  if (commentError) {
+    toast.error('Something went wrong');
+  }
+  if (commentLoading) {
+    return <Loading />;
+  }
 
   const handleModalSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const git = gitRef.current?.value;
-    const markdown = descriptionRef.current?.value;
 
-    if (!git || !markdown) {
+    if (!git || !desc) {
       toast.error('Please fill all the fields');
       return;
     }
@@ -45,55 +97,130 @@ function ChallengeDetails() {
     }
 
     try {
-      await createProject({ challengeId, markdown, git, userId: user._id });
+      await createProject({
+        challengeId,
+        markdown: desc,
+        git: git.value,
+        tags: tags.map((tag) => tag.value),
+        userId: user._id,
+      });
       toast.success('Project submitted successfully');
       setOpen(false);
-    } catch (error: any) {
-      toast.error(error.response.data);
+    } catch (err: unknown) {
+      toast.error("Couldn't submit project");
     }
   };
 
   const onCommentCreate = async (message: string) => {
+    if (!user) return;
+    setLoading(true);
     try {
       const comment = await createComment({
-        challengeId: challengeId!,
+        challengeId: challengeId as string,
         message,
-        userId: user?._id!,
+        userId: user?._id as string,
       });
       createLocalComment(comment);
-    } catch (error: any) {
-      toast.error(error.response.data);
+      setLoading(false);
+    } catch (err: unknown) {
+      toast.error("Couldn't create comment");
+      setError('Something went wrong');
     }
   };
 
-  console.log(challenge);
+  const selectOptions = repos.map((repo) => {
+    return { label: repo.name, value: repo.html_url };
+  });
 
   return (
     <>
       <Modal open={open} onClose={() => setOpen(false)}>
         <form onSubmit={handleModalSubmit} className="flex flex-col gap-4">
-          <Input label="Git" id="git" type="text" ref={gitRef} />
-          <Textarea label="Description" id="desc" ref={descriptionRef} />
+          <div className="flex items-center gap-4 flex-wrap">
+            <Select
+              options={selectOptions}
+              multiple={false}
+              value={git}
+              onChange={(option) => setGit(option)}
+              label="Github Repo"
+            />
+            <Select
+              options={tagsSelectOptions}
+              multiple
+              value={tags}
+              onChange={(option) => setTags(option)}
+              label="Tags"
+            />
+          </div>
+          <Textarea
+            label="Description"
+            id="desc"
+            value={desc}
+            onChange={(e) => setDesc(e.target.value)}
+            className="h-96"
+          />
           <Button type="submit">Submit</Button>
         </form>
       </Modal>
       <div className="w-full flex flex-col items-center mb-4">
         <Toaster />
-        <div className="w-full rounded-lg bg-primary p-8">
-          <h1 className="text-center">{challenge?.tech}</h1>
-          <h3 className="text-center">{challenge?.objective}</h3>
-          <img src={challenge?.thumbnail} alt="thumbnail" />
-          <div className="p-8">
-            <YoutubePlayer embedId={challenge?.tasksVideo!} />
+        <div className="w-full rounded-lg bg-primary bg-opacity-90 p-8">
+          <div className="text-center">
+            <GradientTitle className="text-6xl">
+              {challenge?.tech}
+            </GradientTitle>
           </div>
-          <MarkdownTest markdown={challenge?.tasksMd!} />
-          <div className="text-right px-8">
-            <Button onClick={() => setOpen(true)}>Submit</Button>
+          <h2 className="text-center text-4xl text-tahiti text-opacity-90">
+            {challenge?.objective}
+          </h2>
+          <h2 className="text-center text-light text-2xl mt-3">
+            {challenge?.description}
+          </h2>
+          <section className="w-full flex justify-center mt-4">
+            <p className="md:w-[800px] w-full text-center text-lg">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quos sit
+              rerum, voluptatibus sunt distinctio vitae ullam consequatur!
+              Accusantium porro totam quae quisquam dolorem repellendus iusto
+              eaque aliquid maiores error, mollitia atque voluptatem ex. Vero id
+              sint excepturi sapiente ab vitae culpa saepe eaque aliquam? Hic
+              iusto dolores ipsam velit reprehenderit?
+            </p>
+          </section>
+          <h1 className="text-center my-4">
+            Here is the explanatory video from us:
+          </h1>
+          <YoutubePlayer embedId={challenge?.tasksVideo as string} />
+          <h1 className="text-center mt-4">
+            Here is the final expected result:
+          </h1>
+          <div className="w-full flex justify-center my-4 mb-2">
+            <img
+              src={challenge?.thumbnail}
+              alt="thumbnail"
+              className="md:w-[600px] "
+            />
+          </div>
+          <div className="w-full text-center">
+            <a href={challenge?.liveExample} className="text-2xl text-tahiti">
+              Click to see it on live
+            </a>
+          </div>
+          <h1 className="my-4 text-center">
+            We have also written task for you, you know everyone can forget what
+            is needed
+          </h1>
+          <div className="bg-secondary p-4 rounded-md">
+            <MarkdownTest markdown={challenge?.tasksMd as string} />
+          </div>
+          <div className="flex justify-end items-center mt-4 px-4">
+            <Button className="w-48 h-12 text-lg" onClick={() => setOpen(true)}>
+              Submit
+            </Button>
           </div>
         </div>
       </div>
       <h1>Comments</h1>
-      <CommentForm onSubmit={onCommentCreate} />
+      <CommentForm onSubmit={onCommentCreate} loading={loading} error={error} />
       <div>
         {rootComments != null && rootComments.length > 0 && (
           <CommentList comments={rootComments} place="challenge" />

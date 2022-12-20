@@ -1,7 +1,7 @@
-import IconButton from './IconButton';
+import { useParams } from 'react-router-dom';
 import { FaEdit, FaHeart, FaRegHeart, FaReply, FaTrash } from 'react-icons/fa';
-import CommentList from './CommentList';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import IconButton from './IconButton';
 import CommentForm from './CommentForm';
 import {
   deleteProjectComment,
@@ -12,7 +12,8 @@ import {
 } from '../services/comments';
 import { CommentProps } from '../types/Comment';
 import { useUser } from '../contexts/UserProvider';
-import { useProject } from '../contexts/ProjectProvider';
+import CommentList from './CommentList';
+import { useComment } from '../contexts/CommentProvider';
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
   dateStyle: 'medium',
@@ -25,71 +26,130 @@ function CommentCardForProject({
   username,
   avatar,
   createdAt,
-  likeCount,
-  likedByMe,
+  likes,
 }: CommentProps) {
+  const { user: currentUser } = useUser();
+  const { id: projectId } = useParams<{ id: string }>();
   const [areChildrenHidden, setAreChildrenHidden] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [isReplying, setIsReplying] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [likedByMe, setLikedByMe] = useState(false);
+  const [likeCount, setLikeCount] = useState(likes.length);
+
+  useEffect(() => {
+    setLikedByMe(likes.includes(currentUser?._id as string));
+  }, [likes, currentUser?._id]);
 
   const {
-    project,
     getReplies,
     createLocalComment,
     updateLocalComment,
     deleteLocalComment,
     likeLocalComment,
     dislikeLocalComment,
-  } = useProject();
+  } = useComment();
 
-  const { user: currentUser } = useUser();
   const childComments = getReplies(_id);
-  const [isReplying, setIsReplying] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
 
-  async function onCommentReply(message: string) {
-    const comment = await replyProjectComment({
-      projectId: project?._id!,
-      message,
-      parentId: _id,
-      userId: currentUser?._id!,
-    });
+  async function onCommentReply(msg: string) {
+    if (!currentUser?._id) return;
+    if (!projectId) return;
+    setLoading(true);
+    setIsReplying(true);
+    try {
+      const comment = await replyProjectComment({
+        projectId,
+        message: msg,
+        parentId: _id,
+        userId: currentUser?._id,
+      });
+
+      createLocalComment(comment);
+    } catch (err) {
+      setError("Couldn't reply to comment");
+    }
+    setLoading(false);
     setIsReplying(false);
-    createLocalComment(comment);
   }
 
-  async function onCommentEdit(message: string) {
-    await updateProjectComment({
-      projectId: project?._id!,
-      message,
-      id: _id,
-    });
-    setIsEditing(false);
-    updateLocalComment(_id, message);
+  async function onCommentEdit(msg: string) {
+    if (!projectId) return;
+    setIsEditing(true);
+    setLoading(true);
+    try {
+      await updateProjectComment({
+        projectId,
+        message: msg,
+        id: _id,
+      });
+      setLoading(false);
+      setIsEditing(false);
+      updateLocalComment(_id, message);
+    } catch (err) {
+      setError("Couldn't edit comment");
+    }
   }
   async function onCommentDelete() {
+    if (!projectId) return;
+
     await deleteProjectComment({
-      projectId: project?._id!,
+      projectId,
       id: _id,
     });
     deleteLocalComment(_id);
   }
 
   async function onCommentLike() {
-    await likeProjectComment({
-      id: _id,
-      projectId: project?._id!,
-      userId: currentUser?._id!,
-    });
-    likeLocalComment(_id);
+    if (!currentUser?._id) return;
+    if (!projectId) return;
+
+    try {
+      setLoading(true);
+      await likeProjectComment({
+        id: _id,
+        projectId,
+        userId: currentUser?._id,
+      });
+      likeLocalComment(_id);
+      setLoading(false);
+      setLikeCount((prev) => prev + 1);
+      setLikedByMe(true);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
   }
 
   async function onCommentDislike() {
-    await dislikeProjectComment({
-      id: _id,
-      projectId: project?._id!,
-      userId: currentUser?._id!,
-    });
-    dislikeLocalComment(_id);
+    if (!currentUser?._id) return;
+    if (!projectId) return;
+    setLoading(true);
+    try {
+      await dislikeProjectComment({
+        id: _id,
+        projectId,
+        userId: currentUser?._id,
+      });
+      dislikeLocalComment(_id);
+      setLoading(false);
+      setLikeCount((prev) => prev - 1);
+      setLikedByMe(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
   }
+
+  const handleToggleLike = () => {
+    if (loading) return;
+    if (likedByMe) {
+      onCommentDislike();
+    } else {
+      onCommentLike();
+    }
+  };
 
   return (
     <>
@@ -107,9 +167,11 @@ function CommentCardForProject({
         <div>
           {isEditing ? (
             <CommentForm
-              autoFocus={true}
-              onSubmit={onCommentEdit}
+              autoFocus
+              onSubmit={() => onCommentEdit(message)}
               initialValue={message}
+              loading={loading}
+              error={error}
             />
           ) : (
             <div className="font-light break-words p-2">{message}</div>
@@ -120,7 +182,7 @@ function CommentCardForProject({
           <IconButton
             Icon={likedByMe ? FaHeart : FaRegHeart}
             aria-label={likedByMe ? 'Unlike' : 'Like'}
-            onClick={likedByMe ? onCommentDislike : onCommentLike}
+            onClick={handleToggleLike}
           >
             {likeCount}
           </IconButton>
@@ -142,7 +204,7 @@ function CommentCardForProject({
               <IconButton
                 Icon={FaTrash}
                 aria-label="Delete"
-                color="text-red-500"
+                color="#f33"
                 onClick={() => onCommentDelete()}
               />
             </>
@@ -153,7 +215,13 @@ function CommentCardForProject({
       <div>
         {isReplying && (
           <div className="mt-1 ml-3">
-            <CommentForm autoFocus={true} onSubmit={onCommentReply} />
+            <CommentForm
+              autoFocus
+              onSubmit={() => onCommentReply(message)}
+              initialValue=""
+              loading={loading}
+              error={error}
+            />
           </div>
         )}
       </div>
@@ -165,6 +233,7 @@ function CommentCardForProject({
               <button
                 className="collapse-line"
                 aria-label="Hide Replies"
+                type="button"
                 onClick={() => setAreChildrenHidden(true)}
               />
               <div className="pl-2 flex-grow">
@@ -174,6 +243,7 @@ function CommentCardForProject({
             <button
               className={`btn mt-1 ${!areChildrenHidden ? 'hidden' : ''}`}
               onClick={() => setAreChildrenHidden(false)}
+              type="button"
             >
               Show Replies
             </button>

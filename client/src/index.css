@@ -60,13 +60,16 @@ a:hover {
   opacity: 0.8;
 }
 
+p {
+  margin: 10px 0;
+  letter-spacing: 0.1mm;
+  word-spacing: 0.5mm;
+}
+
 .wrapper {
   width: 100%;
-  max-width: 1000px;
+  max-width: 1080px;
   min-height: calc(100vh - 8rem);
   margin: 0 auto;
   padding: 1rem 1rem;
-  background: #131313;
-  border-left: 2px solid #222;
-  border-right: 2px solid #222;
 }

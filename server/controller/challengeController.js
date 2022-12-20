@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const APIFeatures = require("../utils/apiFeatures");
+const APIFeatures = require("../utils/APIFeatures");
 
 const Challenge = require("../models/ChallengeModel.js");
 const User = require("../models/UserModel.js");
@@ -25,7 +25,10 @@ exports.getActiveChallenges = asyncHandler(async (req, res) => {
 // @route GET /api/
 // @access public
 exports.getOldChallenges = asyncHandler(async (req, res) => {
-  const features = new APIFeatures(Challenge.find().select("-comments -projects"), req.query)
+  const features = new APIFeatures(
+    Challenge.find().select("-comments -projects"),
+    req.query
+  )
     .filter()
     .sort()
     .limitFields()
@@ -45,7 +48,9 @@ exports.getOldChallenges = asyncHandler(async (req, res) => {
 // @access public
 exports.getChallenge = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const challenge = await Challenge.findById(id).populate("comments");
+  const challenge = await Challenge.findById(id).select(
+    "-__v -comments -projects -totalSubmits -isSecret -isActive"
+  );
 
   res.status(200).json(challenge);
 });

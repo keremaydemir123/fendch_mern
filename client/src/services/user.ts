@@ -32,3 +32,8 @@ export async function getUser(id: string) {
   const response = await axios.get(`${SERVER_URL}/users/${id}`);
   return response.data;
 }
+
+export async function getRepos(link: string) {
+  const response = await axios.get(link);
+  return response.data;
+}
