@@ -60,6 +60,12 @@ a:hover {
   opacity: 0.8;
 }
 
+p {
+  margin: 10px 0;
+  letter-spacing: 0.1mm;
+  word-spacing: 0.5mm;
+}
+
 .wrapper {
   width: 100%;
   max-width: 1080px;

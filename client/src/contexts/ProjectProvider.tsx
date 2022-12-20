@@ -10,6 +10,7 @@ import { useQuery } from 'react-query';
 import Loading from '../components/Loading';
 import { ProjectProps } from '../types';
 import { getProject } from '../services/projects';
+import { useUser } from './UserProvider';
 
 interface IProjectContext {
   project: ProjectProps | undefined;
@@ -26,6 +27,7 @@ export function useProject() {
 
 export function ProjectProvider({ children }: { children: React.ReactNode }) {
   const { id } = useParams();
+  const { user: currentUser } = useUser();
   const [project, setProject] = useState<ProjectProps>({} as ProjectProps);
 
   const { isLoading, error } = useQuery<ProjectProps>(
@@ -36,7 +38,7 @@ export function ProjectProvider({ children }: { children: React.ReactNode }) {
         setProject({
           ...data,
           likeCount: data.likes.length,
-          likedByMe: data.likes.includes(data.user as string),
+          likedByMe: data.likes.includes(currentUser?._id as string),
         });
       },
     }

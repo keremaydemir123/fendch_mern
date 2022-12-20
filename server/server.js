@@ -44,6 +44,7 @@ app.use("/users", require("./routes/userRoutes"));
 app.use("/suggestions", require("./routes/suggestionRoutes"));
 
 const PORT = process.env.PORT || 4000;
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
