@@ -21,7 +21,7 @@ function Solution() {
         <h1>{challenge?.tech}</h1>
         <h2>{challenge?.objective}</h2>
         <img src={challenge?.thumbnail} alt="tumbnail" width={500} />
-        <div className="p-2 bg-dark rounded-md">
+        <div className="p-2 rounded-md">
           <MarkdownTest markdown={challenge?.solutionMd} />
         </div>
       </div>

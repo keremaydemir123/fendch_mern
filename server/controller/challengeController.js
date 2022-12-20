@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const APIFeatures = require("../utils/apiFeatures");
+const APIFeatures = require("../utils/APIFeatures");
 
 const Challenge = require("../models/ChallengeModel.js");
 const User = require("../models/UserModel.js");
