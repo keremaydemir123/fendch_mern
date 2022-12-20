@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const User = require("./UserModel.js");
 
 const challengeSchema = mongoose.Schema({
   tech: {
@@ -27,10 +26,6 @@ const challengeSchema = mongoose.Schema({
   startDate: {
     type: Date,
     default: new Date(),
-  },
-  totalSubmits: {
-    type: Number,
-    default: 0,
   },
   isActive: {
     type: Boolean,

@@ -15,7 +15,6 @@ import {
 } from '../services/comments';
 import { CommentProps } from '../types/Comment';
 import { useUser } from '../contexts/UserProvider';
-import { useComment } from '../contexts/CommentProvider';
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
   dateStyle: 'medium',
@@ -32,16 +31,15 @@ function Comment({
 }: CommentProps) {
   const [areChildrenHidden, setAreChildrenHidden] = useState(false);
 
-  const { challenge } = useChallenge();
-
   const {
+    challenge,
     getReplies,
     createLocalComment,
     updateLocalComment,
     deleteLocalComment,
     likeLocalComment,
     dislikeLocalComment,
-  } = useComment();
+  } = useChallenge();
 
   const { user: currentUser } = useUser();
   const childComments = getReplies(_id);

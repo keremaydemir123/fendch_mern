@@ -12,19 +12,14 @@ function Modal({
   onClose: () => void;
   children: React.ReactNode;
 }) {
-  if (!open) {
-    document.body.className = 'overflow-visible';
-    return null;
-  }
-  document.body.className = 'overflow-hidden';
-
+  if (!open) return null;
   return (
     <div
-      className="overlay fixed top-0 bottom-0 left-0 right-0 flex justify-center items-center bg-dark bg-opacity-80 z-10"
+      className="overlay fixed top-0 bottom-0 left-0 right-0 flex justify-center items-center p-8 bg-dark bg-opacity-80 z-10 overflow-auto"
       onClick={onClose}
     >
       <motion.div
-        className="modal relative h-max bg-gray p-8 z-50 rounded-lg md:w-1/2 w-11/12"
+        className="modal relative h-max bg-gray p-4 z-50 rounded-lg w-11/12"
         onClick={(e) => e.stopPropagation()}
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1 }}

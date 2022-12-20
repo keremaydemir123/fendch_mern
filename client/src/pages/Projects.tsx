@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
+import { MdViewList, MdViewWeek } from 'react-icons/md';
 import { useQuery } from 'react-query';
-import Button from '../components/Button';
 import Loading from '../components/Loading';
 import Pagination from '../components/Pagination';
 import ProjectList from '../components/ProjectList';
@@ -13,6 +13,10 @@ const selectOptions = [
   { label: 'JavaScript', value: 'javascript' },
   { label: 'HTML', value: 'html' },
   { label: 'CSS', value: 'css' },
+  { label: 'Tailwind', value: 'tailwind' },
+  { label: 'Angular', value: 'angular' },
+  { label: 'Vue', value: 'vue' },
+  { label: 'Redux', value: 'redux' },
 ];
 
 function Projects() {
@@ -21,6 +25,7 @@ function Projects() {
   ]);
   const [page, setPage] = useState(1);
   const [queryString, setQueryString] = useState('page=1&tech=All');
+  const [layout, setLayout] = useState<'default' | 'list'>('default');
 
   const { isLoading, error, data } = useQuery(['projects', queryString], () =>
     getProjects(queryString)
@@ -34,11 +39,6 @@ function Projects() {
     setQueryString(str);
   }, [page, selectValue]);
 
-  const search = () => {
-    setPage(1);
-    filterProjects();
-  };
-
   useEffect(() => {
     filterProjects();
   }, [filterProjects]);
@@ -50,17 +50,27 @@ function Projects() {
 
   return (
     <div className="flex flex-col h-full w-full  gap-4">
-      <div className="flex justify-between w-full bg-secondary p-4 py-2 rounded-md ">
+      <div className="flex justify-between w-full bg-dark-purple p-4 py-2 rounded-md ">
         <Select
           multiple
           options={selectOptions}
           onChange={(value) => setSelectValue(value)}
           value={selectValue}
         />
-        <Button onClick={search}>Search</Button>
+
+        <div className="flex items-center text-4xl gap-2">
+          <MdViewList
+            onClick={() => setLayout('list')}
+            className="bg-purple hover:bg-opacity-50 hover:text-light hover:cursor-pointer border-transparent rounded-md text-white"
+          />
+          <MdViewWeek
+            onClick={() => setLayout('default')}
+            className="bg-purple hover:bg-opacity-50 hover:text-light hover:cursor-pointer border-transparent rounded-md text-white"
+          />
+        </div>
       </div>
 
-      <ProjectList projects={projects} />
+      <ProjectList projects={projects} layout={layout} />
 
       {data.totalProjects > data.limit && (
         <Pagination

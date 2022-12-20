@@ -13,7 +13,7 @@ type TextAreaProps = {
 const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   ({ label, placeholder, onChange, name, id, value, className }, ref) => {
     return (
-      <div className="flex flex-col gap-1 h-full">
+      <>
         <label htmlFor={id} className="text-light font-semibold font-lg">
           {label}
         </label>
@@ -24,9 +24,9 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           name={name}
           id={id}
           value={value}
-          className={`p-2 border border-primary rounded-md text-primary outline-none ${className}`}
+          className={`p-2 border border-primary resize-none bg-primary text-light rounded-md outline-none ${className}`}
         />
-      </div>
+      </>
     );
   }
 );

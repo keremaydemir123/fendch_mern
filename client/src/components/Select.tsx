@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useId, useRef, useState } from 'react';
 import styles from './select.module.css';
 
 export type SelectOption = {
@@ -20,12 +20,20 @@ type SingleSelectProps = {
 
 type SelectProps = {
   options: SelectOption[];
+  label?: string;
 } & (SingleSelectProps | MultipleSelectProps);
 
-export function Select({ multiple, value, onChange, options }: SelectProps) {
+export function Select({
+  multiple,
+  value,
+  onChange,
+  options,
+  label,
+}: SelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
+  const id = useId();
 
   function clearOptions() {
     return multiple ? onChange([]) : onChange(undefined);
@@ -91,62 +99,68 @@ export function Select({ multiple, value, onChange, options }: SelectProps) {
   }, [isOpen, highlightedIndex, options, selectOption]);
 
   return (
-    <div
-      ref={containerRef}
-      onBlur={() => setIsOpen(false)}
-      onClick={() => setIsOpen((prev) => !prev)}
-      tabIndex={0}
-      className={styles.container}
-      role="button"
-    >
-      <span className={styles.value}>
-        {multiple
-          ? value.map((v) => (
-              <button
-                key={v.value}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  selectOption(v);
-                }}
-                type="button"
-                className={styles['option-badge']}
-              >
-                {v.label}
-                <span className={styles['remove-btn']}>&times;</span>
-              </button>
-            ))
-          : value?.label}
-      </span>
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          clearOptions();
-        }}
-        type="button"
-        className={styles['clear-btn']}
+    <div className={styles.select}>
+      <label htmlFor={id}>{label}</label>
+      <div
+        ref={containerRef}
+        onBlur={() => setIsOpen(false)}
+        onClick={() => setIsOpen((prev) => !prev)}
+        tabIndex={0}
+        className={styles.container}
+        role="button"
+        id={id}
       >
-        &times;
-      </button>
-      <div className={styles.divider} />
-      <div className={styles.caret} />
-      <ul className={`${styles.options} ${isOpen ? styles.show : ''}`}>
-        {options.map((option, index) => (
-          <div
-            onClick={(e) => {
-              e.stopPropagation();
-              selectOption(option);
-              setIsOpen(false);
-            }}
-            onMouseEnter={() => setHighlightedIndex(index)}
-            key={option.value}
-            className={`${styles.option} ${
-              isOptionSelected(option) ? styles.selected : ''
-            } ${index === highlightedIndex ? styles.highlighted : ''}`}
-          >
-            {option.label}
-          </div>
-        ))}
-      </ul>
+        <span className={styles.value}>
+          {multiple
+            ? value.map((v) => (
+                <button
+                  key={v.value}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    selectOption(v);
+                  }}
+                  type="button"
+                  className={styles['option-badge']}
+                >
+                  {v.label}
+                  <span className={styles['remove-btn']}>&times;</span>
+                </button>
+              ))
+            : value?.label}
+        </span>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            clearOptions();
+          }}
+          type="button"
+          className={styles['clear-btn']}
+        >
+          &times;
+        </button>
+        <ul className={`${styles.options} ${isOpen ? styles.show : ''}`}>
+          {options.map((option, index) => (
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                selectOption(option);
+                setIsOpen(false);
+              }}
+              onMouseEnter={() => setHighlightedIndex(index)}
+              key={option.value}
+              className={`${styles.option} ${
+                isOptionSelected(option) ? styles.selected : ''
+              } ${index === highlightedIndex ? styles.highlighted : ''}`}
+            >
+              {option.label}
+            </div>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
+
+Select.defaultProps = {
+  label: '',
+};

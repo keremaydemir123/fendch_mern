@@ -92,7 +92,7 @@ export async function dislikeComment({
   userId: string;
 }) {
   const response = await axios.post(
-    `${SERVER_URL}/challenges/${challengeId}/comments/${id}/like`,
+    `${SERVER_URL}/challenges/${challengeId}/comments/${id}/dislike`,
     { userId }
   );
   return response.data;
@@ -190,7 +190,7 @@ export async function dislikeProjectComment({
   userId: string;
 }) {
   const response = await axios.post(
-    `${SERVER_URL}/projects/${projectId}/comments/${id}/like`,
+    `${SERVER_URL}/projects/${projectId}/comments/${id}/dislike`,
     { userId }
   );
   return response.data;

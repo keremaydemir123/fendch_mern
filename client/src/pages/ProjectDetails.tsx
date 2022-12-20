@@ -1,37 +1,59 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast, Toaster } from 'react-hot-toast';
+import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 import Button from '../components/Button';
 import CommentForm from '../components/CommentForm';
 import CommentList from '../components/CommentList';
+import Loading from '../components/Loading';
 import MarkdownTest from '../components/MarkdownTest';
 import Textarea from '../components/Textarea';
+import { useComment } from '../contexts/CommentProvider';
 import { useProject } from '../contexts/ProjectProvider';
 import { useUser } from '../contexts/UserProvider';
-import { createProjectComment } from '../services/comments';
+import {
+  createProjectComment,
+  getCommentsByProjectId,
+} from '../services/comments';
 import {
   dislikeProject,
   likeProject,
   updateProjectMarkdown,
 } from '../services/projects';
+import { CommentProps } from '../types';
 
 function ProjectDetails() {
   const { id } = useParams<{ id: string }>();
   const { user } = useUser();
-  const [open, setOpen] = useState(false);
 
   const {
     project,
-    createLocalComment,
     dislikeLocalProject,
     likeLocalProject,
-    rootComments,
     updateLocalProjectMarkdown,
   } = useProject();
 
-  const [markdown, setMarkdown] = useState(project?.markdown);
+  const { onCommentsSet, rootComments, createLocalComment } = useComment();
+
+  const [open, setOpen] = useState(false);
+  const [markdown, setMarkdown] = useState<string>('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const { isLoading: commentIsLoading, error: commentError } = useQuery<
+    CommentProps[]
+  >(['getComments', id], () => getCommentsByProjectId(id as string), {
+    onSuccess: (data: CommentProps[]) => {
+      onCommentsSet(data);
+    },
+  });
+
+  useEffect(() => {
+    setMarkdown(project?.markdown as string);
+  }, [project]);
+
+  if (commentIsLoading) return <Loading />;
+  if (commentError) return <div>Couldn&apos;t load comments</div>;
 
   const onCommentCreate = async (message: string) => {
     if (!user) return;
@@ -43,11 +65,11 @@ function ProjectDetails() {
         userId: user?._id as string,
       });
       createLocalComment(comment);
-      setLoading(false);
     } catch (err) {
       toast.error("Couldn't create comment");
       setError("Couldn't create comment");
     }
+    setLoading(false);
   };
   const onProjectLike = async () => {
     if (!user) return;
@@ -97,41 +119,39 @@ function ProjectDetails() {
           {open ? (
             <Textarea
               value={markdown}
-              className="h-full"
               onChange={(e) => setMarkdown(e.target.value)}
+              className="h-full w-full"
             />
           ) : (
             <MarkdownTest markdown={markdown as string} />
           )}
         </div>
         <div className="bg-primary h-max p-2 flex justify-between items-center">
-          <div>
-            {user && user._id === project?.user && (
-              <div>
+          {user && user._id === project?.user && (
+            <div className="flex gap-2 items-center">
+              <Button
+                type="button"
+                onClick={
+                  open
+                    ? () => submitEditedMarkdown(markdown as string)
+                    : () => setOpen(true)
+                }
+              >
+                {open ? 'Submit' : 'Edit'}
+              </Button>
+              {open && (
                 <Button
                   type="button"
-                  onClick={
-                    open
-                      ? () => submitEditedMarkdown(markdown as string)
-                      : () => setOpen(true)
-                  }
+                  onClick={() => {
+                    setOpen(false);
+                    setMarkdown(project?.markdown as string);
+                  }}
                 >
-                  {open ? 'Submit' : 'Edit'}
+                  Cancel
                 </Button>
-                {open && (
-                  <Button
-                    type="button"
-                    onClick={() => {
-                      setOpen(false);
-                      setMarkdown(project?.markdown as string);
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                )}
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
           {project?.likedByMe ? (
             <Button onClick={onProjectDislike} disabled={loading}>
               Dislike {project.likeCount}

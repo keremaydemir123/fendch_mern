@@ -27,7 +27,10 @@ function CommentForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full h-[50px] items-center my-4">
+    <form
+      onSubmit={handleSubmit}
+      className="w-full h-[50px] items-center my-4 "
+    >
       <div className="flex h-full gap-2">
         <textarea
           autoFocus={autoFocus}
@@ -42,7 +45,6 @@ function CommentForm({
         <Button type="submit" disabled={loading}>
           {loading ? 'Loading' : 'Post'}
         </Button>
-        <Button disabled={loading}>Cancel</Button>
       </div>
       <div className="error-msg">{error}</div>
     </form>
