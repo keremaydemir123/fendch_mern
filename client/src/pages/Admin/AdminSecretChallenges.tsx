@@ -1,6 +1,7 @@
 import { useQuery } from 'react-query';
 import ChallengeCard from '../../components/ChallengeCard';
 import CustomLink from '../../components/CustomLink';
+import Loading from '../../components/Loading';
 import { getSecretChallenges } from '../../services/admin';
 import { ChallengeProps } from '../../types/Challenge';
 
@@ -11,7 +12,8 @@ function AdminSecretChallenges() {
     data: secretChallenges,
   } = useQuery('secretChallenges', getSecretChallenges);
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Loading />;
+  if (error) return <div>Error...</div>;
 
   return (
     <div className="p-8">

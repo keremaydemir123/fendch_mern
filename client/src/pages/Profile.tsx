@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { FcSettings } from 'react-icons/fc';
 import { FaLinkedin, FaGithub } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
-import { useUser } from '../contexts/UserProvider';
 import { useQuery } from 'react-query';
+import toast, { Toaster } from 'react-hot-toast';
+import { useUser } from '../contexts/UserProvider';
 import { getUserByUsername, updateMe } from '../services/user';
-import { UserProps } from '../types';
+import { ProjectProps, UserProps } from '../types';
 import Modal from '../components/Modal';
 import Input from '../components/Input';
-import toast, { Toaster } from 'react-hot-toast';
 import Button from '../components/Button';
 import ProjectCard from '../components/ProjectCard';
 import Loading from '../components/Loading';
@@ -16,19 +16,21 @@ import { followUser, unfollowUser } from '../services/follows';
 
 function Profile() {
   const [pageUser, setPageUser] = useState<UserProps | null>(null);
+  const [projects, setProjects] = useState<ProjectProps[] | null>([]);
   const { user } = useUser();
   const [open, setOpen] = useState(false);
-  const [bio, setBio] = useState(user?.bio);
-  const [linkedin, setLinkedin] = useState(user?.linkedin);
-  const [job, setJob] = useState(user?.job);
+  const [bio, setBio] = useState<string>(user?.bio || '');
+  const [linkedin, setLinkedin] = useState(user?.linkedin || '');
+  const [job, setJob] = useState(user?.job || '');
   const { username } = useParams();
 
   const { isLoading: loadingUser, error: errorUser } = useQuery(
     ['user', username],
-    () => getUserByUsername(username!),
+    () => getUserByUsername(username as string),
     {
-      onSuccess: (data: UserProps) => {
-        setPageUser(data);
+      onSuccess: (data) => {
+        setPageUser(data.user);
+        setProjects(data.projects);
       },
     }
   );
@@ -38,31 +40,34 @@ function Profile() {
 
   const handleModalSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (!user?.username) {
+      toast.error('You must be logged in to update your profile');
+      return;
+    }
     try {
-      console.log('here');
       await updateMe({
-        username: user?.username!,
-        bio: bio!,
-        linkedin: linkedin!,
-        job: job!,
+        username: user?.username,
+        bio,
+        linkedin,
+        job,
       });
       toast.success('Profile updated successfully');
       setOpen(false);
-      setPageUser({
-        ...pageUser!,
-        bio,
-        linkedin,
-      });
+      setPageUser((prev) => ({ ...(prev as UserProps), bio, linkedin, job }));
     } catch (error) {
       toast.error('Something went wrong');
     }
   };
 
   const onFollowUser = async () => {
+    if (!user?._id) {
+      toast.error('You must be logged in to follow a user');
+      return;
+    }
     try {
       await followUser({
-        followerId: user?._id!,
-        username: pageUser?.username!,
+        followerId: user?._id,
+        username: pageUser?.username as string,
       });
       toast.success('Successfully followed user');
     } catch (error) {
@@ -71,10 +76,14 @@ function Profile() {
   };
 
   const onUnfollowUser = async () => {
+    if (!user?._id) {
+      toast.error('You must be logged in to unfollow a user');
+      return;
+    }
     try {
       await unfollowUser({
-        followerId: user?._id!,
-        username: pageUser?.username!,
+        followerId: user?._id,
+        username: pageUser?.username as string,
       });
       toast.success('Successfully unfollowed user');
     } catch (error) {
@@ -82,13 +91,7 @@ function Profile() {
     }
   };
 
-  function calculateTotalLikes() {
-    let likeCount = 0;
-    pageUser?.projects?.map((project) => {
-      likeCount = likeCount + project.likes.length;
-    });
-    return likeCount;
-  }
+  console.log('pageUser', pageUser);
 
   return (
     <div className="flex flex-col gap-8 items-center justify-center">
@@ -143,11 +146,10 @@ function Profile() {
           </div>
 
           <div className="relative flex flex-col items-start justify-center font-regular text-lg w-2/5 mt-4 h-full">
-            <h3>Projects: {pageUser?.projects.length}</h3>
+            <h3>Projects: {projects?.length}</h3>
             <h3>Comments: {pageUser?.comments?.length}</h3>
-            <h3>Likes: {calculateTotalLikes().toString()}</h3>
-            <h3>Followers: {pageUser?.followers.length}</h3>
-            <h3>Following: {pageUser?.following.length}</h3>
+            <h3>Followers: {pageUser?.followers?.length}</h3>
+            <h3>Following: {pageUser?.following?.length}</h3>
 
             <div className=" flex justify-center gap-2 text-2xl absolute bottom-4">
               {pageUser?.linkedin && (
@@ -155,7 +157,7 @@ function Profile() {
                   <FaLinkedin fill="#eee" />
                 </a>
               )}
-              <a href={pageUser?.profileUrl} target="_blank">
+              <a href={pageUser?.profileUrl} target="_blank" rel="noreferrer">
                 <FaGithub fill="#eee" />
               </a>
             </div>
@@ -163,7 +165,7 @@ function Profile() {
 
           {user?.username !== pageUser?.username && (
             <div className="absolute top-4 right-4">
-              {pageUser?.followers?.includes(user?._id!) ? (
+              {pageUser?.followers?.includes(user?._id as string) ? (
                 <Button onClick={onUnfollowUser}>Unfollow</Button>
               ) : (
                 <Button onClick={onFollowUser}>Follow</Button>
@@ -183,8 +185,8 @@ function Profile() {
 
       <h1>Projects</h1>
 
-      <div className="flex flex-wrap w-full h-full items-center gap-4 justify-between">
-        {pageUser?.projects?.map((project) => (
+      <div className="flex flex-wrap w-full h-full items-center gap-4 justify-center">
+        {projects?.map((project) => (
           <ProjectCard key={project._id} project={project} />
         ))}
       </div>

@@ -1,4 +1,6 @@
 import React, { useState, createContext, useContext, useMemo } from 'react';
+import { useQuery } from 'react-query';
+import { getUser } from '../services/auth';
 import { UserProps } from '../types/User';
 
 type UserContextType = {
@@ -16,13 +18,17 @@ export function useUser() {
 }
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<UserProps | null>(null);
+
+  useQuery('getUser', getUser, {
+    onSuccess: (data: UserProps) => {
+      setUser(data);
+    },
+  });
 
   return (
     <UserContext.Provider
-      value={
-        useMemo(() => ({ user, setUser }), [user, setUser]) as UserContextType
-      }
+      value={useMemo(() => ({ user }), [user]) as UserContextType}
     >
       {children}
     </UserContext.Provider>

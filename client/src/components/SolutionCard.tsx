@@ -3,20 +3,14 @@ import { useInView } from 'react-intersection-observer';
 import { motion, useAnimation } from 'framer-motion';
 import CustomLink from './CustomLink';
 import { ChallengeProps } from '../types';
-import images from '../images';
+import LogoContainer from './LogoContainer';
 
 const solutionVariants = {
   visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
   hidden: { opacity: 0, scale: 0 },
 };
 
-function SolutionCard({
-  sideBorder,
-  challenge,
-}: {
-  sideBorder: string;
-  challenge: ChallengeProps;
-}) {
+function SolutionCard({ challenge }: { challenge: ChallengeProps }) {
   const control = useAnimation();
   const [ref, inView] = useInView();
 
@@ -28,15 +22,10 @@ function SolutionCard({
     }
   }, [control, inView]);
 
-  console.log(images);
-
-  let border;
   let justify;
-  if (sideBorder === 'right') {
-    border = 'border-r-2';
+  if ((challenge?.week as number) % 2 === 1) {
     justify = 'items-end';
   } else {
-    border = 'border-l-2';
     justify = 'items-start';
   }
   return (
@@ -45,24 +34,12 @@ function SolutionCard({
       variants={solutionVariants}
       initial="hidden"
       animate={control}
-      className={`${border} p-2 border-t-2 border-purple flex flex-col ${justify}`}
+      className={`p-2 flex flex-col ${justify}`}
     >
-      <div className="w-1/2 p-4 bg-secondary rounded-md">
+      <div className="w-full md:w-1/2 p-4 bg-dark-purple rounded-md">
         <div className="flex items-center justify-between">
           <h5 className="text-muted">WEEK {challenge?.week}</h5>
-          <div className="flex gap-2">
-            {challenge?.tags &&
-              challenge?.tags.map((tag, index) => {
-                return (
-                  <img
-                    src={images[tag.toLowerCase()]}
-                    className="w-8 h-8"
-                    alt={tag.toLowerCase()}
-                    key={index}
-                  />
-                );
-              })}
-          </div>
+          <LogoContainer tags={challenge?.tags as string[]} />
         </div>
         <h2>
           {challenge?.tech}: {challenge?.objective}

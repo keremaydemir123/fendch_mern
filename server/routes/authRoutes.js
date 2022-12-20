@@ -6,7 +6,10 @@ const User = require("../models/UserModel.js");
 
 const CLIENT_URL = process.env.CLIENT_URL;
 
-router.get("/github", passport.authenticate("github", { scope: ["profile", "user:email"] }));
+router.get(
+  "/github",
+  passport.authenticate("github", { scope: ["profile", "user:email"] })
+);
 
 router.get(
   "/github/callback",
@@ -24,6 +27,7 @@ router.get(
   "/login/success",
   asyncHandler(async (req, res) => {
     if (req.user) {
+      console.log(req.user);
       const user = await User.findOne({ githubId: req.user.id });
       if (user) {
         console.log(req.user);
@@ -31,6 +35,7 @@ router.get(
       } else {
         const newUser = await User.create({
           githubId: req.user.id,
+          repos_url: req.user._json.repos_url,
           username: req.user.username,
           displayName: req.user.displayName,
           avatar: req.user.photos[0].value,

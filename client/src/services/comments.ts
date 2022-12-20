@@ -1,5 +1,5 @@
-import SERVER_URL from './baseURL';
 import axios from 'axios';
+import SERVER_URL from './baseURL';
 
 export async function getCommentsByChallengeId(challengeId: string) {
   const response = await axios.get(
@@ -71,6 +71,10 @@ export async function likeComment({
   challengeId: string;
   userId: string;
 }) {
+  console.log('challengeId', challengeId);
+  console.log('id', id);
+  console.log('userId', userId);
+
   const response = await axios.post(
     `${SERVER_URL}/challenges/${challengeId}/comments/${id}/like`,
     { userId }
@@ -88,7 +92,7 @@ export async function dislikeComment({
   userId: string;
 }) {
   const response = await axios.post(
-    `${SERVER_URL}/challenges/${challengeId}/comments/${id}/like`,
+    `${SERVER_URL}/challenges/${challengeId}/comments/${id}/dislike`,
     { userId }
   );
   return response.data;
@@ -186,7 +190,7 @@ export async function dislikeProjectComment({
   userId: string;
 }) {
   const response = await axios.post(
-    `${SERVER_URL}/projects/${projectId}/comments/${id}/like`,
+    `${SERVER_URL}/projects/${projectId}/comments/${id}/dislike`,
     { userId }
   );
   return response.data;

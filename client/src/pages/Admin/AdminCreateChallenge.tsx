@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import Button from '../../components/Button';
 import ChallengeCard from '../../components/ChallengeCard';
 import Input from '../../components/Input';
 import { createChallenge } from '../../services/admin';
-import { Select } from '../../components/Select';
+import { SelectOption, Select } from '../../components/Select';
 
-const tagOptions = [
+const SelectOptions = [
   { value: 'react', label: 'React' },
   { value: 'javascript', label: 'JavaScript' },
   { value: 'html', label: 'HTML' },
@@ -22,16 +22,19 @@ function AdminCreateChallenge() {
     tasksVideo: '',
     solutionMd: '',
     solutionVideo: '',
-    tags: [],
+    tags: [SelectOptions[0].value],
     week: 0,
     liveExample: '',
     thumbnail: '',
   });
+  const [selectValue, setSelectValue] = useState<SelectOption[]>([
+    SelectOptions[0],
+  ]);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const response = await createChallenge(challenge);
+      await createChallenge(challenge);
       toast.success('Challenge created successfully!');
     } catch (error) {
       console.log(error);
@@ -40,20 +43,31 @@ function AdminCreateChallenge() {
   };
 
   // handle file import
-  let fileReader: any;
-  const handleFileRead = (e) => {
+  let fileReader: FileReader;
+  const handleFileRead = () => {
     const content = fileReader.result;
-    console.log(content);
+    if (content?.toString().startsWith('## Solution')) {
+      setChallenge({
+        ...challenge,
+        solutionMd: content.toString(),
+      });
+    }
+    if (content?.toString().startsWith('## Tasks')) {
+      setChallenge({
+        ...challenge,
+        tasksMd: content.toString(),
+      });
+    }
   };
 
-  const handleFileChosen = (file: any) => {
-    const fileReader = new FileReader();
+  const handleFileChosen = (file: File) => {
+    fileReader = new FileReader();
     fileReader.onloadend = handleFileRead;
     fileReader.readAsText(file);
   };
 
   return (
-    <div className="mt-8 flex gap-4">
+    <div className="mt-8 flex flex-col gap-4 items-center justify-center bg-purple p-4 rounded-lg">
       <Toaster />
       <form
         onSubmit={handleSubmit}
@@ -62,9 +76,8 @@ function AdminCreateChallenge() {
         <h1>Create Challenge</h1>
         <Input
           label="Tech"
-          id="tech"
           type="text"
-          value={challenge.tech}
+          value={challenge?.tech}
           onChange={(e) =>
             setChallenge({
               ...challenge,
@@ -74,9 +87,8 @@ function AdminCreateChallenge() {
         />
         <Input
           label="Objective"
-          id="objective"
           type="text"
-          value={challenge.objective}
+          value={challenge?.objective}
           onChange={(e) =>
             setChallenge({
               ...challenge,
@@ -86,9 +98,8 @@ function AdminCreateChallenge() {
         />
         <Input
           label="Description"
-          id="desc"
           type="text"
-          value={challenge.description}
+          value={challenge?.description}
           onChange={(e) =>
             setChallenge({
               ...challenge,
@@ -98,22 +109,30 @@ function AdminCreateChallenge() {
         />
         <Select
           multiple
-          value={[tagOptions[0]]}
-          options={tagOptions}
-          onChange={(value) => setChallenge({ ...challenge, tags: value })}
+          value={selectValue}
+          options={SelectOptions}
+          onChange={(values: SelectOption[]) => {
+            const tags: string[] = [];
+            values.forEach((value) => tags.push(value.value as string));
+            setSelectValue(values);
+            setChallenge({ ...challenge, tags });
+          }}
         />
         <Input
           label="Tasks Markdown"
-          id="tasksMd"
           type="file"
-          value={challenge.tasksMd}
-          onChange={(e) => handleFileChosen(e.target.files[0])}
+          onChange={(e: React.FormEvent<HTMLInputElement>) => {
+            const target = e.target as HTMLInputElement;
+            const file = target.files?.item(0);
+            if (file) {
+              handleFileChosen(file);
+            }
+          }}
         />
         <Input
           label="Tasks Video"
-          id="tasksVideo"
           type="text"
-          value={challenge.tasksVideo}
+          value={challenge?.tasksVideo}
           onChange={(e) =>
             setChallenge({
               ...challenge,
@@ -123,21 +142,19 @@ function AdminCreateChallenge() {
         />
         <Input
           label="Solution Markdown"
-          id="solutionMd"
           type="file"
-          value={challenge.solutionMd}
-          onChange={(e) =>
-            setChallenge({
-              ...challenge,
-              solutionMd: e.target.value,
-            })
-          }
+          onChange={(e: React.FormEvent<HTMLInputElement>) => {
+            const target = e.target as HTMLInputElement;
+            const file = target.files?.item(0);
+            if (file) {
+              handleFileChosen(file);
+            }
+          }}
         />
         <Input
           label="Live Example"
-          id="liveExample"
           type="text"
-          value={challenge.liveExample}
+          value={challenge?.liveExample}
           onChange={(e) =>
             setChallenge({
               ...challenge,
@@ -147,9 +164,8 @@ function AdminCreateChallenge() {
         />
         <Input
           label="Solution Video"
-          id="solutionVideo"
           type="text"
-          value={challenge.solutionVideo}
+          value={challenge?.solutionVideo}
           onChange={(e) =>
             setChallenge({
               ...challenge,
@@ -159,9 +175,8 @@ function AdminCreateChallenge() {
         />
         <Input
           label="Week"
-          id="week"
           type="number"
-          value={challenge.week.toString()}
+          value={challenge?.week.toString()}
           onChange={(e) =>
             setChallenge({
               ...challenge,
@@ -171,9 +186,8 @@ function AdminCreateChallenge() {
         />
         <Input
           label="Thumbnail"
-          id="thumbnail"
           type="text"
-          value={challenge.thumbnail}
+          value={challenge?.thumbnail}
           onChange={(e) =>
             setChallenge({
               ...challenge,
@@ -184,9 +198,11 @@ function AdminCreateChallenge() {
         <Button type="submit">Submit</Button>
       </form>
 
-      <div className="w-96 bg-secondary p-8 flex flex-col items-center gap-2">
+      <div className=" bg-secondary p-8 flex flex-col items-center gap-2 w-full">
         <h1>Challenge Preview</h1>
         <ChallengeCard challenge={challenge} />
+        <ChallengeCard challenge={challenge} layout="grid" />
+        <ChallengeCard challenge={challenge} layout="list" />
       </div>
     </div>
   );
