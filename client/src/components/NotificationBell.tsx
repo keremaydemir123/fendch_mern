@@ -7,6 +7,7 @@ import {
   getNotifications,
 } from '../services/notifications';
 import { NotificationProps } from '../types';
+import GradientTitle from './GradientTitle';
 
 function NotificationBell() {
   const [open, setOpen] = useState(false);
@@ -47,12 +48,12 @@ function NotificationBell() {
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="absolute top-16 right-16 w-[300px] h-[300px] bg-gray rounded-lg shadow-dark shadow-lg overflow-y-auto"
+            className="absolute top-16 right-16 md:w-[500px] md:h-max md:max-h-[400px] p-2 bg-primary rounded-lg shadow-dark shadow-lg overflow-y-auto"
           >
             <div className="h-full w-full flex flex-col p-2">
-              <h1 className="text-2xl font-bold border-b-2 border-secondary mb-2">
+              <GradientTitle className="text-3xl py-2 font-bold border-b-2 border-tahiti mb-2">
                 Notifications
-              </h1>
+              </GradientTitle>
               {
                 // if count is greater than 0, show notifications
                 notifications?.length > 0 ? (
@@ -60,7 +61,7 @@ function NotificationBell() {
                     {notifications.map((notification: NotificationProps) => (
                       <div
                         key={notification._id}
-                        className="flex items-center gap-2 bg-primary rounded-md p-2"
+                        className="flex items-center justify-between gap-2 bg-light-gray bg-opacity-20 rounded-md p-2"
                       >
                         <p>{notification.message}</p>
                         <FaTrash

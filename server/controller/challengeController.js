@@ -26,7 +26,9 @@ exports.getActiveChallenges = asyncHandler(async (req, res) => {
 // @access public
 exports.getOldChallenges = asyncHandler(async (req, res) => {
   const features = new APIFeatures(
-    Challenge.find().select("-comments -projects"),
+    Challenge.find({ isActive: false, isSecret: false }).select(
+      "-isSecret -isActive -__v -solutionMd -solutionVideo -tasksMd -tasksVideo -liveExample -thumbnail -totalSubmits -comments"
+    ),
     req.query
   )
     .filter()
@@ -146,9 +148,8 @@ exports.updateChallenge = asyncHandler(async (req, res) => {
 
 exports.getComments = asyncHandler(async (req, res) => {
   const { comments } = await Challenge.findById(req.params.id)
-    .sort({ createdAt: -1 })
     .populate("comments")
-    .select("comments");
+    .sort({ createdAt: -1 });
 
   res.status(200).json(comments);
 });

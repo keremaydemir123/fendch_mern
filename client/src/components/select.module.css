@@ -4,16 +4,15 @@ label {
 }
 
 .container {
+  @apply border-2 border-secondary;
   position: relative;
-  max-width: 100%;
-  width: 400px;
+  width: 200px;
+  max-width: 300px;
   display: flex;
   align-items: center;
   gap: 0.5em;
-  padding: 0.5em;
+  padding: 0.3rem 0.5rem;
   border-radius: 0.25em;
-
-  @apply border-2 border-purple;
 }
 
 .container:focus {
@@ -21,6 +20,7 @@ label {
 }
 
 .value {
+  @apply text-light;
   min-height: 40px;
   display: flex;
   padding: 0 0.5em;
@@ -46,27 +46,13 @@ label {
   opacity: 0.8;
 }
 
-.divider {
-  align-self: stretch;
-  width: 0.05em;
-
-  @apply bg-light-gray;
-}
-
-.caret {
-  translate: 0 25%;
-  border: 0.25em solid transparent;
-
-  @apply border-t-light-gray;
-}
-
 .options {
   position: absolute;
   margin: 0;
   padding: 0;
   list-style: none;
   display: none;
-  max-height: 15em;
+  max-height: 10em;
   overflow-y: auto;
   border: 0.05em solid #777;
   border-radius: 0.25em;
@@ -103,7 +89,6 @@ label {
   padding: 0.15em 0.25em;
   gap: 0.25em 0.75rem;
   cursor: pointer;
-  background: none;
   outline: none;
 }
 

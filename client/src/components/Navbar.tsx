@@ -15,15 +15,17 @@ function Navbar({ user }: { user: UserProps | null }) {
   };
 
   window.addEventListener('scroll', () => {
-    if (window.scrollY > 100) {
+    if (window.scrollY > 0) {
+      document.querySelector('.navbar')?.classList.remove('bg-transparent');
       document.querySelector('.navbar')?.classList.add('bg-dark');
     } else {
-      document.querySelector('.navbar')?.classList.remove('shadow-md');
+      document.querySelector('.navbar')?.classList.add('bg-transparent');
+      document.querySelector('.navbar')?.classList.remove('bg-dark');
     }
   });
 
   return (
-    <nav className="navbar h-16 w-full sticky top-0 z-50 flex items-center px-16 transition duration-300">
+    <nav className="navbar h-16 w-full sticky top-0 z-50 bg-transparent flex items-center px-16">
       <div className="container h-full max-w-7xl flex gap-8 items-center justify-between w-full">
         <div className=" flex items-center gap-6">
           <Link to="/" className="text-xl font-bold">

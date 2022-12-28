@@ -11,7 +11,7 @@ exports.getUsers = asyncHandler(async (req, res) => {
 
 exports.getUserByUsername = asyncHandler(async (req, res) => {
   const user = await User.findOne({ username: req.params.username }).select(
-    "-__v -comments -email -displayName -likedComments -likedProjects -notifications -repos"
+    "-__v -email -displayName -likedComments -likedProjects -notifications -repos"
   );
 
   const projects = await Project.find({ user: user._id })

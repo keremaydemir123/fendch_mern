@@ -1,53 +1,43 @@
-import { IconType } from 'react-icons/lib';
-import {
-  SiRedux,
-  SiTailwindcss,
-  SiJavascript,
-  SiHtml5,
-  SiCss3,
-  SiAngular,
-  SiReact,
-  SiVuedotjs,
-  SiBootstrap,
-} from 'react-icons/si';
-
 function LogoContainer({
   tags,
   className,
 }: {
-  tags: string[];
+  tags: string[] | undefined;
   className?: string;
 }) {
-  const logos: { icon: IconType; color: string }[] = [];
+  const logos: { src: string; alt: string }[] = [];
 
-  tags.forEach((tag) => {
+  tags?.forEach((tag) => {
     switch (tag) {
       case 'redux':
-        logos.push({ icon: SiRedux, color: '#764abc' });
+        logos.push({ src: '../assets/logos/redux.svg', alt: 'redux' });
         break;
       case 'tailwindcss':
-        logos.push({ icon: SiTailwindcss, color: '#3490dc' });
+        logos.push({
+          src: '../assets/logos/tailwindcss.svg',
+          alt: 'tailwindcss',
+        });
         break;
       case 'javascript':
-        logos.push({ icon: SiJavascript, color: '#f0db4f' });
+        logos.push({ src: '../assets/logos/js.png', alt: 'js' });
         break;
       case 'html':
-        logos.push({ icon: SiHtml5, color: '#e34c26' });
+        logos.push({ src: '../assets/logos/html.svg', alt: 'html' });
         break;
       case 'css':
-        logos.push({ icon: SiCss3, color: '#264de4' });
+        logos.push({ src: '../assets/logos/css.svg', alt: 'css' });
         break;
       case 'angular':
-        logos.push({ icon: SiAngular, color: '#dd1b16' });
+        logos.push({ src: '../assets/logos/angular.png', alt: 'angular' });
         break;
       case 'react':
-        logos.push({ icon: SiReact, color: '#61DBFB' });
+        logos.push({ src: '../assets/logos/react.svg', alt: 'react' });
         break;
       case 'vue':
-        logos.push({ icon: SiVuedotjs, color: '#42b883' });
+        logos.push({ src: '../assets/logos/vue.svg', alt: 'vue' });
         break;
       case 'bootstrap':
-        logos.push({ icon: SiBootstrap, color: '#563d7c' });
+        logos.push({ src: '../assets/logos/bootstrap.svg', alt: 'bootstrap' });
         break;
       default:
         break;
@@ -56,11 +46,11 @@ function LogoContainer({
 
   return (
     <div
-      className={`flex items-center gap-2 bg-purple bg-opacity-80 mt-2 p-2 rounded-lg justify-center ${className}`}
+      className={`flex items-center gap-2 bg-dark bg-opacity-30 py-2 px-4 rounded-lg justify-center ${className}`}
     >
       {logos.map((logoObj) => {
-        const { icon: Icon, color } = logoObj;
-        return <Icon key={color} color={color} />;
+        const { src, alt } = logoObj;
+        return <img key={src} src={src} alt={alt} className="w-6 h-6" />;
       })}
     </div>
   );

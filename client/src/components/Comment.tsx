@@ -145,10 +145,14 @@ function Comment({
     <>
       <Toaster />
       <AnimatePresence>
-        <div className="w-full flex flex-col bg-primary rounded-md mt-4 overflow-hidden">
-          <div className="flex justify-between items-center p-2 bg-secondary">
-            <span className="font-medium flex gap-2">
-              <img src={avatar} alt="avatar" className="rounded-full h-6 w-6" />
+        <div className="w-full flex flex-col bg-primary rounded-md mt-4 overflow-hidden shadow-lg shadow-dark">
+          <div className="flex justify-between items-center p-2 bg-dark bg-opacity-30">
+            <span className="font-normal flex gap-2 items-center">
+              <img
+                src={avatar}
+                alt="avatar"
+                className="rounded-full h-8 w-8 object-cover"
+              />
               {username}
             </span>
             <span className="font-light italic text-light text-sm">
@@ -192,7 +196,6 @@ function Comment({
                 <IconButton
                   Icon={FaTrash}
                   aria-label="Delete"
-                  color="text-red-500"
                   onClick={() => onCommentDelete()}
                 />
               </>

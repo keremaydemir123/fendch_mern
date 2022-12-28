@@ -27,7 +27,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           id={id}
           value={value}
-          className={`p-2 border border-primary rounded-md text-primary outline-none ${className}`}
+          className={`p-2 border border-primary rounded-md text-light bg-gray outline-none ${className}`}
         />
       </div>
     );

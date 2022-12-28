@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { toast, Toaster } from 'react-hot-toast';
 import { useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Button from '../components/Button';
 import CommentForm from '../components/CommentForm';
 import CommentList from '../components/CommentList';
@@ -11,6 +11,7 @@ import Textarea from '../components/Textarea';
 import { useComment } from '../contexts/CommentProvider';
 import { useProject } from '../contexts/ProjectProvider';
 import { useUser } from '../contexts/UserProvider';
+import dateFormatter from '../utils/dateFormatter';
 import {
   createProjectComment,
   getCommentsByProjectId,
@@ -21,6 +22,8 @@ import {
   updateProjectMarkdown,
 } from '../services/projects';
 import { CommentProps } from '../types';
+import LogoContainer from '../components/LogoContainer';
+import GradientTitle from '../components/GradientTitle';
 
 function ProjectDetails() {
   const { id } = useParams<{ id: string }>();
@@ -50,6 +53,7 @@ function ProjectDetails() {
 
   useEffect(() => {
     setMarkdown(project?.markdown as string);
+    console.log('project: ', project);
   }, [project]);
 
   if (commentIsLoading) return <Loading />;
@@ -113,8 +117,28 @@ function ProjectDetails() {
   return (
     <div className="w-full flex flex-col">
       <Toaster />
-      <h1>Project Details</h1>
-      <div className="w-full h-96 min-h-max bg-secondary rounded-md flex flex-col justify-between">
+      <div className="w-full h-max bg-secondary shadow-lg shadow-dark mb-4 p-4 rounded-md">
+        <div className="flex justify-between items-center">
+          <h4 className="text-muted uppercase">
+            WEEK {project?.challenge?.week}
+          </h4>
+          <h4 className="text-muted">
+            Submitted at:{' '}
+            {dateFormatter(new Date(project?.submittedAt as Date))}
+          </h4>
+        </div>
+        <div className="flex items-center justify-between">
+          <Link
+            to={`/challenges/${project?.challenge?._id}`}
+            className="text-lg flex items-baseline gap-2"
+          >
+            <h2 className="text-tahiti">{project?.challenge?.tech}</h2>
+            {project?.challenge?.objective}
+          </Link>
+          <LogoContainer tags={project?.tags} />
+        </div>
+      </div>
+      <div className="w-full h-96 min-h-max bg-secondary rounded-md flex flex-col justify-between shadow-lg shadow-dark overflow-hidden">
         <div className="h-full p-2">
           {open ? (
             <Textarea
@@ -123,10 +147,12 @@ function ProjectDetails() {
               className="h-full w-full"
             />
           ) : (
-            <MarkdownTest markdown={markdown as string} />
+            <div className="p-2">
+              <MarkdownTest markdown={markdown as string} />
+            </div>
           )}
         </div>
-        <div className="bg-primary h-max p-2 flex justify-between items-center">
+        <div className="bg-primary h-max p-4 flex justify-between items-center">
           {user && user._id === project?.user && (
             <div className="flex gap-2 items-center">
               <Button
@@ -163,7 +189,7 @@ function ProjectDetails() {
           )}
         </div>
       </div>
-      <h1>Comments</h1>
+      <GradientTitle className="mt-6">Comments</GradientTitle>
       {user && (
         <CommentForm
           onSubmit={onCommentCreate}

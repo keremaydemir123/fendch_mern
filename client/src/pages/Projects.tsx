@@ -50,7 +50,7 @@ function Projects() {
 
   return (
     <div className="flex flex-col h-full w-full  gap-4">
-      <div className="flex justify-between w-full bg-dark-purple p-4 py-2 rounded-md ">
+      <div className="flex justify-between w-full bg-gradient-to-tr from-primary to-gray p-4 py-2 rounded-md shadow-lg shadow-dark">
         <Select
           multiple
           options={selectOptions}
@@ -61,11 +61,15 @@ function Projects() {
         <div className="flex items-center text-4xl gap-2">
           <MdViewList
             onClick={() => setLayout('list')}
-            className="bg-purple hover:bg-opacity-50 hover:text-light hover:cursor-pointer border-transparent rounded-md text-white"
+            className={`${
+              layout === 'list' ? 'text-tahiti' : 'text-muted'
+            }  hover:opacity-50 hover:cursor-pointer border-transparent rounded-md text-white`}
           />
           <MdViewWeek
             onClick={() => setLayout('default')}
-            className="bg-purple hover:bg-opacity-50 hover:text-light hover:cursor-pointer border-transparent rounded-md text-white"
+            className={`${
+              layout === 'default' ? 'text-tahiti' : 'text-muted'
+            }  hover:opacity-50 hover:cursor-pointer border-transparent rounded-md text-white`}
           />
         </div>
       </div>

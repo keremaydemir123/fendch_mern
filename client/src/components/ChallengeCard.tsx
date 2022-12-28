@@ -8,8 +8,9 @@ import LogoContainer from './LogoContainer';
 function ChallengeCardDefault({ challenge }: { challenge: ChallengeProps }) {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+      initial={{ x: -300 }}
+      animate={{ x: 0 }}
+      transition={{ type: 'spring', damping: 10, stiffness: 200, duration: 3 }}
       className="bg-gradient-to-br from-purple to-dark-purple rounded-lg p-6 shadow-md shadow-secondary min-w-[500px] w-[800px]"
     >
       <div className="flex justify-between items-center">
@@ -46,9 +47,10 @@ function ChallengeCardDefault({ challenge }: { challenge: ChallengeProps }) {
 function ChallengeCardGrid({ challenge }: { challenge: ChallengeProps }) {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="flex flex-col justify-between bg-dark-purple rounded-lg p-4 shadow-md shadow-secondary h-80 w-64"
+      initial={{ opacity: 0, scale: 0.3 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: 'spring', stiffness: 110 }}
+      className="flex flex-col justify-between bg-gradient-to-t from-dark-purple to-purple rounded-lg p-4 shadow-md shadow-secondary h-80 w-64"
     >
       <div className="flex items-center justify-between">
         <h4 className="font-bold text-muted text-sm mr-3">
@@ -60,9 +62,9 @@ function ChallengeCardGrid({ challenge }: { challenge: ChallengeProps }) {
       </div>
       <div className="flex flex-col h-36 mt-2">
         <GradientTitle>{challenge?.tech}</GradientTitle>
-        <h2 className="text-light-purple font-medium text-lg">
+        <h1 className="text-light-purple text-lg font-bold">
           {challenge?.objective}
-        </h2>
+        </h1>
         <p className="text-light-purple font-light text-base mt-3">
           {challenge?.description}
         </p>
@@ -86,9 +88,10 @@ function ChallengeCardGrid({ challenge }: { challenge: ChallengeProps }) {
 function ChallengeCardList({ challenge }: { challenge: ChallengeProps }) {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="bg-dark-purple rounded-lg px-6 py-2 shadow-md shadow-secondary w-full"
+      initial={{ opacity: 0, x: -300 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ type: 'spring', stiffness: 100 }}
+      className="bg-gradient-to-tr from-dark-purple to-purple rounded-lg px-6 py-2 shadow-md shadow-secondary w-full"
     >
       <div className="flex justify-between items-center">
         <h4 className="font-bold text-muted text-sm mr-3">
@@ -101,7 +104,7 @@ function ChallengeCardList({ challenge }: { challenge: ChallengeProps }) {
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <GradientTitle>{challenge?.tech}</GradientTitle>
-          <h2>{challenge?.objective}</h2>
+          <h2 className="ml-4">{challenge?.objective}</h2>
         </div>
         <LogoContainer tags={challenge?.tags as string[]} />
       </div>

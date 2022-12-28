@@ -162,7 +162,7 @@ function ChallengeDetails() {
           <Button type="submit">Submit</Button>
         </form>
       </Modal>
-      <div className="w-full flex flex-col items-center mb-4">
+      <div className="w-full flex flex-col items-center mb-4 shadow-lg shadow-dark">
         <Toaster />
         <div className="w-full rounded-lg bg-primary bg-opacity-90 p-8">
           <div className="text-center">
@@ -187,11 +187,11 @@ function ChallengeDetails() {
             </p>
           </section>
           <h1 className="text-center my-4">
-            Here is the explanatory video from us:
+            Here is the explanation video from us
           </h1>
           <YoutubePlayer embedId={challenge?.tasksVideo as string} />
           <h1 className="text-center mt-4">
-            Here is the final expected result:
+            Here is the final expected result
           </h1>
           <div className="w-full flex justify-center my-4 mb-2">
             <img
@@ -206,8 +206,7 @@ function ChallengeDetails() {
             </a>
           </div>
           <h1 className="my-4 text-center">
-            We have also written task for you, you know everyone can forget what
-            is needed
+            We also have a written task for you
           </h1>
           <div className="bg-secondary p-4 rounded-md">
             <MarkdownTest markdown={challenge?.tasksMd as string} />
@@ -219,7 +218,7 @@ function ChallengeDetails() {
           </div>
         </div>
       </div>
-      <h1>Comments</h1>
+      <GradientTitle>Comments</GradientTitle>
       <CommentForm onSubmit={onCommentCreate} loading={loading} error={error} />
       <div>
         {rootComments != null && rootComments.length > 0 && (

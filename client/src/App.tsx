@@ -28,7 +28,7 @@ function App() {
   const { user } = useUser();
 
   return (
-    <div className="App bg-gradient-to-t from-[#112] to-dark text-light min-h-screen">
+    <div className="App bg-gradient-to-t from-[#36393f] to-[#2f3136] text-light min-h-screen">
       <Navbar user={user} />
       <div className="wrapper">
         <Routes>
