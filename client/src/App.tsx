@@ -23,6 +23,7 @@ import AdminGetSuggestions from './pages/Admin/AdminGetSuggestions';
 import SolutionList from './pages/SolutionList';
 import Solution from './pages/Solution';
 import { CommentProvider } from './contexts/CommentProvider';
+import SocketTest from './components/SocketTest';
 
 function App() {
   const { user } = useUser();
@@ -62,6 +63,7 @@ function App() {
           />
 
           <Route path="/profile/:username" element={<Profile />} />
+          <Route path="/socket/test" element={<SocketTest />} />
 
           <Route path="/admin" element={<Admin />}>
             <Route path="/admin/users" element={<AdminUsers />} />

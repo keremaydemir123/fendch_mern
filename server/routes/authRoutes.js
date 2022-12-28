@@ -27,7 +27,6 @@ router.get(
   "/login/success",
   asyncHandler(async (req, res) => {
     if (req.user) {
-      console.log(req.user);
       const user = await User.findOne({ githubId: req.user.id });
       if (user) {
         res.status(200).json(user);
