@@ -24,6 +24,7 @@ import SolutionList from './pages/SolutionList';
 import Solution from './pages/Solution';
 import { CommentProvider } from './contexts/CommentProvider';
 import SocketTest from './components/SocketTest';
+import Socials from './components/Socials';
 
 function App() {
   const { user } = useUser();
@@ -31,6 +32,7 @@ function App() {
   return (
     <div className="App bg-gradient-to-t from-[#36393f] to-[#2f3136] text-light min-h-screen">
       <Navbar user={user} />
+      <Socials />
       <div className="wrapper">
         <Routes>
           <Route path="/" element={<Home />} />

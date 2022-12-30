@@ -4,6 +4,7 @@ import { ChallengeProps } from '../types/Challenge';
 import dateFormatter from '../utils/dateFormatter';
 import GradientTitle from './GradientTitle';
 import LogoContainer from './LogoContainer';
+import ChallengeParticle from './ChallengeParticle';
 
 function ChallengeCardDefault({ challenge }: { challenge: ChallengeProps }) {
   return (
@@ -11,8 +12,11 @@ function ChallengeCardDefault({ challenge }: { challenge: ChallengeProps }) {
       initial={{ x: -300 }}
       animate={{ x: 0 }}
       transition={{ type: 'spring', damping: 10, stiffness: 200, duration: 3 }}
-      className="bg-gradient-to-br from-purple to-dark-purple rounded-lg p-6 shadow-md shadow-secondary min-w-[500px] w-[800px]"
+      className=" relative bg-gradient-to-br from-purple to-dark-purple rounded-lg p-6 shadow-md shadow-secondary max-w-full w-[1000px] h-60"
     >
+      <div className="absolute top-0 left-0 right-0 bottom-0 h-full w-full opacity-10">
+        <ChallengeParticle />
+      </div>
       <div className="flex justify-between items-center">
         <GradientTitle>{challenge?.tech}</GradientTitle>
         <h4 className="font-bold text-muted text-sm mr-3">
