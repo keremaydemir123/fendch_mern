@@ -9,6 +9,7 @@ import TopProjects from '../components/TopProjects';
 import GradientTitle from '../components/GradientTitle';
 import Quote from '../components/Quote';
 import ChallengeParticle from '../components/ChallengeParticle';
+import HeroAnimatedText from '../components/HeroAnimatedText';
 
 function Home() {
   const {
@@ -23,35 +24,20 @@ function Home() {
 
   return (
     <div className="flex w-full flex-col justify-center items-center gap-4">
-      <GradientTitle className="!to-light-gray !from-silver text-5xl">
-        Learn frentend development by
-      </GradientTitle>
-      <GradientTitle className="text-4xl mb-4">
-        <TypeAnimation
-          sequence={[
-            'Building Projects', // Deletes 'One' and types 'Two'
-            1000, // Waits 2s
-            "Checking Other's Code",
-            1000, // Types 'Three' without deleting 'Two'
-            'Getting Feedback',
-            1000,
-          ]}
-          wrapper="div"
-          cursor
-          repeat={Infinity}
-        />
-      </GradientTitle>
+      <HeroAnimatedText />
+
       {activeChallenges.map((challenge: ChallengeProps) => (
         <ChallengeCard key={challenge?._id} challenge={challenge} />
       ))}
-      <div className="flex gap-4">
+      <GradientTitle className="uppercase my-4 p-2 border-b-2 border-purple">
+        Best way to learn frontend
+      </GradientTitle>
+
+      <div className="flex flex-wrap gap-6 w-full justify-center p-4">
         <Quote />
         <Quote />
         <Quote />
-      </div>
-      <div className="flex gap-2">
-        <TopUsers />
-        <TopProjects />
+        <Quote />
       </div>
     </div>
   );

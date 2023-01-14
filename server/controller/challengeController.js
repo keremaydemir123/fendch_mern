@@ -45,6 +45,15 @@ exports.getOldChallenges = asyncHandler(async (req, res) => {
   res.status(200).json(filteredChallenge);
 });
 
+exports.getOldChallengesNames = asyncHandler(async (req, res) => {
+  const challenges = await Challenge.find({
+    isSecret: false,
+    isActive: false,
+  }).select("objective");
+
+  res.status(200).json(challenges);
+});
+
 // Get Challenge
 // @route GET /api/active/
 // @access public

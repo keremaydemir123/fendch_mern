@@ -2,7 +2,7 @@ import { forwardRef, useId } from 'react';
 
 interface InputProps {
   label?: string;
-  type: string;
+  type?: string;
   placeholder?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   value?: string;
@@ -40,6 +40,7 @@ Input.defaultProps = {
   onChange: () => {},
   value: '',
   className: '',
+  type: 'text',
 };
 
 Input.displayName = 'Input';

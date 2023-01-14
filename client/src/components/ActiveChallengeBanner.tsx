@@ -2,6 +2,7 @@ import { ChallengeProps } from '../types';
 import CustomLink from './CustomLink';
 import LogoContainer from './LogoContainer';
 import ChallengeTimeLeft from './ChallengeTimeLeft';
+import GradientTitle from './GradientTitle';
 
 export default function ActiveChallengeBanner({
   challenges,
@@ -9,14 +10,8 @@ export default function ActiveChallengeBanner({
   challenges: ChallengeProps[];
 }) {
   return (
-    <>
-      <div className="flex flex-col items-center justify-center">
-        <h1 className="text-tahiti border-b-2 border-tahiti w-full text-center">
-          Time Left
-        </h1>
-        <ChallengeTimeLeft />
-      </div>
-      <div className="flex md:flex-row flex-col items-center justify-between p-4 w-full rounded-lg shadow-lg shadow-dark md:bg-gradient-to-tr bg-gradient-to-b from-dark-purple to-purple overflow-hidden ">
+    <div className="flex flex-col items-center rounded-lg shadow-lg shadow-dark md:bg-gradient-to-tr bg-gradient-to-b from-primary via-gray to-secondary overflow-hidden">
+      <div className="flex md:flex-row flex-col items-center justify-between p-4 w-full  ">
         <div className="flex flex-col w-full h-64 text-light md:border-r-2 border-purple p-4">
           <div>
             <div>
@@ -31,7 +26,7 @@ export default function ActiveChallengeBanner({
           <div className="flex items-center justify-between mt-auto">
             <CustomLink
               to={`/challenges/${challenges[0]?._id}`}
-              className="mt-auto !bg-light-purple !text-dark-purple font-semibold"
+              className="mt-auto !bg-purple !text-light font-semibold"
             >
               See Details
             </CustomLink>
@@ -61,13 +56,15 @@ export default function ActiveChallengeBanner({
             />
             <CustomLink
               to={`/challenges/${challenges[1]?._id}`}
-              className="mt-auto !bg-light-purple !text-dark-purple font-semibold"
+              className="mt-auto !bg-purple !text-light font-semibold"
             >
               See Details
             </CustomLink>
           </div>
         </div>
       </div>
-    </>
+
+      <ChallengeTimeLeft />
+    </div>
   );
 }

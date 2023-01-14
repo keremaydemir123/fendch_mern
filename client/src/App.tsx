@@ -30,9 +30,10 @@ function App() {
   const { user } = useUser();
 
   return (
-    <div className="App bg-gradient-to-t from-[#36393f] to-[#2f3136] text-light min-h-screen">
+    <div className="App bg-[#36363c] text-light min-h-screen">
       <Navbar user={user} />
       <Socials />
+
       <div className="wrapper">
         <Routes>
           <Route path="/" element={<Home />} />

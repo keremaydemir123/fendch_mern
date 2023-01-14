@@ -11,6 +11,15 @@ export async function getOldChallenges() {
   }
 }
 
+export async function getOldChallengesNames() {
+  try {
+    const response = await axios.get(`${SERVER_URL}/challenges/old/names`);
+    return response.data;
+  } catch (err: unknown) {
+    throw new Error("Couldn't get old challenges");
+  }
+}
+
 export async function getActiveChallenges() {
   try {
     const response = await axios.get(`${SERVER_URL}/challenges/active`);

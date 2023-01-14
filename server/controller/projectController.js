@@ -31,7 +31,6 @@ exports.getAllProjects = asyncHandler(async (req, res) => {
     .sort({ submittedAt: -1 })
     .select("-__v -likedByMe -markdown -comments_id -likeCount");
 
-  console.log(tags);
   projects = projects.filter((project) => {
     if (tags.includes("all")) return project;
 

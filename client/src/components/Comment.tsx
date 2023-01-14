@@ -16,6 +16,8 @@ import {
 import { CommentProps } from '../types/Comment';
 import { useUser } from '../contexts/UserProvider';
 import { useComment } from '../contexts/CommentProvider';
+import Button from './Button';
+import TextButton from './TextButton';
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
   dateStyle: 'medium',
@@ -76,6 +78,7 @@ function Comment({
     }
     setLoading(false);
     setIsReplying(false);
+    setAreChildrenHidden(false);
   };
 
   const onCommentEdit = async (msg: string) => {
@@ -217,23 +220,24 @@ function Comment({
       {childComments?.length > 0 && (
         <>
           <div className={`flex ${areChildrenHidden ? 'hidden' : ''}`}>
-            <button
-              className="collapse-line"
-              aria-label="Hide Replies"
-              type="button"
-              onClick={() => setAreChildrenHidden(true)}
-            />
             <div className="pl-2 flex-grow">
               <CommentList comments={childComments} place="challenge" />
             </div>
           </div>
-          <button
-            className={`btn mt-1 ${!areChildrenHidden ? 'hidden' : ''}`}
+          <TextButton
+            className={`${
+              !areChildrenHidden ? 'hidden' : ''
+            } mt-2 bg-transparent`}
             onClick={() => setAreChildrenHidden(false)}
-            type="button"
           >
-            Show Replies
-          </button>
+            Show Replies ({childComments.length})
+          </TextButton>
+          <TextButton
+            className={`mt-2 ${areChildrenHidden ? 'hidden' : ''}`}
+            onClick={() => setAreChildrenHidden(true)}
+          >
+            Hide Replies
+          </TextButton>
         </>
       )}
     </>

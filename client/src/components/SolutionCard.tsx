@@ -37,7 +37,7 @@ function SolutionCard({ challenge }: { challenge: ChallengeProps }) {
       animate={control}
       className={`p-2 flex flex-col ${justify}`}
     >
-      <div className="w-full md:w-1/2 p-4 bg-dark-purple shadow-lg shadow-dark rounded-md">
+      <div className="w-full md:w-1/2 p-4 bg-gradient-to-tr from-primary to-gray shadow-lg shadow-dark rounded-md">
         <div className="flex items-center justify-between">
           <h5 className="text-muted">WEEK {challenge?.week}</h5>
           <LogoContainer tags={challenge?.tags as string[]} />
@@ -49,8 +49,8 @@ function SolutionCard({ challenge }: { challenge: ChallengeProps }) {
 
         <div className="w-full flex justify-between items-center">
           <div className="flex gap-1 items-center bg-light bg-opacity-5 p-1 px-2 rounded-lg">
-            <h3>{challenge?.projects.length}</h3>
-            <FaFileCode className="text-xl" />
+            <h3 className="text-silver">{challenge?.projects?.length}</h3>
+            <FaFileCode className="text-xl text-light-purple" />
           </div>
           <CustomLink to={`/solutions/${challenge?._id}`}>
             See the Solution

@@ -46,11 +46,11 @@ function LogoContainer({
 
   return (
     <div
-      className={`flex items-center gap-2 bg-dark bg-opacity-30 py-2 px-4 rounded-lg justify-center ${className}`}
+      className={`flex items-center gap-2  bg-opacity-20 py-[6px] px-2 rounded-lg justify-center ${className}`}
     >
       {logos.map((logoObj) => {
         const { src, alt } = logoObj;
-        return <img key={src} src={src} alt={alt} className="w-6 h-6" />;
+        return <img key={src} src={src} alt={alt} className="w-5 h-5" />;
       })}
     </div>
   );

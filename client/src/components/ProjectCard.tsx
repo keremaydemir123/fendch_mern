@@ -42,10 +42,10 @@ function ProjectCardDefault({ project }: { project: ProjectProps }) {
         )}
         <div className="flex gap-2 items-center justify-center bg-light bg-opacity-5 p-2 rounded-lg w-full">
           <div className="flex gap-1 items-center ">
-            <FaComment /> {project?.comments?.length}
+            <FaComment className="text-tahiti" /> {project?.comments?.length}
           </div>
           <div className="flex gap-1 items-center">
-            <FaHeart /> {project?.likes?.length}
+            <FaHeart className="text-pink" /> {project?.likes?.length}
           </div>
         </div>
 
@@ -92,10 +92,11 @@ function ProjectCardList({ project }: { project: ProjectProps }) {
               <LogoContainer tags={project?.tags} />
               <div className="flex gap-2 items-center justify-center bg-light bg-opacity-5 p-2 rounded-lg">
                 <div className="flex gap-1 items-center ">
-                  <FaComment /> {project?.comments?.length}
+                  <FaComment className="text-tahiti" />
+                  {project?.comments?.length}
                 </div>
                 <div className="flex gap-1 items-center">
-                  <FaHeart /> {project?.likes?.length}
+                  <FaHeart className="text-pink" /> {project?.likes?.length}
                 </div>
               </div>
             </>
@@ -103,13 +104,13 @@ function ProjectCardList({ project }: { project: ProjectProps }) {
         </div>
       </div>
       <div className="flex gap-2 justify-between">
-        <div className="flex gap-2 items-center">
+        <div className="flex md:flex-row flex-col md:gap-2 items-center">
           <GradientTitle>{project?.challenge?.tech}</GradientTitle>
           <Link to={`/challenges/${project?.challenge?._id}`}>
             <h3>{project?.challenge?.objective}</h3>
           </Link>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-end gap-2">
           <CustomCTA href={project?.git}>
             <FaGithub />
             Repo

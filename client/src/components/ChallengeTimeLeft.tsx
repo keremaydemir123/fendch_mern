@@ -13,7 +13,7 @@ function ChallengeTimeLeft() {
   const sunday = new Date(
     today.getFullYear(),
     today.getMonth(),
-    today.getDate() + ((8 - today.getDay()) % 7),
+    today.getDate() + ((7 - today.getDay()) % 7),
     23,
     59,
     59
@@ -37,21 +37,24 @@ function ChallengeTimeLeft() {
   }, [deadline]);
 
   return (
-    <div className="flex flex-wrap gap-2 items-center shadow-lg shadow-dark">
-      <div className="flex flex-col items-center justify-center p-2 bg-light bg-opacity-5 md:w-28">
-        <h2 className="text-tahiti">{days}</h2>
+    <div className="flex flex-wrap gap-2 items-center px-8 py-2 w-full border-t-2 border-purple">
+      <h1 className="text-light-purple md:w-max w-full text-center">
+        Remaining Time:{' '}
+      </h1>
+      <div className="flex items-center justify-center p-2 md:w-28 gap-2">
+        <h3 className="text-light-purple">{days}</h3>
         <h4 className="text-light">Days</h4>
       </div>
-      <div className="flex flex-col items-center justify-center p-2 bg-light bg-opacity-5 md:w-28">
-        <h2 className="text-tahiti">{hours}</h2>
+      <div className="flex items-center justify-center p-2  md:w-28 gap-2">
+        <h3 className="text-light-purple">{hours}</h3>
         <h4 className="text-light">Hours</h4>
       </div>
-      <div className="flex flex-col items-center justify-center p-2 bg-light bg-opacity-5 md:w-28">
-        <h2 className="text-tahiti">{minutes}</h2>
+      <div className="flex items-center justify-center p-2  md:w-28 gap-2">
+        <h3 className="text-light-purple">{minutes}</h3>
         <h4 className="text-light">Minutes</h4>
       </div>
-      <div className="flex flex-col items-center justify-center p-2 bg-light bg-opacity-5 md:w-28">
-        <h2 className="text-tahiti">{seconds}</h2>
+      <div className="flex items-center justify-center p-2 md:w-28 gap-2">
+        <h3 className="text-light-purple">{seconds}</h3>
         <h4 className="text-light">Seconds</h4>
       </div>
     </div>

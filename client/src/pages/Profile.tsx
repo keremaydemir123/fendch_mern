@@ -13,13 +13,12 @@ import Button from '../components/Button';
 import ProjectCard from '../components/ProjectCard';
 import Loading from '../components/Loading';
 import { followUser, unfollowUser } from '../services/follows';
-import GradientTitle from '../components/GradientTitle';
-import LevelBar from '../components/LevelBar';
 import TextButton from '../components/TextButton';
 
 function Profile() {
   const [pageUser, setPageUser] = useState<UserProps | null>(null);
   const [projects, setProjects] = useState<ProjectProps[] | null>([]);
+  const [likedProjects, setLikedProjects] = useState<ProjectProps[] | null>([]);
   const [selectedDisplay, setSelectedDisplay] = useState<
     'projects' | 'liked projects' | 'achievements'
   >('projects');
@@ -37,6 +36,7 @@ function Profile() {
       onSuccess: (data) => {
         setPageUser(data.user);
         setProjects(data.projects);
+        setLikedProjects(data.likedProjects);
       },
     }
   );
@@ -131,7 +131,7 @@ function Profile() {
           <Button type="submit">Submit</Button>
         </form>
       </Modal>
-      <div className="card relative flex flex-col rounded-xl justify-center items-center text-center  bg-gradient-to-tr from-primary to-gray w-full text-light px-8 py-4 shadow-lg shadow-dark">
+      <div className="card relative flex flex-col rounded-xl justify-center items-center text-center bg-gradient-to-tr from-primary to-gray w-full text-light px-8 py-4 shadow-lg shadow-dark">
         {user?.username === pageUser?.username && (
           <FcSettings
             onClick={() => setOpen(true)}
@@ -150,37 +150,32 @@ function Profile() {
               ) : (
                 <div className="rounded-full w-64 h-64 bg-light my-4" />
               )}
-
-              <div className="absolute top-0 -right-1/2 flex flex-col items-center gap-2">
-                <LevelBar />
-                <div>303 points</div>
-              </div>
             </div>
-            <GradientTitle className="text-2xl font-semibold flex items-center gap-2">
+            <h3 className="tracking-wider font-semibold flex items-center gap-2">
               {pageUser?.username}
-            </GradientTitle>
+            </h3>
 
             <div className="flex items-center justify-center w-max gap-3 font-semibold text-sm">
               <p className="flex flex-col items-center justify-center">
-                <span className="text-xl text-tahiti font-bold">
+                <span className="text-xl text-purple font-bold">
                   {projects?.length}
                 </span>
                 Projects
               </p>
               <p className="flex flex-col items-center justify-center">
-                <span className="text-xl text-tahiti font-bold">
+                <span className="text-xl text-purple font-bold">
                   {pageUser?.comments?.length}
                 </span>
                 Comments
               </p>
               <p className="flex flex-col items-center justify-center">
-                <span className="text-xl text-tahiti font-bold">
+                <span className="text-xl text-purple font-bold">
                   {pageUser?.followers?.length}
                 </span>
                 Followers
               </p>
               <p className="flex flex-col items-center justify-center">
-                <span className="text-xl text-tahiti font-bold">
+                <span className="text-xl text-purple font-bold">
                   {pageUser?.following?.length}
                 </span>
                 Following
@@ -209,9 +204,9 @@ function Profile() {
           )}
         </div>
 
-        <div className="p-4">
+        <div className="p-4 w-full">
           {pageUser?.bio ? (
-            <p className="text-lg font-regular">{pageUser.bio}</p>
+            <p className="text-lg font-regular w-full">{pageUser.bio}</p>
           ) : (
             <p>No description</p>
           )}
@@ -222,9 +217,9 @@ function Profile() {
         <TextButton
           className={`${
             selectedDisplay === 'liked projects'
-              ? 'text-2xl p-2 !border-b-2 !border-tahiti font-bold'
+              ? 'text-2xl p-2 !border-b-2 !border-purple font-bold'
               : ''
-          } text-tahiti hover:cursor-pointer hover:text-blue`}
+          } text-silver hover:cursor-pointer hover:text-light`}
           onClick={() => setSelectedDisplay('liked projects')}
         >
           Liked Projects
@@ -232,9 +227,9 @@ function Profile() {
         <TextButton
           className={`${
             selectedDisplay === 'projects'
-              ? 'text-2xl p-2 !border-b-2 !border-tahiti font-bold'
+              ? 'text-2xl p-2 !border-b-2 !border-purple font-bold'
               : ''
-          } text-tahiti hover:cursor-pointer hover:text-blue`}
+          } text-silver hover:cursor-pointer hover:text-light`}
           onClick={() => setSelectedDisplay('projects')}
         >
           Projects
@@ -242,9 +237,9 @@ function Profile() {
         <TextButton
           className={`${
             selectedDisplay === 'achievements'
-              ? 'text-2xl p-2 !border-b-2 !border-tahiti font-bold'
+              ? 'text-2xl p-2 !border-b-2 !border-purple font-bold'
               : ''
-          } text-tahiti hover:cursor-pointer hover:text-blue`}
+          } text-silver hover:cursor-pointer hover:text-light`}
           onClick={() => setSelectedDisplay('achievements')}
         >
           Achievements
@@ -255,6 +250,18 @@ function Profile() {
           {projects?.map((project) => (
             <ProjectCard key={project._id} project={project} />
           ))}
+        </div>
+      )}
+      {selectedDisplay === 'achievements' && (
+        <div className="flex flex-wrap w-full h-full items-center gap-6 justify-center">
+          <h1>In Development...</h1>
+        </div>
+      )}
+      {selectedDisplay === 'liked projects' && (
+        <div className="flex flex-wrap w-full h-full items-center gap-6 justify-center">
+          {likedProjects?.map((project) => {
+            return <ProjectCard key={project._id} project={project} />;
+          })}
         </div>
       )}
     </div>

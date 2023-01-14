@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { FaBars } from 'react-icons/fa';
+import { FaBars, FaGithub, FaTimes } from 'react-icons/fa';
 import Button from './Button';
 import CustomLink from './CustomLink';
-import Badge from './Badge';
 import { UserProps } from '../types';
 import GradientTitle from './GradientTitle';
 
@@ -17,16 +16,16 @@ function Navbar({ user }: { user: UserProps | null }) {
   window.addEventListener('scroll', () => {
     if (window.scrollY > 0) {
       document.querySelector('.navbar')?.classList.remove('bg-transparent');
-      document.querySelector('.navbar')?.classList.add('bg-dark');
+      document.querySelector('.navbar')?.classList.add('bg-primary');
     } else {
       document.querySelector('.navbar')?.classList.add('bg-transparent');
-      document.querySelector('.navbar')?.classList.remove('bg-dark');
+      document.querySelector('.navbar')?.classList.remove('bg-primary');
     }
   });
 
   return (
-    <nav className="navbar h-16 w-full sticky top-0 z-50 bg-transparent flex items-center px-16">
-      <div className="container h-full max-w-7xl flex gap-8 items-center justify-between w-full">
+    <nav className="navbar h-16 w-full sticky top-0 z-50 flex items-center px-16">
+      <div className="container h-full max-w-7xl flex gap-8 items-center justify-between w-full text-light tracking-wide font-semibold">
         <div className=" flex items-center gap-6">
           <Link to="/" className="text-xl font-bold">
             <GradientTitle>FENDCH</GradientTitle>
@@ -40,7 +39,6 @@ function Navbar({ user }: { user: UserProps | null }) {
         <div className="md:flex hidden items-center gap-4">
           {user ? (
             <>
-              <Badge />
               <Link to={`/profile/${user.username}`} className="lg:flex hidden">
                 {user.username}
               </Link>
@@ -54,8 +52,13 @@ function Navbar({ user }: { user: UserProps | null }) {
               )}
             </>
           ) : (
-            <Button type="button" onClick={loginWithGithub}>
+            <Button
+              type="button"
+              onClick={loginWithGithub}
+              className="flex items-center gap-2"
+            >
               Login with Github
+              <FaGithub className="text-lg" />
             </Button>
           )}
         </div>
@@ -68,30 +71,57 @@ function Navbar({ user }: { user: UserProps | null }) {
       {/* Mobile Menu */}
       {open && (
         <div className="md:hidden fixed top-0 left-0 w-full h-full bg-dark z-50 flex flex-col items-center justify-center">
-          <div className="flex flex-col gap-4">
-            <Link to="/" className="border-b-2 border-light-gray">
+          <div className="flex flex-col gap-4 w-64">
+            <Link to="/" className="border-b-2 p-2 border-light-gray">
               <h1>FENDCH</h1>
             </Link>
-            <Link to="/challenges">Challenges</Link>
-            <Link to="/projects">Projects</Link>
-            <Link to="/solutions">Solutions</Link>
             {user ? (
-              <>
-                <Link to={`/profile/${user.username}`}>{user.username}</Link>
-                <img src={user.avatar} alt="user" className="rounded w-8 h-8" />
-                {user.role === 'admin' && (
-                  <CustomLink to="/admin">Admin</CustomLink>
-                )}
-              </>
+              <div className="flex items-center gap-2 p-2">
+                <img
+                  src={user.avatar}
+                  alt="user"
+                  className="rounded-full w-8 h-8"
+                />
+                <Link
+                  to={`/profile/${user.username}`}
+                  onClick={() => setOpen(false)}
+                >
+                  {user.username}
+                </Link>
+              </div>
             ) : (
               <Button type="button" onClick={loginWithGithub}>
                 Login with Github
               </Button>
             )}
+            <Link
+              className="hover:bg-purple p-2"
+              to="/challenges"
+              onClick={() => setOpen(false)}
+            >
+              Challenges
+            </Link>
+            <Link
+              className="hover:bg-purple p-2"
+              to="/projects"
+              onClick={() => setOpen(false)}
+            >
+              Projects
+            </Link>
+            <Link
+              className="hover:bg-purple p-2"
+              to="/solutions"
+              onClick={() => setOpen(false)}
+            >
+              Solutions
+            </Link>
           </div>
-          <Button type="button" onClick={() => setOpen(false)} className="mt-4">
+          <FaTimes
+            onClick={() => setOpen(false)}
+            className="absolute top-8 right-8 text-3xl hover:opacity-80 hover:cursor-pointer"
+          >
             Close
-          </Button>
+          </FaTimes>
         </div>
       )}
     </nav>
