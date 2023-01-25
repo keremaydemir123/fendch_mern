@@ -27,11 +27,14 @@ function CommentForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full h-[50px] items-center my-4">
+    <form
+      onSubmit={handleSubmit}
+      className="w-full h-[50px] items-center my-4 "
+    >
       <div className="flex h-full gap-2">
         <textarea
           autoFocus={autoFocus}
-          className="flex-grow resize-none h-full rounded-lg p-2 outline-none text-dark bg-light font-medium leading-8 shadow-md shadow-dark"
+          className="flex-grow resize-none h-full rounded-lg p-2 outline-none text-dark bg-light font-medium leading-8"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder={

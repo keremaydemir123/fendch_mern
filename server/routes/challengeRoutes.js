@@ -11,7 +11,6 @@ router.route("/active").get(challengeController.getActiveChallenges);
 
 // Old challenges
 router.route("/old").get(challengeController.getOldChallenges);
-router.route("/old/names").get(challengeController.getOldChallengesNames);
 
 // Actions for all challenges
 router.route("/").post(challengeController.createChallenge);

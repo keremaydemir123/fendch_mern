@@ -7,7 +7,7 @@ function GradientTitle({
   children: React.ReactNode;
   className?: string;
 }) {
-  const styles = `font-bold text-3xl inline-block text-transparent bg-clip-text bg-gradient-to-r from-purple to-light-purple`;
+  const styles = `font-bold text-2xl inline-block text-transparent bg-clip-text bg-gradient-to-r from-tahiti to-bermuda`;
   return <h1 className={`${styles} ${className}`}>{children}</h1>;
 }
 

@@ -1,6 +1,5 @@
 import React, { useState, createContext, useContext, useMemo } from 'react';
 import { useQuery } from 'react-query';
-import io from 'socket.io-client';
 import { getUser } from '../services/auth';
 import { UserProps } from '../types/User';
 
@@ -21,19 +20,9 @@ export function useUser() {
 export function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserProps | null>(null);
 
-  const socket = io('127.0.0.1:4000', {
-    reconnectionDelay: 1000,
-    reconnection: true,
-    transports: ['websocket', 'polling', 'flashsocket'],
-    agent: false,
-    upgrade: false,
-    rejectUnauthorized: false,
-  });
-
   useQuery('getUser', getUser, {
     onSuccess: (data: UserProps) => {
       setUser(data);
-      socket.emit('connect_user', data._id);
     },
   });
 

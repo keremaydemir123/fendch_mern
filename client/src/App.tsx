@@ -23,17 +23,13 @@ import AdminGetSuggestions from './pages/Admin/AdminGetSuggestions';
 import SolutionList from './pages/SolutionList';
 import Solution from './pages/Solution';
 import { CommentProvider } from './contexts/CommentProvider';
-import SocketTest from './components/SocketTest';
-import Socials from './components/Socials';
 
 function App() {
   const { user } = useUser();
 
   return (
-    <div className="App bg-[#36363c] text-light min-h-screen">
+    <div className="App bg-gradient-to-t from-[#112] to-dark text-light min-h-screen">
       <Navbar user={user} />
-      <Socials />
-
       <div className="wrapper">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -66,7 +62,6 @@ function App() {
           />
 
           <Route path="/profile/:username" element={<Profile />} />
-          <Route path="/socket/test" element={<SocketTest />} />
 
           <Route path="/admin" element={<Admin />}>
             <Route path="/admin/users" element={<AdminUsers />} />

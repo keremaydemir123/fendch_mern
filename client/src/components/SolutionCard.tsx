@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { motion, useAnimation } from 'framer-motion';
-import { FaFileCode } from 'react-icons/fa';
 import CustomLink from './CustomLink';
 import { ChallengeProps } from '../types';
 import LogoContainer from './LogoContainer';
@@ -37,7 +36,7 @@ function SolutionCard({ challenge }: { challenge: ChallengeProps }) {
       animate={control}
       className={`p-2 flex flex-col ${justify}`}
     >
-      <div className="w-full md:w-1/2 p-4 bg-gradient-to-tr from-primary to-gray shadow-lg shadow-dark rounded-md">
+      <div className="w-full md:w-1/2 p-4 bg-dark-purple rounded-md">
         <div className="flex items-center justify-between">
           <h5 className="text-muted">WEEK {challenge?.week}</h5>
           <LogoContainer tags={challenge?.tags as string[]} />
@@ -47,11 +46,7 @@ function SolutionCard({ challenge }: { challenge: ChallengeProps }) {
         </h2>
         <p>{challenge?.description}</p>
 
-        <div className="w-full flex justify-between items-center">
-          <div className="flex gap-1 items-center bg-light bg-opacity-5 p-1 px-2 rounded-lg">
-            <h3 className="text-silver">{challenge?.projects?.length}</h3>
-            <FaFileCode className="text-xl text-light-purple" />
-          </div>
+        <div className="w-full flex justify-end ">
           <CustomLink to={`/solutions/${challenge?._id}`}>
             See the Solution
           </CustomLink>

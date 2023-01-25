@@ -4,8 +4,6 @@ const notificationController = require("../controller/notificationController");
 
 router.get("/", userController.getUsers);
 
-router.get("/usernames", userController.getUsernames);
-
 router
   .route("/username/:username")
   .get(userController.getUserByUsername)

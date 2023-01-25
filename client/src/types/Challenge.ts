@@ -8,7 +8,6 @@ export type ChallengeProps = {
   tags: string[];
   tasksMd: string;
   week: number;
-  projects: string[];
   startDate?: string;
   objective: string;
   liveExample: string;
