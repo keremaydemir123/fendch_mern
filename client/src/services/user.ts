@@ -33,6 +33,11 @@ export async function getUser(id: string) {
   return response.data;
 }
 
+export async function getUsernames() {
+  const response = await axios.get(`${SERVER_URL}/users/usernames`);
+  return response.data;
+}
+
 export async function getRepos(link: string) {
   const response = await axios.get(link);
   return response.data;

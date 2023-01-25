@@ -33,15 +33,24 @@ GOALS:
 - all card containers must be responsive
 
 #### Server:
+- sıralı gönder -> comments (createdAt , self first) solutions (week) projects (like,recent)
+- create complete challenges [2 challenge oluştur]
 - When a comment deleted, delete all references from project, challange and user
-- Middleware that checks time and changing isSecret and isActive states
-- Pagination functionality for challenges and projects
-- like a project: project.likes.push(liker.id)
 - Mail nodemailer mailgun 
-- Change challenge fields with time
+- mail template
+- error handler
+- like dislike challenge
+- delete project
+- profile -> liked projects
 - Some security checks[x]
 - response trim [x]
-- private message []
+- socket.io notification
+- socket.io private message []
+- create achievement types
+- user needs points, level and streak fields and set rules [  ] [10. levele kdar olan kurallar ] [ streak kuralları ]
+- profile -> achievements [10 kural 10 icon]
+- top users, top projects and cron jobs
+- update points
 
 
 ### Check later

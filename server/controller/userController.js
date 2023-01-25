@@ -11,7 +11,7 @@ exports.getUsers = asyncHandler(async (req, res) => {
 
 exports.getUserByUsername = asyncHandler(async (req, res) => {
   const user = await User.findOne({ username: req.params.username }).select(
-    "-__v -comments -email -displayName -likedComments -likedProjects -notifications -repos"
+    "-__v -email -displayName -likedComments -likedProjects -notifications -repos"
   );
 
   const projects = await Project.find({ user: user._id })
@@ -20,12 +20,20 @@ exports.getUserByUsername = asyncHandler(async (req, res) => {
       path: "challenge",
       select: { tech: 1, objective: 1, week: 1, _id: 1 },
     })
-    .select("-__v -markdown -comments -likeCount -likedByMe");
+    .select("-__v -markdown -likeCount -likedByMe");
 
-  console.log(projects);
+  const likedProjects = await Project.find({ likes: user._id })
+    .populate({ path: "user", select: { username: 1, avatar: 1, _id: 0 } })
+    .populate({
+      path: "challenge",
+      select: { tech: 1, objective: 1, week: 1, _id: 1 },
+    })
+    .select("-__v -markdown -likeCount -likedByMe");
+
+  console.log(likedProjects);
 
   if (user) {
-    res.status(200).json({ user, projects });
+    res.status(200).json({ user, projects, likedProjects });
   } else {
     res.status(404);
     throw new Error("User not found");
@@ -104,4 +112,10 @@ exports.unfollowUser = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("User not found");
   }
+});
+
+exports.getUsernames = asyncHandler(async (req, res) => {
+  const users = await User.find().select("username");
+
+  res.status(200).json(users);
 });

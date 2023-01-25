@@ -79,3 +79,8 @@ export async function updateProjectMarkdown({
   );
   return response.data;
 }
+
+export async function deleteProject(projectId: string) {
+  const response = await axios.delete(`${SERVER_URL}/projects/${projectId}`);
+  return response.data;
+}

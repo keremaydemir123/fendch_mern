@@ -9,7 +9,7 @@ function ProjectList({
   layout?: 'default' | 'list';
 }) {
   return (
-    <div className="flex flex-wrap gap-4 justify-center">
+    <div className="flex flex-wrap gap-4 mt-4 justify-center">
       {projects.map((project) => (
         <ProjectCard project={project} key={project._id} layout={layout} />
       ))}

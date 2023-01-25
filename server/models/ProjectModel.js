@@ -10,8 +10,6 @@ const projectSchema = mongoose.Schema(
     challenge: { type: mongoose.Schema.Types.ObjectId, ref: "Challenge" },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] }],
-    likeCount: { type: Number, default: 0 },
-    likedByMe: { type: Boolean, default: false },
     comments: [
       { type: mongoose.Schema.Types.ObjectId, ref: "Comment", default: [] },
     ],

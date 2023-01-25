@@ -16,6 +16,8 @@ import {
 import { CommentProps } from '../types/Comment';
 import { useUser } from '../contexts/UserProvider';
 import { useComment } from '../contexts/CommentProvider';
+import Button from './Button';
+import TextButton from './TextButton';
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
   dateStyle: 'medium',
@@ -76,6 +78,7 @@ function Comment({
     }
     setLoading(false);
     setIsReplying(false);
+    setAreChildrenHidden(false);
   };
 
   const onCommentEdit = async (msg: string) => {
@@ -145,10 +148,14 @@ function Comment({
     <>
       <Toaster />
       <AnimatePresence>
-        <div className="w-full flex flex-col bg-primary rounded-md mt-4 overflow-hidden">
-          <div className="flex justify-between items-center p-2 bg-secondary">
-            <span className="font-medium flex gap-2">
-              <img src={avatar} alt="avatar" className="rounded-full h-6 w-6" />
+        <div className="w-full flex flex-col bg-primary rounded-md mt-4 overflow-hidden shadow-lg shadow-dark">
+          <div className="flex justify-between items-center p-2 bg-dark bg-opacity-30">
+            <span className="font-normal flex gap-2 items-center">
+              <img
+                src={avatar}
+                alt="avatar"
+                className="rounded-full h-8 w-8 object-cover"
+              />
               {username}
             </span>
             <span className="font-light italic text-light text-sm">
@@ -192,7 +199,6 @@ function Comment({
                 <IconButton
                   Icon={FaTrash}
                   aria-label="Delete"
-                  color="text-red-500"
                   onClick={() => onCommentDelete()}
                 />
               </>
@@ -214,23 +220,24 @@ function Comment({
       {childComments?.length > 0 && (
         <>
           <div className={`flex ${areChildrenHidden ? 'hidden' : ''}`}>
-            <button
-              className="collapse-line"
-              aria-label="Hide Replies"
-              type="button"
-              onClick={() => setAreChildrenHidden(true)}
-            />
             <div className="pl-2 flex-grow">
               <CommentList comments={childComments} place="challenge" />
             </div>
           </div>
-          <button
-            className={`btn mt-1 ${!areChildrenHidden ? 'hidden' : ''}`}
+          <TextButton
+            className={`${
+              !areChildrenHidden ? 'hidden' : ''
+            } mt-2 bg-transparent`}
             onClick={() => setAreChildrenHidden(false)}
-            type="button"
           >
-            Show Replies
-          </button>
+            Show Replies ({childComments.length})
+          </TextButton>
+          <TextButton
+            className={`mt-2 ${areChildrenHidden ? 'hidden' : ''}`}
+            onClick={() => setAreChildrenHidden(true)}
+          >
+            Hide Replies
+          </TextButton>
         </>
       )}
     </>

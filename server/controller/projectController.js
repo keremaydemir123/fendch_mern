@@ -15,9 +15,12 @@ exports.getAllProjects = asyncHandler(async (req, res) => {
   const limit = req.query.limit * 1 || 10;
   const skip = (page - 1) * limit;
 
-  let techs;
-  if (req.query.tech.includes(",")) techs = req.query.tech.split(",");
-  else techs = [req.query.tech];
+  let tags = [];
+  if (req.query.tech && req.query.tech.length > 1) {
+    tags = req.query.tech.toLowerCase().split(",");
+  } else if (req.query.tech) {
+    tags = [req.query.tech.toLowerCase()];
+  } else tags = ["all"];
 
   let projects = await Project.find()
     .populate({
@@ -25,13 +28,14 @@ exports.getAllProjects = asyncHandler(async (req, res) => {
       select: { objective: 1, tech: 1, week: 1, submittedAt: 1, _id: 1 },
     })
     .populate({ path: "user", select: { username: 1, avatar: 1, _id: 0 } })
+    .sort({ submittedAt: -1 })
     .select("-__v -likedByMe -markdown -comments_id -likeCount");
 
   projects = projects.filter((project) => {
-    if (techs.includes("All")) return project;
+    if (tags.includes("all")) return project;
 
-    for (let i = 0; i < techs.length; i++) {
-      if (project.challenge.tech.includes(techs[i])) {
+    for (let i = 0; i < tags.length; i++) {
+      if (project.tags.includes(tags[i])) {
         return project;
       }
     }

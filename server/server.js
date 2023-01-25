@@ -1,20 +1,25 @@
 const express = require("express");
 const dotenv = require("dotenv");
 dotenv.config();
+
+const http = require("http");
+const socketio = require("socket.io");
 const cors = require("cors");
 const cookieSession = require("cookie-session");
 const passport = require("passport");
 const morgan = require("morgan");
 const errorHandler = require("./middleware/errorHandler.js");
 
-require("./passport");
-require("./cronJobs");
+const app = express();
+const server = http.createServer(app);
+const io = socketio(server);
 
 const connectDB = require("./config/db.js");
-
 connectDB();
 
-const app = express();
+const notificationHandler = require("./socket/notificationHandler");
+require("./passport");
+require("./cronJobs");
 
 app.use(
   cors({
@@ -38,6 +43,27 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+io.on("connection", (socket) => {
+  // Define socket actions in the actionHandlers file
+
+  // connect user to the socket
+  socket.on("connect_user", (userId) => {
+    console.log(userId);
+  });
+
+  // disconnect user from the socket
+  socket.on("disconnect", (userId) => {
+    socket.leave(userId);
+  });
+
+  socket.on("notifications", (data) => {
+    let newData = { ...data, socketId: socket.id };
+    notificationHandler.handleNotification(newData);
+  });
+});
+
+global.io = io;
+
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/challenges", require("./routes/challengeRoutes"));
 app.use("/projects", require("./routes/projectRoutes"));
@@ -60,6 +86,6 @@ app.use((err,req,res,next)=> {
 
 const PORT = process.env.PORT || 4000;
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
