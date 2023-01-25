@@ -8,6 +8,7 @@ const cors = require("cors");
 const cookieSession = require("cookie-session");
 const passport = require("passport");
 const morgan = require("morgan");
+const errorHandler = require("./middleware/errorHandler.js");
 
 const app = express();
 const server = http.createServer(app);
@@ -68,6 +69,20 @@ app.use("/challenges", require("./routes/challengeRoutes"));
 app.use("/projects", require("./routes/projectRoutes"));
 app.use("/users", require("./routes/userRoutes"));
 app.use("/suggestions", require("./routes/suggestionRoutes"));
+app.all('*',(req,res,next)=> {
+  const err= new Error(`Can't find ${req.originalUrl} on this server!`)
+  err.status=404
+  err.statusCode=404
+ next(err)
+})
+app.use((err,req,res,next)=> {
+  err.statusCode= err.statusCode || 500
+  err.status= err.status || 'error'
+  res.status(err.statusCode).json({
+       status:err.status,
+       message:err.message
+  })
+})
 
 const PORT = process.env.PORT || 4000;
 
