@@ -6,7 +6,7 @@ function HeroAnimatedText() {
   return (
     <div className="flex flex-col gap-2 w-full text-center">
       <h1 className="text-silver opacity-90 text-5xl">
-        <strong className="underline">Learn</strong> frentend development by
+        <strong className="underline">Learn</strong> frontend development by
       </h1>
       <GradientTitle className="text-4xl mb-4">
         <TypeAnimation
