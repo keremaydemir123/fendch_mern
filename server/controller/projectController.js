@@ -15,14 +15,19 @@ exports.getAllProjects = asyncHandler(async (req, res) => {
   const limit = req.query.limit * 1 || 10;
   const skip = (page - 1) * limit;
 
-  let tags = [];
-  if (req.query.tech && req.query.tech.length > 1) {
-    tags = req.query.tech.toLowerCase().split(",");
-  } else if (req.query.tech) {
-    tags = [req.query.tech.toLowerCase()];
-  } else tags = ["all"];
+  let tagsQuery = [];
+  if (req.query.tags && req.query.tags.length > 1) {
+    tagsQuery = req.query.tags.toLowerCase().split(",");
+  } else if (req.query.tags) {
+    tagsQuery = [req.query.tags.toLowerCase()];
+  } else tagsQuery = ["all"];
 
-  let projects = await Project.find()
+  let challengeQuery = req.query.challenge || "all";
+
+  // find all projects with the id of the challenge in the query
+  // if the query is all, then find all projects
+
+  let projects = await Project.find({})
     .populate({
       path: "challenge",
       select: { objective: 1, tech: 1, week: 1, submittedAt: 1, _id: 1 },
@@ -31,8 +36,16 @@ exports.getAllProjects = asyncHandler(async (req, res) => {
     .sort({ submittedAt: -1 })
     .select("-__v -likedByMe -markdown -comments_id -likeCount");
 
+  if (challengeQuery !== "all") {
+    projects = projects.filter((project) => {
+      if (project.challenge._id == challengeQuery) {
+        return project;
+      }
+    });
+  }
+
   projects = projects.filter((project) => {
-    if (tags.includes("all")) return project;
+    if (tagsQuery.includes("all")) return project;
 
     for (let i = 0; i < tags.length; i++) {
       if (project.tags.includes(tags[i])) {
