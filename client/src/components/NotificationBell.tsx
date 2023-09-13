@@ -8,6 +8,7 @@ import {
 } from '../services/notifications';
 import { NotificationProps } from '../types';
 import GradientTitle from './GradientTitle';
+import toast from 'react-hot-toast';
 
 function NotificationBell() {
   const [open, setOpen] = useState(false);
@@ -24,7 +25,7 @@ function NotificationBell() {
     try {
       await deleteNotification({ userId: user?._id, notificationId });
     } catch (err) {
-      console.log("couldn't delete notification");
+      toast.error('Something went wrong!');
     }
   };
   return (

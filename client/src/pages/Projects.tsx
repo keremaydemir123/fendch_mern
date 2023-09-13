@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import { MdViewList, MdViewWeek } from 'react-icons/md';
-import { FaFilter } from 'react-icons/fa';
 import { useQuery } from 'react-query';
 import { motion } from 'framer-motion';
+import { Toaster, toast } from 'react-hot-toast';
 import ChallengeComboBox from '../components/ChallengeComboBox';
 import Loading from '../components/Loading';
 import Pagination from '../components/Pagination';
@@ -10,8 +10,8 @@ import ProjectList from '../components/ProjectList';
 import { Select, SelectOption } from '../components/Select';
 import TextButton from '../components/TextButton';
 import { getProjects } from '../services/projects';
-import UsersComboBox from '../components/UsersComboBox';
 import Button from '../components/Button';
+import { ProjectProps } from '../types';
 
 const selectOptions = [
   { label: 'All', value: 'all' },
@@ -26,42 +26,57 @@ const selectOptions = [
 ];
 
 function Projects() {
-  const [selectValue, setSelectValue] = useState<SelectOption[]>([
+  const [projects, setProjects] = useState<ProjectProps[]>([]);
+  const [selectedTags, setSelectedTags] = useState<SelectOption[]>([
     selectOptions[0],
   ]);
+  const [selectedChallenge, setSelectedChallenge] = useState<string>('All');
   const [page, setPage] = useState(1);
-  const [queryString, setQueryString] = useState('page=1&tech=All');
   const [layout, setLayout] = useState<'default' | 'list'>('default');
   const [isFilterTabOpen, setIsFilterTabOpen] = useState(false);
 
-  const { isLoading, error, data } = useQuery(['projects', queryString], () =>
-    getProjects(queryString)
+  const { isLoading, error, data } = useQuery(
+    'projects',
+    () => getProjects('page=1&tech=all&challenge=all'),
+    {
+      onSuccess: (data) => {
+        setProjects(data.projects);
+        console.log(data.projects);
+      },
+    }
   );
 
-  const filterProjects = useCallback(() => {
+  const fetchProjects = async (str: string) => {
+    try {
+      const projects = await getProjects(str);
+      setProjects(projects);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const filterProjects = async () => {
     let str;
-    const techStr = selectValue.map((tech) => tech.label).join(',');
-    if (techStr.length < 1) str = `page=${page}`;
-    else str = `page=${page}&tech=${techStr}`;
-
-    setQueryString(str);
-  }, [page, selectValue]);
-
-  useEffect(() => {
-    filterProjects();
-  }, [filterProjects]);
+    const tags = selectedTags.map((tech) => tech.label).join(',');
+    if (tags.length < 1) str = `page=${page}`;
+    else str = `page=${page}&tags=${tags}&challenge=${selectedChallenge}`;
+    fetchProjects(str);
+  };
 
   const handleFilterToggle = () => {
     setIsFilterTabOpen(!isFilterTabOpen);
   };
 
+  const handleChallengeSelect = (challengeId: string) => {
+    setSelectedChallenge(challengeId);
+  };
+
   if (isLoading) return <Loading />;
   if (error) return <p>Error</p>;
 
-  const { projects } = data;
-
   return (
     <div className="flex flex-col h-full w-full  gap-4">
+      <Toaster />
       <div className="flex justify-between w-full bg-gradient-to-tr from-primary to-gray p-4 py-2 rounded-md shadow-lg shadow-dark">
         <div className="flex items-center text-4xl gap-2">
           <MdViewList
@@ -86,25 +101,22 @@ function Projects() {
         className="bg-gradient-to-tr from-primary to-gray shadow-lg shadow-dark rounded-md"
       >
         {isFilterTabOpen && (
-          <div className="flex md:flex-row flex-col p-4 gap-4 h-full">
+          <div className="flex md:flex-row flex-col p-4 gap-4 h-64">
             <Select
               multiple
               options={selectOptions}
-              onChange={(value) => setSelectValue(value)}
-              value={selectValue}
+              onChange={(value) => setSelectedTags(value)}
+              value={selectedTags}
             />
-            <div className="w-full flex items-center justify-center">
-              <ChallengeComboBox />
-            </div>
-            <div className="w-full flex items-center justify-center">
-              <UsersComboBox />
-            </div>
-            <Button>Search</Button>
+            <ChallengeComboBox handleChange={handleChallengeSelect} />
+            <Button onClick={filterProjects}>Search</Button>
           </div>
         )}
       </motion.div>
 
-      <ProjectList projects={projects} layout={layout} />
+      {projects && projects.length > 0 && (
+        <ProjectList projects={projects} layout={layout} />
+      )}
 
       {data.totalProjects > data.limit && (
         <Pagination

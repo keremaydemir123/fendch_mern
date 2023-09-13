@@ -16,7 +16,6 @@ import {
 import { CommentProps } from '../types/Comment';
 import { useUser } from '../contexts/UserProvider';
 import { useComment } from '../contexts/CommentProvider';
-import Button from './Button';
 import TextButton from './TextButton';
 
 const dateFormatter = new Intl.DateTimeFormat(undefined, {
@@ -110,7 +109,7 @@ function Comment({
       });
       deleteLocalComment(comment._id);
     } catch (err) {
-      console.log(err);
+      toast.error('Error deleting comment');
     }
   };
 
@@ -130,7 +129,6 @@ function Comment({
   };
 
   const onCommentDislike = async () => {
-    console.log(likedByMe);
     if (!currentUser?._id) {
       throw new Error('You must be logged in to dislike to a comment');
     }

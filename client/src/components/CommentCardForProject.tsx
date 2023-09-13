@@ -116,8 +116,7 @@ function CommentCardForProject({
       setLikeCount((prev) => prev + 1);
       setLikedByMe(true);
     } catch (err) {
-      console.log(err);
-      setLoading(false);
+      toast.error('Error liking comment');
     }
   }
   async function onCommentDislike() {
@@ -135,7 +134,6 @@ function CommentCardForProject({
       setLikeCount((prev) => prev - 1);
       setLikedByMe(false);
     } catch (err) {
-      console.log(err);
       setLoading(false);
     }
   }

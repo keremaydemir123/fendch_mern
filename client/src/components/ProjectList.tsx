@@ -8,6 +8,7 @@ function ProjectList({
   projects: ProjectProps[];
   layout?: 'default' | 'list';
 }) {
+  console.log(projects);
   return (
     <div className="flex flex-wrap gap-4 mt-4 justify-center">
       {projects.map((project) => (

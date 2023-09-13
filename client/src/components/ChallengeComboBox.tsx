@@ -10,7 +10,11 @@ type Challenge = {
   _id: string;
 };
 
-export default function ChallengeComboBox() {
+export default function ChallengeComboBox({
+  handleChange,
+}: {
+  handleChange: any;
+}) {
   const [selected, setSelected] = useState<Challenge>();
   const [query, setQuery] = useState('');
   const [challenges, setChallenges] = useState<Challenge[]>([]);
@@ -36,12 +40,17 @@ export default function ChallengeComboBox() {
             .includes(query.toLowerCase().replace(/\s+/g, ''))
         );
 
+  const handleSelect = (value: { _id: string; objective: string }) => {
+    setSelected(value);
+    handleChange(value._id);
+  };
+
   if (isLoading) return <Loading />;
   if (error) return <p>Error</p>;
 
   return (
-    <div className="absolute w-72 text-light outline-none">
-      <Combobox value={selected} onChange={setSelected}>
+    <div className="relative w-72 text-light outline-none">
+      <Combobox value={selected} onChange={handleSelect}>
         <div className="relative mt-1 h-16">
           <div className="relative w-full h-full cursor-default outline-none text-left sm:text-sm">
             <Combobox.Input
@@ -63,7 +72,7 @@ export default function ChallengeComboBox() {
             leaveTo="opacity-0"
             afterLeave={() => setQuery('')}
           >
-            <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md outline-none border-none bg-primary py-1 text-base shadow-lg sm:text-sm">
+            <Combobox.Options className="absolute top-full mt-1 max-h-60 w-full overflow-auto rounded-md outline-none border-none bg-primary py-1 text-base shadow-lg sm:text-sm">
               {filteredChallenges.length === 0 && query !== '' ? (
                 <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
                   Nothing found.
