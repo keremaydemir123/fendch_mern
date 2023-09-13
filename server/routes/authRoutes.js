@@ -29,12 +29,14 @@ router.get(
     if (req.user) {
       const user = await User.findOne({ githubId: req.user.id });
       if (user) {
+        console.log(req.user);
         res.status(200).json(user);
       } else {
         const newUser = await User.create({
           githubId: req.user.id,
           repos_url: req.user._json.repos_url,
           username: req.user.username,
+          displayName: req.user.displayName,
           avatar: req.user.photos[0].value,
           profileUrl: req.user.profileUrl,
           email: req.user.emails[0].value,
